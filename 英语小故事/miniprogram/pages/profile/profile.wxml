@@ -1,0 +1,52 @@
+<view class="profile">
+  <view wx:if="{{loading}}" class="profile__loading">
+    <text>加载中...</text>
+  </view>
+
+  <block wx:else>
+    <view class="profile__header">
+      <view class="profile__avatar" bindtap="onAvatarTap">
+        <image class="profile__avatar-img" src="/assets/images/app_icon.png" mode="aspectFill" />
+      </view>
+      <text class="profile__title">我的学习</text>
+      <text class="profile__subtitle">坚持每天读一个故事</text>
+    </view>
+
+    <view class="profile__stats">
+      <view class="profile__stat-item">
+        <text class="profile__stat-value">{{daysJoined}}</text>
+        <text class="profile__stat-label">使用天数</text>
+      </view>
+      <view class="profile__stat-divider"></view>
+      <view class="profile__stat-item">
+        <text class="profile__stat-value">{{vocabCount}}</text>
+        <text class="profile__stat-label">生词收藏</text>
+      </view>
+    </view>
+
+    <view class="profile__section">
+      <view class="profile__section-title">学习进度</view>
+      <view class="profile__progress-bar-wrap">
+        <view class="profile__progress-bar-bg">
+          <view class="profile__progress-bar-fill" style="width: {{storiesCompleted > 0 ? (storiesCompleted / 40 * 100) : 0}}%"></view>
+        </view>
+        <text class="profile__progress-text">已完成 {{storiesCompleted}}/40 个故事</text>
+      </view>
+    </view>
+
+    <view class="profile__section">
+      <view class="profile__section-title">数据同步</view>
+      <view class="profile__sync-row" bindtap="onSyncProgress">
+        <text class="profile__sync-label">同步学习进度</text>
+        <text class="profile__sync-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="profile__section">
+      <view class="profile__sync-row" bindtap="onPrivacyTap">
+        <text class="profile__sync-label">隐私政策与用户协议</text>
+        <text class="profile__sync-arrow">›</text>
+      </view>
+    </view>
+  </block>
+</view>

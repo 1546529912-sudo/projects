@@ -1,0 +1,64 @@
+<view class="reading">
+  <!-- 自定义顶栏 -->
+  <view class="reading__nav" style="padding-top: {{statusBarHeight}}px">
+    <view class="reading__back" bindtap="onBack">
+      <text class="reading__back-icon">‹</text>
+    </view>
+    <view class="level-badge">L{{story.level}} {{levelName}}</view>
+    <view class="reading__fav" bindtap="onFavTap">
+      <text class="reading__fav-icon {{favoured ? 'reading__fav-icon--active' : ''}}">{{favoured ? '♥' : '♡'}}</text>
+    </view>
+  </view>
+
+  <!-- 内容区 -->
+  <scroll-view class="reading__scroll" scroll-y enhanced scroll-top="{{scrollTop}}" bindscroll="onScroll">
+    <!-- 故事封面图（有图才显示） -->
+    <view wx:if="{{coverUrl}}" class="reading__cover">
+      <image class="reading__cover-img" src="{{coverUrl}}" mode="aspectFill" />
+      <view class="reading__cover-fade" />
+    </view>
+    <!-- 标题 -->
+    <view class="reading__title">{{story.title}}</view>
+
+    <!-- 正文：按句子分组渲染 -->
+    <view class="reading__content">
+      <block wx:for="{{sentences}}" wx:key="index" wx:for-item="sentence" wx:for-index="sIdx">
+        <view class="reading__sentence {{activeSentence === sIdx ? 'reading__sentence--active' : ''}}">
+          <block wx:for="{{sentence.tokens}}" wx:key="index" wx:for-item="token">
+            <text wx:if="{{token.type === 'punct'}}" class="reading__punct">{{token.text}}</text>
+            <text wx:else
+                  class="reading__word {{activeWord === token.cleanWord ? 'reading__word--active' : ''}}"
+                  data-word="{{token.cleanWord}}"
+                  data-display="{{token.text}}"
+                  bindtap="onWordTap">{{token.text}}</text>
+          </block>
+        </view>
+      </block>
+    </view>
+
+    <view class="reading__bottom-spacer" />
+  </scroll-view>
+
+  <!-- 底部工具栏 -->
+  <view class="reading__toolbar">
+    <audio-player wx:if="{{story.audioUrl && story.audioUrl !== 'ERROR'}}" audioUrl="{{story.audioUrl}}" storyId="{{story._id}}" bindtimeupdate="onAudioTimeUpdate" bindended="onAudioEnded" />
+    <view class="reading__vocab-btn" bindtap="onVocabTap">
+      <text class="reading__vocab-icon">📖</text>
+      <text>生词本</text>
+    </view>
+  </view>
+
+  <!-- 单词弹窗 -->
+  <word-popup
+    visible="{{popupVisible}}"
+    wordInfo="{{currentWordInfo}}"
+    storyId="{{story._id}}"
+    storyTitle="{{story.title}}"
+    bindclose="onPopupClose"
+  />
+
+  <!-- 加载遮罩 -->
+  <view wx:if="{{loading}}" class="reading__loading">
+    <view class="reading__loading-dot" />
+  </view>
+</view>

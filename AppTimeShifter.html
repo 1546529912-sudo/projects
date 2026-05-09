@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App Time Shifter</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #7c6cff;
+    --accent2: #ff6c9d;
+    --accent3: #6cffcb;
+    --text: #e8e8f0;
+    --text-muted: #6868a0;
+    --glow: rgba(124, 108, 255, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,108,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,108,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,108,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    animation: drift 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift {
+    to { transform: translate(200px, 100px); }
+  }
+
+  .window {
+    width: 520px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 0 0 1px rgba(124,108,255,0.1), 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(124,108,255,0.08);
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+    animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Title bar */
+  .titlebar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+  }
+
+  .dots { display: flex; gap: 7px; }
+  .dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: filter 0.2s;
+  }
+  .dot:hover { filter: brightness(1.3); }
+  .dot.red { background: #ff5f57; }
+  .dot.yellow { background: #febc2e; }
+  .dot.green { background: #28c840; }
+
+  .title-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    flex: 1;
+    text-align: center;
+    letter-spacing: 0.08em;
+  }
+
+  .badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.1em;
+    color: white;
+  }
+
+  /* Body */
+  .body { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* Section label */
+  .label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Drop zone */
+  .dropzone {
+    border: 1.5px dashed var(--border);
+    border-radius: 12px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .dropzone:hover, .dropzone.dragover {
+    border-color: var(--accent);
+    background: rgba(124,108,255,0.05);
+    box-shadow: inset 0 0 20px rgba(124,108,255,0.05);
+  }
+  .dropzone.has-app {
+    border-style: solid;
+    border-color: var(--accent3);
+    background: rgba(108,255,203,0.04);
+  }
+
+  .drop-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+    display: block;
+    filter: grayscale(0.4);
+    transition: transform 0.3s;
+  }
+  .dropzone:hover .drop-icon { transform: scale(1.1) translateY(-2px); }
+  .dropzone.has-app .drop-icon { filter: none; }
+
+  .drop-main {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .drop-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .app-info {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+  }
+  .dropzone.has-app .app-info { display: flex; }
+  .dropzone.has-app .drop-placeholder { display: none; }
+
+  .app-icon-big {
+    font-size: 42px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .app-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--accent3);
+    margin-bottom: 3px;
+  }
+  .app-path {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    word-break: break-all;
+  }
+
+  .clear-btn {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: rgba(255,108,157,0.15);
+    border: 1px solid rgba(255,108,157,0.3);
+    color: var(--accent2);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+  .dropzone.has-app .clear-btn { display: block; }
+  .clear-btn:hover { background: rgba(255,108,157,0.3); }
+
+  /* Time section */
+  .time-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .time-field {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+  .time-field:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(124,108,255,0.12);
+  }
+
+  .field-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .field-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .field-input::-webkit-calendar-picker-indicator {
+    filter: invert(0.6);
+    cursor: pointer;
+  }
+
+  /* Preset quick buttons */
+  .presets {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .preset-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .preset-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(124,108,255,0.08);
+  }
+  .preset-btn.active {
+    background: rgba(124,108,255,0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Command preview */
+  .cmd-preview {
+    background: #050508;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    position: relative;
+    overflow: hidden;
+  }
+  .cmd-preview::before {
+    content: '$ ';
+    color: var(--accent3);
+    font-weight: 700;
+  }
+  .cmd-highlight { color: var(--accent); }
+  .cmd-app { color: var(--accent2); }
+  .cmd-time { color: var(--accent3); }
+
+  .copy-cmd {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-cmd:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Launch button */
+  .launch-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent) 0%, #9b6cff 50%, var(--accent2) 100%);
+    background-size: 200% 200%;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+  }
+  .launch-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .launch-btn:hover::before { opacity: 1; }
+  .launch-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(124,108,255,0.5), 0 0 60px rgba(124,108,255,0.2);
+    background-position: 100% 100%;
+  }
+  .launch-btn:active { transform: translateY(0); }
+  .launch-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .launch-btn .btn-icon { margin-right: 8px; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface2);
+    border: 1px solid var(--accent3);
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+    z-index: 100;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Launch animation overlay */
+  .launch-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(124,108,255,0.3) 0%, transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s;
+    z-index: 50;
+  }
+  .launch-overlay.active { opacity: 1; }
+
+  /* Divider */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="window" id="mainWindow">
+  <!-- Title Bar -->
+  <div class="titlebar">
+    <div class="dots">
+      <div class="dot red" onclick="closeAnim()"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+    </div>
+    <span class="title-text">App Time Shifter</span>
+    <span class="badge">v1.0</span>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+
+    <!-- App Drop Zone -->
+    <div>
+      <div class="label">目标应用</div>
+      <div class="dropzone" id="dropzone"
+           ondragover="handleDragOver(event)"
+           ondragleave="handleDragLeave(event)"
+           ondrop="handleDrop(event)"
+           onclick="triggerFileSelect()">
+        <div class="drop-placeholder">
+          <span class="drop-icon">🖥️</span>
+          <div class="drop-main">拖入 App 到此处</div>
+          <div class="drop-sub">或点击选择 .app 文件</div>
+        </div>
+        <div class="app-info" id="appInfo">
+          <div class="app-icon-big" id="appIcon">📦</div>
+          <div>
+            <div class="app-name" id="appName">—</div>
+            <div class="app-path" id="appPath">—</div>
+          </div>
+        </div>
+        <button class="clear-btn" onclick="clearApp(event)">✕ 移除</button>
+      </div>
+      <input type="file" id="fileInput" accept=".app" style="display:none" onchange="handleFileSelect(event)">
+    </div>
+
+    <!-- Time Settings -->
+    <div>
+      <div class="label">目标时间</div>
+      <div class="time-grid">
+        <div class="time-field">
+          <div class="field-label">📅 日期</div>
+          <input class="field-input" type="date" id="dateInput" onchange="updateCmd()">
+        </div>
+        <div class="time-field">
+          <div class="field-label">⏰ 时间</div>
+          <input class="field-input" type="time" id="timeInput" value="09:00" onchange="updateCmd()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick presets -->
+    <div>
+      <div class="label">快速预设</div>
+      <div class="presets">
+        <button class="preset-btn" onclick="setPreset(0, '今天')">今天</button>
+        <button class="preset-btn" onclick="setPreset(-1, '昨天')">昨天</button>
+        <button class="preset-btn" onclick="setPreset(-7, '一周前')">一周前</button>
+        <button class="preset-btn" onclick="setPreset(-30, '一月前')">一月前</button>
+        <button class="preset-btn" onclick="setPreset(-365, '一年前')">一年前</button>
+        <button class="preset-btn" onclick="setPreset(365, '明年')">明年</button>
+      </div>
+    </div>
+
+    <!-- Command preview -->
+    <div>
+      <div class="label">命令预览</div>
+      <div class="cmd-preview" id="cmdPreview">
+        <span id="cmdText">faketime '<span class="cmd-time">请先选择时间和 App</span>' open -a '<span class="cmd-app">App.app</span>'</span>
+        <button class="copy-cmd" onclick="copyCmd()">复制</button>
+      </div>
+    </div>
+
+    <!-- Launch -->
+    <button class="launch-btn" id="launchBtn" onclick="launch()" disabled>
+      <span class="btn-icon">🚀</span>启动 App（时间穿梭）
+    </button>
+
+  </div>
+</div>
+
+<div class="launch-overlay" id="overlay"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+  let selectedApp = null;
+  let activePreset = null;
+
+  // Init date to today
+  const today = new Date();
+  document.getElementById('dateInput').value = today.toISOString().split('T')[0];
+  updateCmd();
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('dropzone').classList.add('dragover');
+  }
+
+  function handleDragLeave(e) {
+    document.getElementById('dropzone').classList.remove('dragover');
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    const dz = document.getElementById('dropzone');
+    dz.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) setApp(files[0]);
+  }
+
+  function triggerFileSelect() {
+    if (!selectedApp) document.getElementById('fileInput').click();
+  }
+
+  function handleFileSelect(e) {
+    if (e.target.files.length > 0) setApp(e.target.files[0]);
+  }
+
+  function setApp(file) {
+    const name = file.name.replace(/\.app$/, '');
+    const path = file.path || `/Applications/${file.name}`;
+    selectedApp = { name, path, fullName: file.name };
+
+    const icons = ['🎮','🎵','📸','🌐','📝','🎨','💻','🔧','📊','🎬'];
+    const icon = icons[Math.floor(Math.random() * icons.length)];
+
+    document.getElementById('appIcon').textContent = icon;
+    document.getElementById('appName').textContent = name;
+    document.getElementById('appPath').textContent = path;
+    document.getElementById('dropzone').classList.add('has-app');
+    updateCmd();
+  }
+
+  function clearApp(e) {
+    e.stopPropagation();
+    selectedApp = null;
+    document.getElementById('dropzone').classList.remove('has-app');
+    document.getElementById('fileInput').value = '';
+    updateCmd();
+  }
+
+  function setPreset(dayOffset, label) {
+    const d = new Date();
+    d.setDate(d.getDate() + dayOffset);
+    document.getElementById('dateInput').value = d.toISOString().split('T')[0];
+
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    updateCmd();
+  }
+
+  function updateCmd() {
+    const date = document.getElementById('dateInput').value;
+    const time = document.getElementById('timeInput').value;
+    const appName = selectedApp ? selectedApp.fullName : 'YourApp.app';
+    const appPath = selectedApp ? selectedApp.path : '/Applications/YourApp.app';
+
+    let timeStr = '请先选择日期';
+    if (date && time) {
+      const [y, m, day] = date.split('-');
+      const [h, min] = time.split(':');
+      timeStr = `${y}-${m}-${day} ${h}:${min}:00`;
+    }
+
+    const cmdEl = document.getElementById('cmdText');
+    cmdEl.innerHTML = `faketime '<span class="cmd-time">${timeStr}</span>' open -a '<span class="cmd-app">${appName}</span>'`;
+
+    const btn = document.getElementById('launchBtn');
+    btn.disabled = !selectedApp || !date || !time;
+  }
+
+  function copyCmd() {
+    const date = document.getElementById('dateInput').value;
+    const time = document.getElementById('timeInput').value;
+    const appName = selectedApp ? selectedApp.fullName : 'YourApp.app';
+    const [y, m, day] = date.split('-');
+    const [h, min] = time.split(':');
+    const cmd = `faketime '${y}-${m}-${day} ${h}:${min}:00' open -a '${appName}'`;
+    navigator.clipboard.writeText(cmd).then(() => showToast('✓ 命令已复制到剪贴板'));
+  }
+
+  function launch() {
+    if (!selectedApp) return;
+
+    const date = document.getElementById('dateInput').value;
+    const time = document.getElementById('timeInput').value;
+    const [y, m, day] = date.split('-');
+    const [h, min] = time.split(':');
+    const targetTime = `${y}-${m}-${day} ${h}:${min}:00`;
+    const appPath = selectedApp.path;
+    const appName = selectedApp.name;
+    const cmd = `faketime '${targetTime}' open -a '${appPath}'`;
+
+    const overlay = document.getElementById('overlay');
+    const btn = document.getElementById('launchBtn');
+    btn.textContent = '⏳ 正在穿梭时空...';
+    btn.disabled = true;
+    overlay.classList.add('active');
+
+    const resetBtn = () => {
+      overlay.classList.remove('active');
+      btn.innerHTML = '<span class="btn-icon">🚀</span>启动 App（时间穿梭）';
+      btn.disabled = false;
+    };
+
+    // Electron / Node context: execute directly
+    try {
+      const { exec } = require('child_process');
+      exec(cmd, (err) => {
+        resetBtn();
+        if (err) {
+          showToast(`✗ 启动失败: ${err.message}`);
+        } else {
+          showToast(`✓ ${appName} 已在 ${targetTime} 启动`);
+        }
+      });
+      return;
+    } catch (e) {}
+
+    // Browser fallback: generate and download a runnable .command script
+    const script = `#!/bin/bash\n${cmd}\n`;
+    const blob = new Blob([script], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `launch_${appName.replace(/[^a-zA-Z0-9]/g, '_')}.command`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    setTimeout(() => {
+      resetBtn();
+      showToast(`✓ 脚本已下载 → 双击 .command 文件启动 ${appName}`);
+    }, 800);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  function closeAnim() {
+    const w = document.getElementById('mainWindow');
+    w.style.transition = 'all 0.3s cubic-bezier(0.4,0,1,1)';
+    w.style.transform = 'scale(0.9)';
+    w.style.opacity = '0';
+    setTimeout(() => {
+      w.style.transform = '';
+      w.style.opacity = '';
+      w.style.transition = '';
+    }, 400);
+  }
+</script>
+</body>
+</html>

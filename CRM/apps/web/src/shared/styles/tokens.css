@@ -1,0 +1,28 @@
+:root {
+  --bg-app: #f7f8fa;
+  --bg-card: #ffffff;
+  --bg-subtle: #fafafa;
+  --bg-hover: #f0f1f3;
+  --bg-selected: #eeeeef;
+  --side-bg: #fbfbfc;
+  --side-border: #ebedf0;
+  --side-item-text: #6b7280;
+  --side-item-muted: #a1a1aa;
+  --side-active-bg: #eeeeef;
+  --side-active-text: #18181b;
+  --action-primary: #111827;
+  --action-primary-hover: #1f2937;
+  --action-primary-text: #ffffff;
+  --text-heading: #111827;
+  --text-body: #3f4654;
+  --text-muted: #8a93a3;
+  --text-disabled: #c4c9d4;
+  --border-default: #e5e7eb;
+  --border-row: #f0f1f3;
+  --border-focus: #111827;
+  --success: #059669;
+  --warning: #b45309;
+  --error: #dc2626;
+  /* Top bar: reserved width for “CRM / 模块名 + 副标题”，避免左右挤压搜索区 */
+  --topbar-title-width: 22rem;
+}

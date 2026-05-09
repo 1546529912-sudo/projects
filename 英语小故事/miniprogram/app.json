@@ -1,0 +1,44 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/story-list/story-list",
+    "pages/reading/reading",
+    "pages/vocabulary/vocabulary",
+    "pages/profile/profile",
+    "pages/admin/admin",
+    "pages/privacy/privacy"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FFF8F0",
+    "navigationBarTitleText": "英语小故事",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FFF8F0"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#FF8C42",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "故事"
+      },
+      {
+        "pagePath": "pages/vocabulary/vocabulary",
+        "text": "生词本"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "cloud": true,
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "style": "v2",
+  "__usePrivacyCheck__": true
+}

@@ -1,0 +1,50 @@
+<scroll-view class="privacy" scroll-y>
+  <view class="privacy__section">
+    <text class="privacy__title">隐私政策与用户协议</text>
+    <text class="privacy__update">最后更新：2025年5月</text>
+  </view>
+
+  <view class="privacy__section">
+    <text class="privacy__h2">一、我们收集哪些信息</text>
+    <text class="privacy__p">本小程序在您使用过程中会收集以下信息：</text>
+    <text class="privacy__p">1. 微信用户标识（OpenID）：用于识别您的账户，无需手动注册，系统自动生成，不包含您的微信昵称、头像或手机号。</text>
+    <text class="privacy__p">2. 阅读进度：记录您读过哪些故事、阅读进度百分比，用于在不同设备间同步进度。</text>
+    <text class="privacy__p">3. 生词收藏：您主动收藏的英语单词列表，保存在您的账户下。</text>
+    <text class="privacy__p">4. 使用行为数据：包括打开小程序、阅读故事、点击单词等匿名行为记录，用于改善产品体验，不含任何个人身份信息。</text>
+  </view>
+
+  <view class="privacy__section">
+    <text class="privacy__h2">二、信息如何使用</text>
+    <text class="privacy__p">我们收集的信息仅用于以下目的：</text>
+    <text class="privacy__p">· 同步您的阅读进度和生词收藏</text>
+    <text class="privacy__p">· 展示您的学习统计数据</text>
+    <text class="privacy__p">· 改善小程序功能和内容质量</text>
+  </view>
+
+  <view class="privacy__section">
+    <text class="privacy__h2">三、信息存储与安全</text>
+    <text class="privacy__p">所有数据存储于微信云开发（CloudBase）平台，受微信官方安全机制保护。我们不会将您的任何数据出售、出租或共享给第三方。</text>
+  </view>
+
+  <view class="privacy__section">
+    <text class="privacy__h2">四、儿童隐私保护</text>
+    <text class="privacy__p">本小程序面向儿童设计，我们不收集儿童的姓名、照片、联系方式等个人身份信息。家长或监护人可随时通过联系我们删除相关数据。</text>
+  </view>
+
+  <view class="privacy__section">
+    <text class="privacy__h2">五、用户协议</text>
+    <text class="privacy__p">使用本小程序，即表示您同意遵守以下规定：</text>
+    <text class="privacy__p">· 本小程序内容仅供个人学习使用，不得用于商业目的</text>
+    <text class="privacy__p">· 不得通过技术手段破解、复制或传播本小程序内容</text>
+    <text class="privacy__p">· 我们保留对小程序内容和功能进行更新、调整的权利</text>
+  </view>
+
+  <view class="privacy__section">
+    <text class="privacy__h2">六、联系我们</text>
+    <text class="privacy__p">如您对隐私政策有任何疑问，或需要删除您的数据，请通过微信小程序「意见反馈」功能与我们联系。</text>
+  </view>
+
+  <view class="privacy__footer">
+    <text class="privacy__footer-text">继续使用本小程序即表示您已阅读并同意以上条款</text>
+  </view>
+</scroll-view>

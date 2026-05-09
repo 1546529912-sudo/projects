@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "word-popup": "/components/word-popup/word-popup",
+    "audio-player": "/components/audio-player/audio-player"
+  }
+}

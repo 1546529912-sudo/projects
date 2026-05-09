@@ -1,0 +1,196 @@
+.container {
+  position: relative;
+  --color-1: #b9a89b;
+  --color-2: #b9a89b;
+  --color-3: #b9a89b;
+  --color-4: #b9a89b;
+}
+
+.nav {
+  display: flex;
+  position: relative;
+  transform: translate3d(0, 0, 0.01px);
+}
+
+.list {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  z-index: 3;
+  color: #8c675a;
+}
+
+.item {
+  border-radius: 9999px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+  box-shadow: 0 0 0.5px 1.5px transparent;
+  color: #8c675a;
+}
+
+.item a {
+  display: inline-block;
+  position: relative;
+  z-index: 2;
+  padding: 0.52rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.item:focus-within:has(:focus-visible) {
+  box-shadow: 0 0 0.5px 1.5px #a47463;
+}
+
+.item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: #f2e6db;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.itemActive {
+  color: #6b4f3f;
+  font-weight: 600;
+}
+
+.itemActive::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.effect {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  opacity: 1;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+}
+
+.effectText {
+  display: none;
+}
+
+.effectTextActive {
+  color: #6b4f3f;
+}
+
+.effectFilter {
+  filter: blur(2px) contrast(8);
+  mix-blend-mode: normal;
+}
+
+.effectFilter::before {
+  content: none;
+}
+
+.effectFilter::after {
+  content: none;
+}
+
+@keyframes pill {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.particle,
+.point {
+  display: block;
+  opacity: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  transform-origin: center;
+}
+
+.particle {
+  --time: 5s;
+  position: absolute;
+  top: calc(50% - 5px);
+  left: calc(50% - 5px);
+  animation: particle calc(var(--time)) ease 1 -350ms;
+}
+
+.point {
+  background: var(--color);
+  opacity: 0.45;
+  animation: point calc(var(--time)) ease 1 -350ms;
+}
+
+@keyframes particle {
+  0% {
+    transform: rotate(0deg) translate(var(--start-x), var(--start-y));
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+
+  70% {
+    transform: rotate(calc(var(--rotate) * 0.5)) translate(calc(var(--end-x) * 1.2), calc(var(--end-y) * 1.2));
+    opacity: 1;
+    animation-timing-function: ease;
+  }
+
+  85% {
+    transform: rotate(calc(var(--rotate) * 0.66)) translate(var(--end-x), var(--end-y));
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(calc(var(--rotate) * 1.2)) translate(calc(var(--end-x) * 0.5), calc(var(--end-y) * 0.5));
+    opacity: 1;
+  }
+}
+
+@keyframes point {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+
+  25% {
+    transform: scale(calc(var(--scale) * 0.25));
+  }
+
+  38% {
+    opacity: 1;
+  }
+
+  65% {
+    transform: scale(var(--scale));
+    opacity: 1;
+    animation-timing-function: ease;
+  }
+
+  85% {
+    transform: scale(var(--scale));
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}

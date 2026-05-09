@@ -1,0 +1,31 @@
+<view class="vocab">
+  <view wx:if="{{words.length === 0}}" class="vocab__empty">
+    <text class="vocab__empty-icon">📖</text>
+    <view class="vocab__empty-text">还没有收藏单词</view>
+    <view class="vocab__empty-sub">阅读故事时点击单词可以收藏</view>
+  </view>
+
+  <view wx:else class="vocab__list">
+    <view wx:for="{{words}}" wx:key="word" class="vocab__item" bindtap="onWordTap" data-index="{{index}}">
+      <view class="vocab__item-word">{{item.word}}</view>
+      <view class="vocab__item-pos">{{item.partOfSpeech}}</view>
+      <view class="vocab__item-def">{{item.displayDefinition}}</view>
+      <view class="vocab__item-actions">
+        <view class="vocab__play" catchtap="onPlayTap" data-url="{{item.audioUrl}}" data-word="{{item.word}}">
+          <text class="vocab__action-icon">🔊</text>
+        </view>
+        <view class="vocab__delete" catchtap="onDeleteTap" data-word="{{item.word}}">
+          <text class="vocab__action-icon">🗑</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <word-popup
+    visible="{{popupVisible}}"
+    wordInfo="{{currentWordInfo}}"
+    storyId=""
+    storyTitle=""
+    bindclose="onPopupClose"
+  />
+</view>

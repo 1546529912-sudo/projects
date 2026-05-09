@@ -1,0 +1,19 @@
+<view class="mask {{visible ? 'mask--show' : ''}}" bindtap="onMaskTap">
+  <view class="popup {{visible ? 'popup--show' : ''}}" catchtap="stopProp">
+    <view class="popup__header">
+      <view class="popup__word">{{wordInfo.word}}</view>
+      <view class="popup__phonetic">{{wordInfo.phonetic}}</view>
+      <view class="popup__play" bindtap="onPlayTap">
+        <text class="popup__play-icon">{{playing ? '⏸' : '🔊'}}</text>
+      </view>
+    </view>
+    <view class="popup__pos">{{wordInfo.partOfSpeech}}</view>
+    <view class="popup__def">{{wordInfo.displayDefinition || wordInfo.definition}}</view>
+    <view class="popup__actions">
+      <view class="popup__save {{saved ? 'popup__save--saved' : ''}}" bindtap="onSaveTap">
+        <text class="popup__save-icon">{{saved ? '★' : '☆'}}</text>
+        <text>{{saved ? '已收藏' : '加入生词本'}}</text>
+      </view>
+    </view>
+  </view>
+</view>

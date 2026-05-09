@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Pencil 多端产品设计代理 Skill 信息图</title>
+  <desc id="desc">中文信息图，介绍该 Skill 的流程、支持模式和交付校验重点。</desc>
+  <rect width="1600" height="900" fill="#f5f7fb"/>
+  <rect x="48" y="42" width="1504" height="816" rx="28" fill="#ffffff" stroke="#d8e0ec" stroke-width="2"/>
+  <text x="92" y="120" font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, Arial, sans-serif" font-size="48" font-weight="800" fill="#101828">Pencil 多端产品设计代理 Skill</text>
+  <text x="94" y="164" font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, Arial, sans-serif" font-size="24" fill="#667085">把 AI 助手变成更稳定、更可控的 Pencil 产品设计代理。</text>
+
+  <g transform="translate(94 226)">
+    <rect width="430" height="520" rx="20" fill="#111827"/>
+    <text x="34" y="62" font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, Arial, sans-serif" font-size="28" font-weight="800" fill="#ffffff">工作流程</text>
+    <g font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, Arial, sans-serif" font-size="22" fill="#dbeafe">
+      <text x="36" y="120">1. Host 检测</text>
+      <text x="36" y="178">2. 前置确认</text>
+      <text x="36" y="236">3. 检查当前 .pen 文件</text>
+      <text x="36" y="294">4. 路由到合适模式</text>
+      <text x="36" y="352">5. 输出设计方向</text>
+      <text x="36" y="410">6. 生成 Pencil 画布</text>
+      <text x="36" y="468">7. 校验并修正</text>
+    </g>
+  </g>
+
+  <g transform="translate(570 226)">
+    <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, Arial, sans-serif" font-size="30" font-weight="800" fill="#101828">支持模式</text>
+    <g font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, Arial, sans-serif" font-size="20" fill="#344054">
+      <rect x="0" y="34" width="290" height="74" rx="16" fill="#eef4ff"/><text x="24" y="80">企业管理后台</text>
+      <rect x="320" y="34" width="290" height="74" rx="16" fill="#ecfdf3"/><text x="344" y="80">响应式网页</text>
+      <rect x="640" y="34" width="290" height="74" rx="16" fill="#fff7ed"/><text x="664" y="80">Mobile App</text>
+      <rect x="0" y="132" width="290" height="74" rx="16" fill="#fdf2fa"/><text x="24" y="178">微信小程序</text>
+      <rect x="320" y="132" width="290" height="74" rx="16" fill="#f0f9ff"/><text x="344" y="178">数据可视化大屏</text>
+      <rect x="640" y="132" width="290" height="74" rx="16" fill="#fef3f2"/><text x="664" y="178">电商 / Campaign</text>
+      <rect x="0" y="230" width="290" height="74" rx="16" fill="#f8fafc"/><text x="24" y="276">设计系统</text>
+      <rect x="320" y="230" width="290" height="74" rx="16" fill="#f4f3ff"/><text x="344" y="276">演示文稿 / Deck</text>
+      <rect x="640" y="230" width="290" height="74" rx="16" fill="#ecfeff"/><text x="664" y="276">多端一致性</text>
+    </g>
+
+    <rect x="0" y="358" width="930" height="162" rx="20" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="28" y="410" font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, Arial, sans-serif" font-size="26" font-weight="800" fill="#101828">它改善什么</text>
+    <text x="30" y="456" font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, Arial, sans-serif" font-size="22" fill="#475467">减少盲画和平台误判，提升 batch_design 安全性、图层可编辑性、状态完整性。</text>
+    <text x="30" y="500" font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, Arial, sans-serif" font-size="22" fill="#475467">适合首稿、改版、评审修正、多端一致性和交付前校验。</text>
+  </g>
+</svg>

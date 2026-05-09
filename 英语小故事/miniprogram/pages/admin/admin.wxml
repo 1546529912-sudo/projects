@@ -1,0 +1,82 @@
+<view class="admin">
+  <view wx:if="{{loading}}" class="admin__loading">
+    <text>加载中...</text>
+  </view>
+
+  <view wx:elif="{{unauthorized}}" class="admin__unauth">
+    <text>无权限访问</text>
+  </view>
+
+  <block wx:else>
+    <view class="admin__tabs">
+      <view class="admin__tab {{tab === 'overview' ? 'admin__tab--active' : ''}}"
+            bindtap="onTabTap" data-tab="overview">概览</view>
+      <view class="admin__tab {{tab === 'stories' ? 'admin__tab--active' : ''}}"
+            bindtap="onTabTap" data-tab="stories">故事</view>
+      <view class="admin__tab {{tab === 'events' ? 'admin__tab--active' : ''}}"
+            bindtap="onTabTap" data-tab="events">事件</view>
+      <view class="admin__refresh" bindtap="onRefresh">刷新</view>
+    </view>
+
+    <!-- 概览 -->
+    <block wx:if="{{tab === 'overview'}}">
+      <view class="admin__cards">
+        <view class="admin__card">
+          <text class="admin__card-val">{{userCount}}</text>
+          <text class="admin__card-label">总用户</text>
+        </view>
+        <view class="admin__card">
+          <text class="admin__card-val">{{newUsersToday}}</text>
+          <text class="admin__card-label">今日新增</text>
+        </view>
+        <view class="admin__card">
+          <text class="admin__card-val">{{readerCount}}</text>
+          <text class="admin__card-label">有阅读记录</text>
+        </view>
+        <view class="admin__card">
+          <text class="admin__card-val">{{completionCount}}</text>
+          <text class="admin__card-label">有完成记录</text>
+        </view>
+      </view>
+
+      <view class="admin__section-title">近30天事件统计</view>
+      <view class="admin__event-counts">
+        <view class="admin__event-row" wx:for="{{eventCounts}}" wx:key="*this" wx:for-index="type">
+          <text class="admin__event-type">{{type}}</text>
+          <text class="admin__event-num">{{item}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 故事 -->
+    <block wx:if="{{tab === 'stories'}}">
+      <view class="admin__story-row admin__story-header">
+        <text class="admin__story-title">故事标题</text>
+        <text class="admin__story-level">等级</text>
+        <text class="admin__story-num">阅读</text>
+        <text class="admin__story-num">完成</text>
+      </view>
+      <view class="admin__story-row" wx:for="{{storyList}}" wx:key="storyId">
+        <text class="admin__story-title">{{item.title}}</text>
+        <text class="admin__story-level">{{item.level ? 'L' + item.level : '-'}}</text>
+        <text class="admin__story-num">{{item.readers}}</text>
+        <text class="admin__story-num">{{item.completions}}</text>
+      </view>
+      <view wx:if="{{storyList.length === 0}}" class="admin__empty">暂无数据</view>
+    </block>
+
+    <!-- 事件 -->
+    <block wx:if="{{tab === 'events'}}">
+      <view class="admin__event-item" wx:for="{{recentEvents}}" wx:key="_id">
+        <view class="admin__event-item-row">
+          <text class="admin__event-item-type">{{item.type}}</text>
+          <text class="admin__event-item-time">{{item.timeStr}}</text>
+        </view>
+        <text class="admin__event-item-detail">
+          {{item.storyId ? 'story:' + item.storyId : ''}}{{item.level ? ' L' + item.level : ''}}{{item.exitPercent !== undefined ? ' ' + item.exitPercent + '%' : ''}}{{item.word ? 'word:' + item.word : ''}}
+        </text>
+      </view>
+      <view wx:if="{{recentEvents.length === 0}}" class="admin__empty">暂无事件</view>
+    </block>
+  </block>
+</view>

@@ -1,0 +1,139 @@
+.profile {
+  min-height: 100vh;
+  background: #FFF8F0;
+  padding: 40rpx 32rpx 120rpx;
+}
+
+.profile__loading {
+  display: flex;
+  justify-content: center;
+  padding-top: 200rpx;
+  color: #AAAAAA;
+  font-size: 28rpx;
+}
+
+.profile__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0 40rpx;
+}
+
+.profile__avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 40rpx;
+  overflow: hidden;
+  margin-bottom: 24rpx;
+}
+
+.profile__avatar-img {
+  width: 160rpx;
+  height: 160rpx;
+}
+
+.profile__title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 8rpx;
+}
+
+.profile__subtitle {
+  font-size: 26rpx;
+  color: #AAAAAA;
+}
+
+.profile__stats {
+  display: flex;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 40rpx 0;
+  margin-bottom: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
+}
+
+.profile__stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile__stat-value {
+  font-size: 52rpx;
+  font-weight: 700;
+  color: #5BAD8F;
+  line-height: 1.1;
+}
+
+.profile__stat-label {
+  font-size: 22rpx;
+  color: #AAAAAA;
+  margin-top: 8rpx;
+}
+
+.profile__stat-divider {
+  width: 1rpx;
+  background: #EBEBEB;
+  margin: 8rpx 0;
+}
+
+.profile__section {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
+}
+
+.profile__section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 24rpx;
+}
+
+.profile__progress-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.profile__progress-bar-bg {
+  height: 16rpx;
+  background: #F0F0F0;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.profile__progress-bar-fill {
+  height: 100%;
+  background: #5BAD8F;
+  border-radius: 8rpx;
+  min-width: 0;
+  transition: width 0.4s ease;
+}
+
+.profile__progress-text {
+  font-size: 24rpx;
+  color: #AAAAAA;
+}
+
+.profile__sync-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 0;
+}
+
+.profile__sync-label {
+  font-size: 28rpx;
+  color: #555555;
+}
+
+.profile__sync-arrow {
+  font-size: 40rpx;
+  color: #CCCCCC;
+  line-height: 1;
+}

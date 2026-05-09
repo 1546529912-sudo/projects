@@ -1,0 +1,752 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  sales
+  manager
+  director
+  admin
+}
+
+enum UserStatus {
+  active
+  locked
+  disabled
+}
+
+enum LeadStatus {
+  new
+  converted
+  duplicate_suspected
+  invalid
+}
+
+enum CustomerLevel {
+  A
+  B
+  C
+  D
+}
+
+enum CustomerStatus {
+  following
+  interested
+  negotiating
+  won
+  lost
+}
+
+enum DuplicateStatus {
+  none
+  suspected
+  confirmed
+  ignored
+}
+
+enum DuplicateCandidateStatus {
+  pending
+  confirmed
+  ignored
+  merged
+}
+
+model Department {
+  id        BigInt    @id @default(autoincrement())
+  name      String    @db.VarChar(128)
+  parentId  BigInt?   @map("parent_id")
+  parent    Department? @relation("DepartmentTree", fields: [parentId], references: [id])
+  children  Department[] @relation("DepartmentTree")
+  users     User[]
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
+
+  @@map("departments")
+}
+
+model User {
+  id               BigInt      @id @default(autoincrement())
+  name             String      @db.VarChar(64)
+  email            String?     @unique @db.VarChar(128)
+  phone            String?     @unique @db.VarChar(32)
+  passwordHash     String      @map("password_hash") @db.VarChar(255)
+  role             UserRole
+  departmentId     BigInt?     @map("department_id")
+  department       Department? @relation(fields: [departmentId], references: [id])
+  managerId        BigInt?     @map("manager_id")
+  manager          User?       @relation("UserManager", fields: [managerId], references: [id])
+  members          User[]      @relation("UserManager")
+  status           UserStatus  @default(active)
+  salesRegion      String?     @map("sales_region") @db.VarChar(64)
+  salesIndustry    String?     @map("sales_industry") @db.VarChar(64)
+  salesGroup       String?     @map("sales_group") @db.VarChar(64)
+  failedLoginCount Int         @default(0) @map("failed_login_count")
+  lockedAt         DateTime?   @map("locked_at") @db.Timestamptz
+  lastLoginAt      DateTime?   @map("last_login_at") @db.Timestamptz
+  createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt        DateTime?   @map("deleted_at") @db.Timestamptz
+
+  leads                  Lead[]
+  customers              Customer[]
+  contactsChanged        CustomerStatusHistory[]
+  followUps              FollowUpRecord[]
+  followUpEditHistories FollowUpEditHistory[]
+  opportunities          Opportunity[]
+  auditLogs              AuditLog[]
+  businessEvents         BusinessEvent[]
+  salesTargets           SalesTarget[]
+  notifications          Notification[]
+  quotations             Quotation[]
+  rollbackRequests       StatusRollbackRequest[] @relation("rollback_requester")
+  rollbackReviews        StatusRollbackRequest[] @relation("rollback_reviewer")
+  quotationApprovalReqs  QuotationApproval[]     @relation("qa_requester")
+  quotationApprovalRevs  QuotationApproval[]     @relation("qa_reviewer")
+  customerTagsAdded      CustomerTag[]
+  followUpAttachments    FollowUpAttachment[]
+  collaborating          CustomerCollaborator[]
+  collaboratorsAdded     CustomerCollaborator[] @relation("CollaboratorAdder")
+  contracts              Contract[]
+  exportApprovalReqs     ExportApproval[] @relation("ExportRequester")
+  exportApprovalRevs     ExportApproval[] @relation("ExportReviewer")
+
+  @@index([departmentId])
+  @@index([managerId])
+  @@map("users")
+}
+
+model Lead {
+  id                  BigInt     @id @default(autoincrement())
+  name                String?    @db.VarChar(128)
+  companyName         String?    @map("company_name") @db.VarChar(255)
+  contactName         String?    @map("contact_name") @db.VarChar(128)
+  phone               String?    @db.VarChar(32)
+  email               String?    @db.VarChar(128)
+  sourceCategory      String?    @map("source_category") @db.VarChar(64)
+  sourceDetail        String?    @map("source_detail") @db.VarChar(128)
+  status              LeadStatus @default(new)
+  ownerId             BigInt     @map("owner_id")
+  owner               User       @relation(fields: [ownerId], references: [id])
+  convertedCustomerId BigInt?    @map("converted_customer_id")
+  convertedContactId  BigInt?    @map("converted_contact_id")
+  convertedAt         DateTime?  @map("converted_at") @db.Timestamptz
+  extraFields         Json       @default("{}") @map("extra_fields")
+  createdAt           DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt           DateTime?  @map("deleted_at") @db.Timestamptz
+
+  customers           Customer[]
+
+  @@index([ownerId])
+  @@index([phone])
+  @@index([email])
+  @@index([createdAt])
+  @@index([companyName, contactName])
+  @@map("leads")
+}
+
+model Customer {
+  id                 BigInt          @id @default(autoincrement())
+  name               String          @db.VarChar(255)
+  shortName          String?         @map("short_name") @db.VarChar(128)
+  companyName        String?         @map("company_name") @db.VarChar(255)
+  primaryContactName String?         @map("primary_contact_name") @db.VarChar(128)
+  primaryPhone       String?         @map("primary_phone") @db.VarChar(32)
+  primaryEmail       String?         @map("primary_email") @db.VarChar(128)
+  level              CustomerLevel   @default(C)
+  status             CustomerStatus  @default(following)
+  ownerId            BigInt          @map("owner_id")
+  owner              User            @relation(fields: [ownerId], references: [id])
+  sourceLeadId       BigInt?         @map("source_lead_id")
+  sourceLead         Lead?           @relation(fields: [sourceLeadId], references: [id])
+  sourceCategory     String?         @map("source_category") @db.VarChar(64)
+  sourceDetail       String?         @map("source_detail") @db.VarChar(128)
+  duplicateStatus    DuplicateStatus @default(none) @map("duplicate_status")
+  customFields       Json            @default("{}") @map("custom_fields")
+  industry           String?         @db.VarChar(64)
+  companySize        String?         @map("company_size") @db.VarChar(64)
+  region             String?         @db.VarChar(64)
+  bantBudget         Int?            @map("bant_budget")
+  bantAuthority      Int?            @map("bant_authority")
+  bantNeed           Int?            @map("bant_need")
+  bantTimeline       Int?            @map("bant_timeline")
+  bantNotes          String?         @map("bant_notes") @db.VarChar(1000)
+  scotsmanSituation  Int?            @map("scotsman_situation")
+  scotsmanCompetition Int?           @map("scotsman_competition")
+  scotsmanOpportunity Int?           @map("scotsman_opportunity")
+  scotsmanTimescale  Int?            @map("scotsman_timescale")
+  scotsmanSize       Int?            @map("scotsman_size")
+  scotsmanMotivation Int?            @map("scotsman_motivation")
+  scotsmanAuthority  Int?            @map("scotsman_authority")
+  scotsmanNeed       Int?            @map("scotsman_need")
+  scotsmanNotes      String?         @map("scotsman_notes") @db.VarChar(1000)
+  lastFollowUpAt     DateTime?       @map("last_follow_up_at") @db.Timestamptz
+  nextFollowUpAt     DateTime?       @map("next_follow_up_at") @db.Timestamptz
+  archivedAt         DateTime?       @map("archived_at") @db.Timestamptz
+  archiveReason      String?         @map("archive_reason") @db.VarChar(500)
+  createdAt          DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt          DateTime?       @map("deleted_at") @db.Timestamptz
+
+  contacts              Contact[]
+  statusHistories       CustomerStatusHistory[]
+  opportunities         Opportunity[]
+  followUps             FollowUpRecord[]
+  orders                Order[]
+  quotations            Quotation[]
+  rollbackRequests      StatusRollbackRequest[]
+  tags                  CustomerTag[]
+  collaborators         CustomerCollaborator[]
+  contracts             Contract[]
+
+  @@index([ownerId])
+  @@index([status])
+  @@index([level])
+  @@index([duplicateStatus])
+  @@index([sourceLeadId])
+  @@index([primaryPhone])
+  @@index([primaryEmail])
+  @@index([companyName, primaryContactName])
+  @@map("customers")
+}
+
+model CustomerCollaborator {
+  id          BigInt    @id @default(autoincrement())
+  customerId  BigInt    @map("customer_id")
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  userId      BigInt    @map("user_id")
+  user        User      @relation(fields: [userId], references: [id])
+  addedById   BigInt    @map("added_by_id")
+  addedBy     User      @relation("CollaboratorAdder", fields: [addedById], references: [id])
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([customerId, userId])
+  @@index([customerId])
+  @@index([userId])
+  @@map("customer_collaborators")
+}
+
+model Contact {
+  id           BigInt    @id @default(autoincrement())
+  customerId   BigInt    @map("customer_id")
+  customer     Customer  @relation(fields: [customerId], references: [id])
+  name         String    @db.VarChar(128)
+  phone        String?   @db.VarChar(32)
+  email        String?   @db.VarChar(128)
+  position     String?   @db.VarChar(128)
+  decisionRole String?   @map("decision_role") @db.VarChar(64)
+  isPrimary    Boolean   @default(false) @map("is_primary")
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamptz
+
+  followUps    FollowUpRecord[]
+
+  @@index([customerId])
+  @@index([phone])
+  @@index([email])
+  @@map("contacts")
+}
+
+model DuplicateCandidate {
+  id                BigInt                   @id @default(autoincrement())
+  objectType        String                   @map("object_type") @db.VarChar(32)
+  objectId          BigInt                   @map("object_id")
+  matchedObjectType String                   @map("matched_object_type") @db.VarChar(32)
+  matchedObjectId   BigInt                   @map("matched_object_id")
+  matchType         String                   @map("match_type") @db.VarChar(32)
+  matchValue        String                   @map("match_value") @db.VarChar(255)
+  confidence        Int                      @default(80)
+  status            DuplicateCandidateStatus @default(pending)
+  createdBy         BigInt?                  @map("created_by")
+  resolvedBy        BigInt?                  @map("resolved_by")
+  resolvedAt        DateTime?                @map("resolved_at") @db.Timestamptz
+  createdAt         DateTime                 @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([objectType, objectId])
+  @@index([status])
+  @@map("duplicate_candidates")
+}
+
+model CustomerStatusHistory {
+  id          BigInt    @id @default(autoincrement())
+  customerId  BigInt    @map("customer_id")
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  fromStatus  String?   @map("from_status") @db.VarChar(32)
+  toStatus    String    @map("to_status") @db.VarChar(32)
+  triggerType String    @map("trigger_type") @db.VarChar(32)
+  reason      String?
+  changedBy   BigInt?   @map("changed_by")
+  changedUser User?     @relation(fields: [changedBy], references: [id])
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([customerId])
+  @@map("customer_status_histories")
+}
+
+model Opportunity {
+  id                BigInt    @id @default(autoincrement())
+  customerId        BigInt    @map("customer_id")
+  customer          Customer  @relation(fields: [customerId], references: [id])
+  title             String    @db.VarChar(255)
+  amount            Decimal   @default(0) @db.Decimal(14, 2)
+  stage             String    @default("initial_contact") @db.VarChar(32)
+  closeReason       String?   @map("close_reason")
+  contractStatus    String?   @default("none") @map("contract_status") @db.VarChar(16) // none | uploaded | signed
+  contractUrl       String?   @map("contract_url") @db.VarChar(512)
+  ownerId           BigInt    @map("owner_id")
+  owner             User      @relation(fields: [ownerId], references: [id])
+  expectedCloseDate DateTime? @map("expected_close_date") @db.Date
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt         DateTime? @map("deleted_at") @db.Timestamptz
+
+  orders            Order[]
+  quotations        Quotation[]
+  contracts         Contract[]
+
+  @@index([customerId])
+  @@index([ownerId])
+  @@map("opportunities")
+}
+
+model Contract {
+  id            BigInt    @id @default(autoincrement())
+  opportunityId BigInt?   @map("opportunity_id")
+  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id])
+  customerId    BigInt    @map("customer_id")
+  customer      Customer  @relation(fields: [customerId], references: [id])
+  contractNo    String    @map("contract_no") @db.VarChar(64)
+  title         String    @db.VarChar(255)
+  amount        Decimal   @default(0) @db.Decimal(14, 2)
+  status        String    @default("draft") @db.VarChar(16) // draft | active | expired | terminated | voided
+  signingDate   DateTime? @map("signing_date") @db.Date
+  startDate     DateTime? @map("start_date") @db.Date
+  endDate       DateTime? @map("end_date") @db.Date
+  notes         String?   @db.VarChar(2000)
+  fileUrl       String?   @map("file_url") @db.VarChar(512)
+  fileName      String?   @map("file_name") @db.VarChar(255)
+  ownerId       BigInt    @map("owner_id")
+  owner         User      @relation(fields: [ownerId], references: [id])
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz
+
+  @@index([opportunityId])
+  @@index([customerId])
+  @@index([ownerId])
+  @@map("contracts")
+}
+
+model WorkflowRule {
+  id          BigInt               @id @default(autoincrement())
+  name        String               @db.VarChar(128)
+  description String?              @db.VarChar(500)
+  trigger     String               @db.VarChar(64)
+  conditions  Json                 @default("[]")
+  actions     Json                 @default("[]")
+  isActive    Boolean              @default(false) @map("is_active")
+  createdAt   DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime             @updatedAt @map("updated_at") @db.Timestamptz
+  executions  WorkflowExecution[]
+
+  @@map("workflow_rules")
+}
+
+model WorkflowExecution {
+  id           BigInt        @id @default(autoincrement())
+  ruleId       BigInt        @map("rule_id")
+  rule         WorkflowRule  @relation(fields: [ruleId], references: [id])
+  triggerEvent String        @map("trigger_event") @db.VarChar(64)
+  entityType   String        @map("entity_type") @db.VarChar(32)
+  entityId     String        @map("entity_id") @db.VarChar(64)
+  status       String        @db.VarChar(16) // success | failed | skipped
+  errorMessage String?       @map("error_message") @db.VarChar(500)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([ruleId])
+  @@index([entityType, entityId])
+  @@map("workflow_executions")
+}
+
+model CustomFieldDef {
+  id             BigInt   @id @default(autoincrement())
+  entityType     String   @map("entity_type") @db.VarChar(32) // "customer"
+  label          String   @db.VarChar(64)
+  fieldKey       String   @map("field_key") @db.VarChar(64)
+  fieldType      String   @map("field_type") @db.VarChar(16) // text|number|date|select|boolean
+  options        String?  @db.VarChar(2000) // comma-separated values for select type
+  defaultValue   String?  @map("default_value") @db.VarChar(500)
+  conditionLogic Json?    @map("condition_logic") // { operator: "AND"|"OR", rules: [{field,op,value}] }
+  required       Boolean  @default(false)
+  sortOrder      Int      @default(0) @map("sort_order")
+  isActive       Boolean  @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([entityType, fieldKey])
+  @@map("custom_field_defs")
+}
+
+model WebhookConfig {
+  id          BigInt    @id @default(autoincrement())
+  name        String    @db.VarChar(64)
+  url         String    @db.VarChar(500)
+  events      String[]  // e.g. ["customer.created", "opportunity.closed"]
+  secret      String?   @db.VarChar(128) // HMAC signing secret
+  isActive    Boolean   @default(true) @map("is_active")
+  lastFiredAt DateTime? @map("last_fired_at") @db.Timestamptz
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  @@map("webhook_configs")
+}
+
+model CustomReport {
+  id          BigInt   @id @default(autoincrement())
+  name        String   @db.VarChar(100)
+  entityType  String   @db.VarChar(32) @map("entity_type")
+  dimensions  String[]
+  metrics     Json
+  filters     Json?
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("custom_reports")
+}
+
+model FollowUpRecord {
+  id               BigInt    @id @default(autoincrement())
+  customerId        BigInt    @map("customer_id")
+  customer          Customer  @relation(fields: [customerId], references: [id])
+  contactId         BigInt?   @map("contact_id")
+  contact           Contact?  @relation(fields: [contactId], references: [id])
+  content           String
+  followUpTime      DateTime  @map("follow_up_time") @db.Timestamptz
+  nextFollowUpTime  DateTime? @map("next_follow_up_time") @db.Timestamptz
+  ownerId           BigInt    @map("owner_id")
+  owner             User      @relation(fields: [ownerId], references: [id])
+  attachments       FollowUpAttachment[]
+  editHistories     FollowUpEditHistory[]
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt         DateTime? @map("deleted_at") @db.Timestamptz
+
+  @@index([customerId])
+  @@index([ownerId])
+  @@index([nextFollowUpTime])
+  @@map("follow_up_records")
+}
+
+model FollowUpEditHistory {
+  id          BigInt   @id @default(autoincrement())
+  followUpId  BigInt   @map("follow_up_id")
+  followUp    FollowUpRecord @relation(fields: [followUpId], references: [id], onDelete: Cascade)
+  editorId    BigInt   @map("editor_id")
+  editor      User     @relation(fields: [editorId], references: [id])
+  field       String   @db.VarChar(32)
+  beforeValue String?  @map("before_value") @db.Text
+  afterValue  String?  @map("after_value") @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([followUpId])
+  @@map("follow_up_edit_histories")
+}
+
+model FollowUpAttachment {
+  id            BigInt          @id @default(autoincrement())
+  followUpId    BigInt          @map("follow_up_id")
+  followUp      FollowUpRecord  @relation(fields: [followUpId], references: [id])
+  filename      String          @db.VarChar(255)
+  originalName  String          @map("original_name") @db.VarChar(255)
+  mimeType      String          @map("mime_type") @db.VarChar(128)
+  size          Int
+  uploadedById  BigInt          @map("uploaded_by_id")
+  uploadedBy    User            @relation(fields: [uploadedById], references: [id])
+  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([followUpId])
+  @@map("follow_up_attachments")
+}
+
+model Order {
+  id            BigInt       @id @default(autoincrement())
+  customerId    BigInt       @map("customer_id")
+  customer      Customer     @relation(fields: [customerId], references: [id])
+  opportunityId BigInt?      @map("opportunity_id")
+  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id])
+  orderNo       String       @unique @map("order_no") @db.VarChar(64)
+  amount        Decimal      @default(0) @db.Decimal(14, 2)
+  paidAmount    Decimal      @default(0) @map("paid_amount") @db.Decimal(14, 2)
+  status        String       @default("pending_payment") @db.VarChar(32)
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime     @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt     DateTime?    @map("deleted_at") @db.Timestamptz
+
+  @@index([customerId])
+  @@index([opportunityId])
+  @@map("orders")
+}
+
+model BusinessEvent {
+  id           BigInt   @id @default(autoincrement())
+  objectType   String   @map("object_type") @db.VarChar(64)
+  objectId     BigInt   @map("object_id")
+  eventType    String   @map("event_type") @db.VarChar(64)
+  title        String   @db.VarChar(255)
+  detail       Json     @default("{}")
+  createdBy    BigInt?  @map("created_by")
+  createdUser  User?    @relation(fields: [createdBy], references: [id])
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([objectType, objectId])
+  @@map("business_events")
+}
+
+model AuditLog {
+  id           BigInt   @id @default(autoincrement())
+  actorId      BigInt?  @map("actor_id")
+  actor        User?    @relation(fields: [actorId], references: [id])
+  action       String   @db.VarChar(128)
+  resourceType String   @map("resource_type") @db.VarChar(64)
+  resourceId   BigInt?  @map("resource_id")
+  beforeData   Json?    @map("before_data")
+  afterData    Json?    @map("after_data")
+  ipAddress    String?  @map("ip_address") @db.VarChar(64)
+  userAgent    String?  @map("user_agent")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([actorId])
+  @@index([resourceType, resourceId])
+  @@map("audit_logs")
+}
+
+model Notification {
+  id        BigInt    @id @default(autoincrement())
+  userId    BigInt    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id])
+  type      String    @db.VarChar(32)
+  title     String    @db.VarChar(255)
+  body      String?   @db.Text
+  isRead    Boolean   @default(false) @map("is_read")
+  refType   String?   @map("ref_type") @db.VarChar(32)
+  refId     BigInt?   @map("ref_id")
+  dedupKey  String    @map("dedup_key") @db.VarChar(128)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  readAt    DateTime? @map("read_at") @db.Timestamptz
+
+  @@unique([userId, dedupKey])
+  @@index([userId, isRead])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("notifications")
+}
+
+model SalesTarget {
+  id         BigInt   @id @default(autoincrement())
+  period     String   @db.VarChar(16)       // e.g. "2026-05" / "2026-Q2" / "2026"
+  periodType String   @map("period_type") @db.VarChar(16) // month | quarter | year
+  targetType String   @map("target_type") @db.VarChar(16) // team | personal
+  userId     BigInt?  @map("user_id")
+  user       User?    @relation(fields: [userId], references: [id])
+  amount     Decimal  @default(0) @db.Decimal(14, 2)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([period, periodType, targetType, userId])
+  @@index([period, periodType])
+  @@map("sales_targets")
+}
+
+model Product {
+  id          BigInt    @id @default(autoincrement())
+  name        String    @db.VarChar(128)
+  code        String?   @db.VarChar(64)
+  description String?   @db.Text
+  unit        String?   @db.VarChar(32)
+  unitPrice   Decimal   @default(0) @map("unit_price") @db.Decimal(14, 2)
+  minPrice    Decimal?  @map("min_price") @db.Decimal(14, 2)
+  isActive    Boolean   @default(true) @map("is_active")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  quotationItems QuotationItem[]
+
+  @@index([isActive])
+  @@map("products")
+}
+
+model Quotation {
+  id             BigInt      @id @default(autoincrement())
+  quoteNo        String      @unique @map("quote_no") @db.VarChar(64)
+  opportunityId  BigInt      @map("opportunity_id")
+  opportunity    Opportunity @relation(fields: [opportunityId], references: [id])
+  customerId     BigInt      @map("customer_id")
+  customer       Customer    @relation(fields: [customerId], references: [id])
+  status         String      @default("draft") @db.VarChar(16) // draft | sent | accepted | rejected | expired
+  approvalStatus String?     @map("approval_status") @db.VarChar(16) // pending_approval | approved | rejected
+  validUntil     DateTime?   @map("valid_until") @db.Date
+  totalAmount    Decimal     @default(0) @map("total_amount") @db.Decimal(14, 2)
+  notes          String?     @db.Text
+  createdById    BigInt      @map("created_by_id")
+  createdBy      User        @relation(fields: [createdById], references: [id])
+  items          QuotationItem[]
+  approvals      QuotationApproval[]
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([opportunityId])
+  @@index([customerId])
+  @@index([createdById])
+  @@map("quotations")
+}
+
+model QuotationApproval {
+  id           BigInt     @id @default(autoincrement())
+  quotationId  BigInt     @map("quotation_id")
+  quotation    Quotation  @relation(fields: [quotationId], references: [id])
+  requestedBy  BigInt     @map("requested_by")
+  requester    User       @relation("qa_requester", fields: [requestedBy], references: [id])
+  reviewedBy   BigInt?    @map("reviewed_by")
+  reviewer     User?      @relation("qa_reviewer", fields: [reviewedBy], references: [id])
+  reason       String?    @db.Text
+  status       String     @default("pending") @db.VarChar(16) // pending | approved | rejected
+  reviewNote   String?    @map("review_note") @db.Text
+  reviewedAt   DateTime?  @map("reviewed_at") @db.Timestamptz
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([quotationId, status])
+  @@map("quotation_approvals")
+}
+
+model QuotationItem {
+  id           BigInt     @id @default(autoincrement())
+  quotationId  BigInt     @map("quotation_id")
+  quotation    Quotation  @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  productId    BigInt?    @map("product_id")
+  product      Product?   @relation(fields: [productId], references: [id])
+  name         String     @db.VarChar(128)
+  unit         String?    @db.VarChar(32)
+  quantity     Decimal    @default(1) @db.Decimal(14, 4)
+  unitPrice    Decimal    @default(0) @map("unit_price") @db.Decimal(14, 2)
+  discount     Decimal    @default(100) @db.Decimal(5, 2)
+  lineTotal    Decimal    @default(0) @map("line_total") @db.Decimal(14, 2)
+  sortOrder    Int        @default(0) @map("sort_order")
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([quotationId])
+  @@map("quotation_items")
+}
+
+model StatusRollbackRequest {
+  id          BigInt    @id @default(autoincrement())
+  customerId  BigInt    @map("customer_id")
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  fromStatus  String    @map("from_status") @db.VarChar(32)
+  toStatus    String    @map("to_status") @db.VarChar(32)
+  reason      String?   @db.Text
+  status      String    @default("pending") @db.VarChar(16) // pending | approved | rejected
+  requestedBy BigInt    @map("requested_by")
+  requester   User      @relation("rollback_requester", fields: [requestedBy], references: [id])
+  reviewedBy  BigInt?   @map("reviewed_by")
+  reviewer    User?     @relation("rollback_reviewer", fields: [reviewedBy], references: [id])
+  reviewNote  String?   @map("review_note") @db.Text
+  reviewedAt  DateTime? @map("reviewed_at") @db.Timestamptz
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([customerId])
+  @@index([status])
+  @@map("status_rollback_requests")
+}
+
+model LeadSourceConfig {
+  id            BigInt   @id @default(autoincrement())
+  category      String   @db.VarChar(64)
+  categoryLabel String   @map("category_label") @db.VarChar(64)
+  name          String   @db.VarChar(64)
+  label         String   @db.VarChar(64)
+  isActive      Boolean  @default(true) @map("is_active")
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([category, isActive])
+  @@map("lead_source_configs")
+}
+
+model Tag {
+  id          BigInt       @id @default(autoincrement())
+  name        String       @unique @db.VarChar(64)
+  color       String       @default("#6366f1") @db.VarChar(16)
+  category    String?      @db.VarChar(32) // customer_trait | follow_status | internal_ops
+  isActive    Boolean      @default(true) @map("is_active")
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz
+
+  customers   CustomerTag[]
+
+  @@index([isActive])
+  @@map("tags")
+}
+
+model CustomerTag {
+  customerId  BigInt    @map("customer_id")
+  tagId       BigInt    @map("tag_id")
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  tag         Tag       @relation(fields: [tagId], references: [id])
+  addedAt     DateTime  @default(now()) @map("added_at") @db.Timestamptz
+  addedById   BigInt?   @map("added_by_id")
+  addedBy     User?     @relation(fields: [addedById], references: [id])
+
+  @@id([customerId, tagId])
+  @@index([customerId])
+  @@index([tagId])
+  @@map("customer_tags")
+}
+
+model SystemConfig {
+  key       String   @id @db.VarChar(64)
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("system_configs")
+}
+
+model RequiredFieldRule {
+  id          BigInt   @id @default(autoincrement())
+  entityType  String   @map("entity_type") @db.VarChar(32)
+  fieldKey    String   @map("field_key") @db.VarChar(64)
+  fieldLabel  String   @map("field_label") @db.VarChar(64)
+  ruleType    String   @map("rule_type") @db.VarChar(16)
+  stageValue  String?  @map("stage_value") @db.VarChar(64)
+  roleValue   String?  @map("role_value") @db.VarChar(32)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([entityType, fieldKey, ruleType, stageValue, roleValue])
+  @@map("required_field_rules")
+}
+
+model ExportApproval {
+  id          BigInt    @id @default(autoincrement())
+  requestedBy BigInt    @map("requested_by")
+  requester   User      @relation("ExportRequester", fields: [requestedBy], references: [id])
+  reviewedBy  BigInt?   @map("reviewed_by")
+  reviewer    User?     @relation("ExportReviewer", fields: [reviewedBy], references: [id])
+  scope       String    @default("department") @db.VarChar(16)
+  filters     Json      @default("{}")
+  status      String    @default("pending") @db.VarChar(16)
+  reviewNote  String?   @map("review_note") @db.VarChar(500)
+  reviewedAt  DateTime? @map("reviewed_at") @db.Timestamptz
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([requestedBy])
+  @@index([status])
+  @@map("export_approvals")
+}

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="420" viewBox="0 0 750 420">
+<defs>
+  
+  <linearGradient id="bg-the-moo" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#f2faed"/>
+    <stop offset="1" stop-color="#fff1dc"/>
+  </linearGradient>
+  <filter id="softShadow" x="-30%" y="-30%" width="160%" height="170%">
+    <feDropShadow dx="0" dy="10" stdDeviation="9" flood-color="#9a7c61" flood-opacity=".13"/>
+  </filter>
+  <filter id="tinyShadow" x="-25%" y="-25%" width="150%" height="150%">
+    <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#9a7c61" flood-opacity=".10"/>
+  </filter>
+</defs>
+<rect width="750" height="420" fill="#fbf4ed"/>
+<ellipse cx="132" cy="72" rx="230" ry="118" fill="#f2faed" opacity=".78"/>
+<ellipse cx="638" cy="56" rx="190" ry="102" fill="#ffffff" opacity=".72"/>
+<ellipse cx="640" cy="364" rx="210" ry="88" fill="#fff1dc" opacity=".62"/>
+
+<g transform="translate(36 22)">
+  <rect x="0" y="0" width="678" height="376" rx="34" fill="#fffdf9" filter="url(#softShadow)"/>
+  <rect x="0" y="0" width="678" height="376" rx="34" fill="url(#bg-the-moo)" opacity=".42"/>
+  <rect x="18" y="18" width="642" height="340" rx="26" fill="#fffdf9" opacity=".82"/>
+
+  <g transform="translate(44 40)">
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', Arial, sans-serif" font-size="18" font-weight="700" fill="#393b3f">Good morning</text>
+    <text x="0" y="32" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', Arial, sans-serif" font-size="31" font-weight="800" fill="#2f3136">Little stories</text>
+    <text x="0" y="58" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="13" fill="#9a938c">Warm reading for tiny English steps.</text>
+
+    <g transform="translate(0 84)">
+      <rect x="0" y="0" width="72" height="34" rx="17" fill="#c8a88a" opacity=".95"/>
+      <text x="36" y="22" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="13" font-weight="700" fill="#fffdf8">L1 Seed</text>
+      <rect x="82" y="0" width="70" height="34" rx="17" fill="#ffffff" stroke="#eee4da"/>
+      <text x="117" y="22" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="13" font-weight="700" fill="#8f8982">L2 Leaf</text>
+      <rect x="162" y="0" width="72" height="34" rx="17" fill="#ffffff" stroke="#eee4da"/>
+      <text x="198" y="22" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="13" font-weight="700" fill="#8f8982">L3 Bird</text>
+    </g>
+
+    <g transform="translate(0 142)">
+      <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', Arial, sans-serif" font-size="17" font-weight="800" fill="#383b40">Recent Reading</text>
+      <rect x="0" y="16" width="250" height="86" rx="20" fill="#ffffff" filter="url(#tinyShadow)"/>
+      
+  <g transform="translate(14 28)">
+    <rect x="0" y="0" width="64" height="62" rx="13" fill="#fffdf8" filter="url(#softShadow)"/>
+    <clipPath id="clip-the-moo-s"><rect x="0" y="0" width="64" height="62" rx="13"/></clipPath>
+    <g clip-path="url(#clip-the-moo-s)">
+      <rect width="64" height="62" fill="#f2faed"/>
+      <ellipse cx="12.8" cy="8.680000000000001" rx="30.72" ry="17.360000000000003" fill="#ffffff" opacity=".42"/>
+      <ellipse cx="55.04" cy="21.080000000000002" rx="23.04" ry="14.879999999999999" fill="#ffe8bd" opacity=".36"/>
+      <ellipse cx="32" cy="64.48" rx="46.08" ry="18.599999999999998" fill="#fff1dc" opacity=".96"/>
+      <g transform="translate(32 33) scale(0.3368421052631579)">
+    <ellipse cx="-6" cy="9" rx="66" ry="45" fill="#fff8eb"/>
+    <ellipse cx="-28" cy="-32" rx="38" ry="31" fill="#fff8eb"/>
+    <ellipse cx="-51" cy="-36" rx="18" ry="25" fill="#6c5b52" transform="rotate(-22 -51 -36)"/>
+    <ellipse cx="-4" cy="-36" rx="18" ry="25" fill="#6c5b52" transform="rotate(22 -4 -36)"/>
+    <path d="M-53 -10 C-44 -37 -24 -44 -5 -28 C9 -16 7 5 -11 12Z" fill="#7b6659" opacity=".9"/>
+    <ellipse cx="-29" cy="-18" rx="28" ry="20" fill="#f0c3ba"/>
+    <circle cx="-39" cy="-33" r="5" fill="#34383a"/><circle cx="-40.4" cy="-34.6" r="1.4000000000000001" fill="#fffdf4"/><circle cx="-16" cy="-33" r="5" fill="#34383a"/><circle cx="-17.4" cy="-34.6" r="1.4000000000000001" fill="#fffdf4"/>
+    <circle cx="-38" cy="-17" r="4" fill="#5b4942"/><circle cx="-18" cy="-17" r="4" fill="#5b4942"/>
+    <path d="M-36 -5 Q-29 2 -21 -5" fill="none" stroke="#6d5148" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="18" cy="0" r="20" fill="#6c5b52"/><circle cx="43" cy="20" r="15" fill="#6c5b52"/>
+    <line x1="-44" y1="45" x2="-44" y2="76" stroke="#c8a88a" stroke-width="10" stroke-linecap="round"/>
+    <line x1="26" y1="45" x2="26" y2="76" stroke="#c8a88a" stroke-width="10" stroke-linecap="round"/>
+  </g>
+    </g>
+  </g>
+      <text x="94" y="48" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', Arial, sans-serif" font-size="17" font-weight="800" fill="#35383d">The Moo</text>
+      <text x="94" y="72" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="12" font-weight="700" fill="#a09a93">L1 Seed · 6 min</text>
+      <rect x="94" y="84" width="116" height="5" rx="3" fill="#f0e6dc"/>
+      <rect x="94" y="84" width="78" height="5" rx="3" fill="#c8a88a"/>
+    </g>
+  </g>
+
+  <g transform="translate(330 34)">
+    
+  <g transform="translate(0 0)">
+    <rect x="0" y="0" width="138" height="188" rx="20" fill="#fffdf8" filter="url(#softShadow)"/>
+    <clipPath id="clip-the-moo-l"><rect x="0" y="0" width="138" height="188" rx="20"/></clipPath>
+    <g clip-path="url(#clip-the-moo-l)">
+      <rect width="138" height="188" fill="#f2faed"/>
+      <ellipse cx="27.6" cy="26.320000000000004" rx="66.24" ry="52.64000000000001" fill="#ffffff" opacity=".42"/>
+      <ellipse cx="118.67999999999999" cy="63.92" rx="49.68" ry="45.12" fill="#ffe8bd" opacity=".36"/>
+      <ellipse cx="69" cy="195.52" rx="99.36" ry="56.4" fill="#fff1dc" opacity=".96"/>
+      <g transform="translate(69 100) scale(0.7263157894736842)">
+    <ellipse cx="-6" cy="9" rx="66" ry="45" fill="#fff8eb"/>
+    <ellipse cx="-28" cy="-32" rx="38" ry="31" fill="#fff8eb"/>
+    <ellipse cx="-51" cy="-36" rx="18" ry="25" fill="#6c5b52" transform="rotate(-22 -51 -36)"/>
+    <ellipse cx="-4" cy="-36" rx="18" ry="25" fill="#6c5b52" transform="rotate(22 -4 -36)"/>
+    <path d="M-53 -10 C-44 -37 -24 -44 -5 -28 C9 -16 7 5 -11 12Z" fill="#7b6659" opacity=".9"/>
+    <ellipse cx="-29" cy="-18" rx="28" ry="20" fill="#f0c3ba"/>
+    <circle cx="-39" cy="-33" r="5" fill="#34383a"/><circle cx="-40.4" cy="-34.6" r="1.4000000000000001" fill="#fffdf4"/><circle cx="-16" cy="-33" r="5" fill="#34383a"/><circle cx="-17.4" cy="-34.6" r="1.4000000000000001" fill="#fffdf4"/>
+    <circle cx="-38" cy="-17" r="4" fill="#5b4942"/><circle cx="-18" cy="-17" r="4" fill="#5b4942"/>
+    <path d="M-36 -5 Q-29 2 -21 -5" fill="none" stroke="#6d5148" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="18" cy="0" r="20" fill="#6c5b52"/><circle cx="43" cy="20" r="15" fill="#6c5b52"/>
+    <line x1="-44" y1="45" x2="-44" y2="76" stroke="#c8a88a" stroke-width="10" stroke-linecap="round"/>
+    <line x1="26" y1="45" x2="26" y2="76" stroke="#c8a88a" stroke-width="10" stroke-linecap="round"/>
+  </g>
+    </g>
+  </g>
+    <g transform="translate(162 6)">
+      <text x="0" y="8" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', Arial, sans-serif" font-size="18" font-weight="800" fill="#373a3f">Story Covers</text>
+      
+      <g transform="translate(0 32)">
+        <rect x="0" y="0" width="158" height="54" rx="16" fill="#ffffff" filter="url(#tinyShadow)"/>
+        
+  <g transform="translate(8 8)">
+    <rect x="0" y="0" width="38" height="38" rx="13" fill="#fffdf8" filter="url(#softShadow)"/>
+    <clipPath id="clip-my-cat-s"><rect x="0" y="0" width="38" height="38" rx="13"/></clipPath>
+    <g clip-path="url(#clip-my-cat-s)">
+      <rect width="38" height="38" fill="#eef8ee"/>
+      <ellipse cx="7.6000000000000005" cy="5.32" rx="18.24" ry="10.64" fill="#ffffff" opacity=".42"/>
+      <ellipse cx="32.68" cy="12.920000000000002" rx="13.68" ry="9.12" fill="#ffe8bd" opacity=".36"/>
+      <ellipse cx="19" cy="39.52" rx="27.36" ry="11.4" fill="#fff0dd" opacity=".96"/>
+      <g transform="translate(19 21) scale(0.2)">
+    <ellipse cx="0" cy="35" rx="47" ry="48" fill="#b79473"/>
+    <path d="M-46 -22 L-31 -62 L-14 -25Z" fill="#a78365"/>
+    <path d="M46 -22 L31 -62 L14 -25Z" fill="#a78365"/>
+    <path d="M-34 -25 L-29 -49 L-18 -26Z" fill="#f5b0a0"/>
+    <path d="M34 -25 L29 -49 L18 -26Z" fill="#f5b0a0"/>
+    <ellipse cx="0" cy="-3" rx="52" ry="48" fill="#bd9877"/>
+    <ellipse cx="0" cy="12" rx="34" ry="31" fill="#f3dfc8"/>
+    <circle cx="-17" cy="-4" r="6" fill="#34383a"/><circle cx="-18.68" cy="-5.92" r="1.6800000000000002" fill="#fffdf4"/><circle cx="17" cy="-4" r="6" fill="#34383a"/><circle cx="15.32" cy="-5.92" r="1.6800000000000002" fill="#fffdf4"/>
+    <path d="M-5 13 L5 13 L0 21Z" fill="#e58f88"/>
+    <path d="M-17 24 Q-5 31 0 22 Q5 31 17 24" fill="none" stroke="#645048" stroke-width="3" stroke-linecap="round"/>
+    <path d="M-45 9 L-72 2 M-45 18 L-73 20 M45 9 L72 2 M45 18 L73 20" stroke="#6d584f" stroke-width="3" stroke-linecap="round"/>
+  </g>
+    </g>
+  </g>
+        <text x="56" y="22" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', Arial, sans-serif" font-size="13" font-weight="800" fill="#3d4045">My Cat</text>
+        <text x="56" y="40" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="10" font-weight="700" fill="#aaa29b">L1 Seed</text>
+      </g>
+      <g transform="translate(0 100)">
+        <rect x="0" y="0" width="158" height="54" rx="16" fill="#ffffff" filter="url(#tinyShadow)"/>
+        
+  <g transform="translate(8 8)">
+    <rect x="0" y="0" width="38" height="38" rx="13" fill="#fffdf8" filter="url(#softShadow)"/>
+    <clipPath id="clip-the-sun-s"><rect x="0" y="0" width="38" height="38" rx="13"/></clipPath>
+    <g clip-path="url(#clip-the-sun-s)">
+      <rect width="38" height="38" fill="#eaf8ff"/>
+      <ellipse cx="7.6000000000000005" cy="5.32" rx="18.24" ry="10.64" fill="#ffffff" opacity=".42"/>
+      <ellipse cx="32.68" cy="12.920000000000002" rx="13.68" ry="9.12" fill="#ffe8bd" opacity=".36"/>
+      <ellipse cx="19" cy="39.52" rx="27.36" ry="11.4" fill="#fff1d7" opacity=".96"/>
+      <g transform="translate(19 21) scale(0.2)">
+    <g stroke="#f4bc55" stroke-width="10" stroke-linecap="round">
+      <line x1="0" y1="-76" x2="0" y2="-104"/><line x1="0" y1="76" x2="0" y2="104"/>
+      <line x1="-76" y1="0" x2="-104" y2="0"/><line x1="76" y1="0" x2="104" y2="0"/>
+      <line x1="-54" y1="-54" x2="-75" y2="-75"/><line x1="54" y1="-54" x2="75" y2="-75"/>
+      <line x1="-54" y1="54" x2="-75" y2="75"/><line x1="54" y1="54" x2="75" y2="75"/>
+    </g>
+    <circle cx="0" cy="0" r="58" fill="#ffd36d"/>
+    <circle cx="-16" cy="-16" r="18" fill="#ffe9a9" opacity=".55"/>
+    <circle cx="-18" cy="-4" r="6" fill="#34383a"/><circle cx="-19.68" cy="-5.92" r="1.6800000000000002" fill="#fffdf4"/><circle cx="18" cy="-4" r="6" fill="#34383a"/><circle cx="16.32" cy="-5.92" r="1.6800000000000002" fill="#fffdf4"/>
+    <path d="M-18 19 Q0 32 20 19" fill="none" stroke="#8b6540" stroke-width="5" stroke-linecap="round"/>
+  </g>
+    </g>
+  </g>
+        <text x="56" y="22" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', Arial, sans-serif" font-size="13" font-weight="800" fill="#3d4045">The Sun</text>
+        <text x="56" y="40" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="10" font-weight="700" fill="#aaa29b">L1 Seed</text>
+      </g>
+      <g transform="translate(0 168)">
+        <rect x="0" y="0" width="158" height="54" rx="16" fill="#ffffff" filter="url(#tinyShadow)"/>
+        
+  <g transform="translate(8 8)">
+    <rect x="0" y="0" width="38" height="38" rx="13" fill="#fffdf8" filter="url(#softShadow)"/>
+    <clipPath id="clip-my-dog-s"><rect x="0" y="0" width="38" height="38" rx="13"/></clipPath>
+    <g clip-path="url(#clip-my-dog-s)">
+      <rect width="38" height="38" fill="#eef7ff"/>
+      <ellipse cx="7.6000000000000005" cy="5.32" rx="18.24" ry="10.64" fill="#ffffff" opacity=".42"/>
+      <ellipse cx="32.68" cy="12.920000000000002" rx="13.68" ry="9.12" fill="#ffe8bd" opacity=".36"/>
+      <ellipse cx="19" cy="39.52" rx="27.36" ry="11.4" fill="#fff0dc" opacity=".96"/>
+      <g transform="translate(19 21) scale(0.2)">
+    <ellipse cx="0" cy="28" rx="56" ry="52" fill="#d8a97d"/>
+    <ellipse cx="-47" cy="-2" rx="19" ry="43" fill="#9e775c" transform="rotate(18 -47 -2)"/>
+    <ellipse cx="47" cy="-2" rx="19" ry="43" fill="#9e775c" transform="rotate(-18 47 -2)"/>
+    <ellipse cx="0" cy="0" rx="50" ry="44" fill="#dfb183"/>
+    <ellipse cx="0" cy="21" rx="29" ry="23" fill="#fff0d8"/>
+    <circle cx="-17" cy="-5" r="6" fill="#34383a"/><circle cx="-18.68" cy="-6.92" r="1.6800000000000002" fill="#fffdf4"/><circle cx="17" cy="-5" r="6" fill="#34383a"/><circle cx="15.32" cy="-6.92" r="1.6800000000000002" fill="#fffdf4"/>
+    <ellipse cx="0" cy="17" rx="9" ry="7" fill="#3d3835"/>
+    <path d="M-14 29 Q0 39 14 29" fill="none" stroke="#665044" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="-34" cy="16" r="8" fill="#f5a99a" opacity=".55"/><circle cx="34" cy="16" r="8" fill="#f5a99a" opacity=".55"/>
+  </g>
+    </g>
+  </g>
+        <text x="56" y="22" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', Arial, sans-serif" font-size="13" font-weight="800" fill="#3d4045">My Dog</text>
+        <text x="56" y="40" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="10" font-weight="700" fill="#aaa29b">L1 Seed</text>
+      </g>
+    </g>
+  </g>
+
+  <g transform="translate(44 250)">
+    <rect x="0" y="0" width="590" height="42" rx="21" fill="#fffaf4" stroke="#efe5db" filter="url(#tinyShadow)"/>
+    <g transform="translate(82 21)"><path d="M-12 -10 C-5 -13 0 -11 0 -6 V13 C-5 10 -9 10 -12 12Z M0 -6 C5 -11 10 -13 12 -10 V12 C9 10 5 10 0 13Z" fill="none" stroke="#db7f58" stroke-width="2.6" stroke-linejoin="round"/><text x="22" y="5" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="12" font-weight="800" fill="#db7f58">Stories</text></g>
+    <g transform="translate(286 21)"><path d="M0 -13 L4 -3 L14 0 L4 3 L0 13 L-4 3 L-14 0 L-4 -3Z" fill="#b8b1aa"/><text x="22" y="5" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="12" font-weight="700" fill="#b8b1aa">Words</text></g>
+    <g transform="translate(490 21)"><circle cx="0" cy="-4" r="7" fill="none" stroke="#b8b1aa" stroke-width="2.6"/><path d="M-12 13 C-8 4 8 4 12 13" fill="none" stroke="#b8b1aa" stroke-width="2.6" stroke-linecap="round"/><text x="22" y="5" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="12" font-weight="700" fill="#b8b1aa">Me</text></g>
+  </g>
+</g>
+</svg>

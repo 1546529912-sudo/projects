@@ -1,0 +1,17 @@
+# Monorepo defaults
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+coverage/
+.DS_Store
+*.log
+
+# Env files (keep examples)
+.env
+.env.*
+!.env.example
+
+# Nested git metadata (ignore if re-introduced as sub-repos)
+**/.git/

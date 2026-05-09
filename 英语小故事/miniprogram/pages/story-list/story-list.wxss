@@ -1,0 +1,38 @@
+.list__header {
+  padding: 48rpx 40rpx 40rpx;
+  border-radius: 0 0 32rpx 32rpx;
+  margin-bottom: 32rpx;
+}
+
+.list__level {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #2D2D2D;
+  margin-bottom: 8rpx;
+}
+
+.list__desc {
+  font-size: 28rpx;
+  color: rgba(45,45,45,0.7);
+  margin-bottom: 8rpx;
+}
+
+.list__count {
+  font-size: 24rpx;
+  color: rgba(45,45,45,0.5);
+}
+
+.list__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24rpx;
+  padding: 0 40rpx 40rpx;
+}
+
+.list__empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #AAAAAA;
+  font-size: 30rpx;
+  padding: 80rpx 0;
+}

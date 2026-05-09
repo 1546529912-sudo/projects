@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "我的生词本",
+  "usingComponents": {
+    "word-popup": "/components/word-popup/word-popup"
+  }
+}

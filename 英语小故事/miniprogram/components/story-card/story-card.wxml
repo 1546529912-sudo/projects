@@ -1,0 +1,19 @@
+<view class="story-card" catchtap="onTap" hover-class="story-card--pressed" hover-stay-time="100">
+  <view class="story-card__cover" style="background: {{coverBg}}">
+    <image wx:if="{{resolvedImageUrl}}" class="story-card__cover-img" src="{{resolvedImageUrl}}" mode="aspectFill" />
+    <text wx:else class="story-card__cover-deco">{{levelName}}</text>
+    <view class="story-card__badge">L{{story.level}}</view>
+  </view>
+  <view class="story-card__body">
+    <view class="story-card__title" style="font-size: {{titleFontSize}}rpx">{{story.title}}</view>
+    <view class="story-card__footer">
+      <text class="story-card__meta">{{levelName}} · {{story.wordCount}} words</text>
+      <view class="story-card__arrow" style="background: {{coverBg}}">
+        <text class="story-card__arrow-icon">›</text>
+      </view>
+    </view>
+    <view wx:if="{{progress > 0}}" class="story-card__progress">
+      <view class="story-card__progress-bar" style="width: {{progress}}%; background: {{coverBg}}"></view>
+    </view>
+  </view>
+</view>

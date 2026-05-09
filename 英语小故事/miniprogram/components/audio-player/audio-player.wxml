@@ -1,0 +1,11 @@
+<view class="player">
+  <view class="player__btn {{playing ? 'player__btn--playing' : ''}}" bindtap="onToggle" hover-class="player__btn--pressed" hover-stay-time="80">
+    <text class="player__icon">{{playing ? '⏸' : '▶'}}</text>
+  </view>
+  <view class="player__progress-wrap" bindtap="onProgressTap">
+    <view class="player__progress-bg">
+      <view class="player__progress-fill" style="width: {{progressPct}}%"></view>
+    </view>
+    <text class="player__time">{{currentTimeStr}} / {{durationStr}}</text>
+  </view>
+</view>

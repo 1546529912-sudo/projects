@@ -1,0 +1,63 @@
+{
+  "name": "@crm/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "lint": "eslint \"src/**/*.ts\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "prisma db seed"
+  },
+  "dependencies": {
+    "@crm/shared": "workspace:*",
+    "@nestjs/common": "latest",
+    "@nestjs/config": "latest",
+    "@nestjs/core": "latest",
+    "@nestjs/jwt": "latest",
+    "@nestjs/mapped-types": "latest",
+    "@nestjs/passport": "latest",
+    "@nestjs/platform-express": "^11.1.19",
+    "@nestjs/schedule": "^6.1.3",
+    "@prisma/client": "^6.19.3",
+    "bcryptjs": "latest",
+    "bullmq": "latest",
+    "class-transformer": "latest",
+    "class-validator": "latest",
+    "compression": "latest",
+    "cookie-parser": "latest",
+    "helmet": "latest",
+    "ioredis": "latest",
+    "multer": "^2.1.1",
+    "nestjs-pino": "latest",
+    "passport": "latest",
+    "passport-jwt": "latest",
+    "pino": "latest",
+    "reflect-metadata": "latest",
+    "rxjs": "latest",
+    "xlsx": "^0.18.5",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "latest",
+    "@nestjs/schematics": "latest",
+    "@nestjs/testing": "latest",
+    "@types/bcryptjs": "latest",
+    "@types/compression": "latest",
+    "@types/cookie-parser": "latest",
+    "@types/express": "latest",
+    "@types/multer": "^2.1.0",
+    "@types/node": "latest",
+    "@types/passport-jwt": "latest",
+    "prisma": "^6.19.3",
+    "ts-node": "latest",
+    "typescript": "latest"
+  },
+  "prisma": {
+    "seed": "ts-node --project tsconfig.seed.json prisma/seed.ts"
+  }
+}

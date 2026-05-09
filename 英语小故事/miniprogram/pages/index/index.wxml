@@ -1,0 +1,65 @@
+<view class="index">
+
+  <!-- ① 固定头部：Hero 图片 + 副标题 + 等级 Tabs -->
+  <view class="index__header">
+    <view class="index__hero">
+      <image class="index__hero-bg" src="../../images/hero-bg.jpg" mode="widthFix" />
+      <view class="index__hero-fade" />
+      <view class="index__navbar" style="padding-top: {{statusBarHeight}}px">
+        <text class="index__navbar-title" bindlongpress="onAdminLongPress">英语小故事</text>
+        <view class="index__navbar-sub">选择一个故事，大声读出来吧</view>
+      </view>
+    </view>
+
+    <scroll-view class="index__levels" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="index__levels-inner">
+        <view wx:for="{{levels}}" wx:key="id"
+              class="index__level-chip {{selectedLevel === item.id ? 'index__level-chip--active' : ''}}"
+              style="{{selectedLevel === item.id ? 'background:' + item.color : ''}}"
+              bindtap="onLevelSelect"
+              data-id="{{item.id}}">
+          <text class="index__level-chip-name">L{{item.id}}</text>
+          <text class="index__level-chip-label">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ② 可滚动内容区 -->
+
+  <!-- 最近阅读 -->
+  <block wx:if="{{recentStories.length > 0}}">
+    <view class="index__section-title">
+      <text class="index__section-icon">🌿</text>最近阅读
+    </view>
+    <scroll-view class="index__recent" scroll-x enhanced>
+      <view class="index__recent-inner">
+        <view wx:for="{{recentStories}}" wx:key="_id" class="index__recent-item">
+          <story-card story="{{item}}" progress="{{item._progress}}" bindtap="onStoryTap" />
+        </view>
+      </view>
+    </scroll-view>
+  </block>
+
+  <!-- 故事列表 -->
+  <view class="index__section-title">
+    <text class="index__section-icon">🌱</text>L{{selectedLevel}} · {{currentLevelName}}
+  </view>
+
+  <view class="index__stories" wx:if="{{!loading}}">
+    <view wx:for="{{stories}}" wx:key="_id" class="index__story-item">
+      <story-card story="{{item}}" bindtap="onStoryTap" />
+    </view>
+    <view wx:if="{{stories.length === 0}}" class="index__empty">
+      <text>故事即将上线 🌱</text>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="index__loading">
+    <view class="index__loading-dots">
+      <view class="dot" /><view class="dot" /><view class="dot" />
+    </view>
+  </view>
+
+  <view class="index__bottom-space" />
+</view>

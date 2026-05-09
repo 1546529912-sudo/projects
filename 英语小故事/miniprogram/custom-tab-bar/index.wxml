@@ -1,0 +1,14 @@
+<view class="tabbar">
+  <view class="tabbar__item {{selected === 0 ? 'tabbar__item--active' : ''}}"
+        bindtap="onTab" data-index="0">
+    <text class="tabbar__label">故事</text>
+  </view>
+  <view class="tabbar__item {{selected === 1 ? 'tabbar__item--active' : ''}}"
+        bindtap="onTab" data-index="1">
+    <text class="tabbar__label">生词本</text>
+  </view>
+  <view class="tabbar__item {{selected === 2 ? 'tabbar__item--active' : ''}}"
+        bindtap="onTab" data-index="2">
+    <text class="tabbar__label">我的</text>
+  </view>
+</view>

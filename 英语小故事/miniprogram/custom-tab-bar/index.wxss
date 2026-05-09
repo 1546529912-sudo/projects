@@ -1,0 +1,25 @@
+.tabbar {
+  display: flex;
+  height: 100rpx;
+  background: #FFFFFF;
+  border-top: 1rpx solid #EBEBEB;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tabbar__item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tabbar__label {
+  font-size: 32rpx;
+  color: #AAAAAA;
+  font-weight: 500;
+}
+
+.tabbar__item--active .tabbar__label {
+  color: #5BAD8F;
+  font-weight: 700;
+}

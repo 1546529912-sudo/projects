@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "英语小故事",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "story-card": "/components/story-card/story-card"
+  }
+}
