@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import GooeyNav from "@/components/GooeyNav";
 import { PortfolioChat } from "@/components/PortfolioChat";
@@ -164,6 +164,7 @@ const navAnchorClass =
 export function ApprovedPortfolioPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeNavIndex, setActiveNavIndex] = useState(0);
+  const [showDevModal, setShowDevModal] = useState(false);
   /** 顶部 Tab 点击后短暂暂停 scroll-spy：避免平滑滚过中段时高亮乱跳 */
   const navSpyPausedUntilRef = useRef(0);
 
@@ -461,14 +462,13 @@ export function ApprovedPortfolioPage() {
                       <p className="text-sm font-medium text-[#8c675a]">{project.actionLabel}</p>
                       <p className="mt-1 truncate text-xs text-gray-400">https://234/lost</p>
                     </div>
-                    <a
-                      href="https://234/lost"
-                      target="_blank"
-                      rel="noreferrer"
+                    <button
+                      type="button"
+                      onClick={() => setShowDevModal(true)}
                       className="inline-flex h-24 w-24 shrink-0 items-center justify-center rounded-[1.4rem] border border-[#e5d9cf] bg-white text-sm font-medium text-[#8c675a] shadow-sm transition hover:bg-[#f5efe7]"
                     >
                       打开链接
-                    </a>
+                    </button>
                   </div>
                 )}
               </motion.article>
@@ -495,25 +495,36 @@ export function ApprovedPortfolioPage() {
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {enterpriseProjects.map((ep) => (
-              <div
+            {enterpriseProjects.map((ep, index) => (
+              <motion.article
                 key={ep.title}
-                className="rounded-2xl border border-[#e5d9cf] bg-[#faf8f4]/90 p-5 shadow-sm backdrop-blur-sm"
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-10%" }}
+                transition={{ duration: 0.45, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] as const }}
+                whileHover={{ y: -6 }}
+                whileTap={{ scale: 0.985 }}
+                className="group relative cursor-default overflow-hidden rounded-2xl border border-[#e5d9cf] bg-[#faf8f4]/90 p-5 shadow-sm backdrop-blur-sm transition-colors duration-300 hover:border-[#caa392] hover:bg-white hover:shadow-[0_22px_60px_-44px_rgba(140,103,90,0.55)]"
               >
-                <h3 className="text-lg font-semibold tracking-[-0.02em] text-[#a47463]">{ep.title}</h3>
-                <p className="mt-3 min-h-[3.5rem] line-clamp-2 text-sm leading-7 text-gray-600">{ep.summary}</p>
+                <div className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-[#ead8ce]/0 blur-2xl transition-colors duration-300 group-hover:bg-[#ead8ce]/70" />
+                <h3 className="relative text-lg font-semibold tracking-[-0.02em] text-[#a47463] transition-colors duration-300 group-hover:text-[#8c675a]">
+                  {ep.title}
+                </h3>
+                <p className="relative mt-3 min-h-[3.5rem] line-clamp-2 text-sm leading-7 text-gray-600 transition-colors duration-300 group-hover:text-gray-700">
+                  {ep.summary}
+                </p>
                 <p className="mt-4 text-xs font-medium uppercase tracking-[0.12em] text-gray-400">关键词</p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {ep.keywords.map((kw) => (
                     <span
                       key={kw}
-                      className="rounded-full border border-[#e5d9cf] bg-white px-2.5 py-1 text-xs text-[#8c675a]"
+                      className="rounded-full border border-[#e5d9cf] bg-white px-2.5 py-1 text-xs text-[#8c675a] transition-colors duration-300 group-hover:border-[#d5b7aa] group-hover:bg-[#faf8f4]"
                     >
                       {kw}
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.article>
             ))}
           </div>
         </div>
@@ -559,16 +570,37 @@ export function ApprovedPortfolioPage() {
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {skills.map((skill) => {
+            {skills.map((skill, index) => {
               const SkillIcon = skill.icon;
               return (
-                <div key={skill.title} className="rounded-[2rem] border border-white bg-white/70 p-6 shadow-sm backdrop-blur-xl">
-                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100"><SkillIcon className="h-5 w-5" /></div>
-                  <h3 className="font-semibold">{skill.title}</h3>
-                  <ul className="mt-4 space-y-2 text-sm text-gray-600">
-                    {skill.items.map((item) => <li key={item}>· {item}</li>)}
+                <motion.article
+                  key={skill.title}
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-10%" }}
+                  transition={{ duration: 0.45, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] as const }}
+                  whileHover={{ y: -6 }}
+                  whileTap={{ scale: 0.985 }}
+                  className="group relative cursor-default overflow-hidden rounded-[2rem] border border-white bg-white/70 p-6 shadow-sm backdrop-blur-xl transition-colors duration-300 hover:border-[#e5d9cf] hover:bg-white hover:shadow-[0_22px_60px_-44px_rgba(140,103,90,0.45)]"
+                >
+                  <div className="pointer-events-none absolute -right-12 -top-12 h-28 w-28 rounded-full bg-[#ead8ce]/0 blur-2xl transition-colors duration-300 group-hover:bg-[#ead8ce]/70" />
+                  <div className="relative mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100 text-gray-500 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#f7eee8] group-hover:text-[#8c675a]">
+                    <SkillIcon className="h-5 w-5" />
+                  </div>
+                  <h3 className="relative font-semibold transition-colors duration-300 group-hover:text-[#8c675a]">{skill.title}</h3>
+                  <ul className="relative mt-4 space-y-2 text-sm text-gray-600">
+                    {skill.items.map((item, itemIndex) => (
+                      <li
+                        key={item}
+                        className="flex items-start gap-2 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-gray-700"
+                        style={{ transitionDelay: `${itemIndex * 30}ms` }}
+                      >
+                        <span className="mt-2 inline-block h-1 w-1 shrink-0 rounded-full bg-gray-300 transition-colors duration-300 group-hover:bg-[#a47463]" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
                   </ul>
-                </div>
+                </motion.article>
               );
             })}
           </div>
@@ -627,6 +659,40 @@ export function ApprovedPortfolioPage() {
         </div>
       </section>
       <PortfolioChat />
+      <AnimatePresence>
+        {showDevModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 px-6 backdrop-blur-[2px]"
+            onClick={() => setShowDevModal(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="系统提示"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 6 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 4 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] as const }}
+              className="w-full max-w-sm rounded-3xl border border-[#e5d9cf] bg-[#faf8f4] p-8 text-center shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p className="text-base font-medium text-[#8c675a]">系统正在开发中～～</p>
+              <p className="mt-2 text-xs text-gray-400">敬请期待，感谢理解</p>
+              <button
+                type="button"
+                onClick={() => setShowDevModal(false)}
+                className="mt-6 inline-flex h-11 items-center justify-center rounded-2xl bg-[#111827] px-6 text-sm font-medium text-white transition hover:bg-[#1f2937]"
+              >
+                我知道了
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
