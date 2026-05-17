@@ -175,7 +175,7 @@ Page({
 
   onViewReport() {
     const today = new Date().toISOString().slice(0, 10);
-    wx.navigateTo({ url: `/pages/report/report?date=${today}&mode=draft` });
+    wx.navigateTo({ url: `/pages/report/report?date=${today}&mode=view` });
   },
 
   onGenerateReport() {

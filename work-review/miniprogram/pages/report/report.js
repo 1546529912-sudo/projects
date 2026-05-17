@@ -1,4 +1,4 @@
-const { createReport, saveReport } = require('../../utils/cloud');
+const { createReport, saveReport, getReport } = require('../../utils/cloud');
 
 Page({
   data: {
@@ -33,19 +33,12 @@ Page({
   async loadSaved(date) {
     this.setData({ loading: true, error: null });
     try {
-      const db = wx.cloud.database();
-      const res = await db.collection('daily_reports')
-        .where({ reportDate: date })
-        .orderBy('updateTime', 'desc')
-        .limit(1)
-        .get();
-
-      if (res.data.length === 0) {
+      const result = await getReport(date);
+      if (!result.list || result.list.length === 0) {
         this.loadAndGenerate(date);
         return;
       }
-
-      const r = res.data[0];
+      const r = result.list[0];
       this.setData({
         reportContent: r.content,
         summary: r.content?.summary || '',
@@ -74,11 +67,27 @@ Page({
         return;
       }
 
-      // 汇总所有项目
-      const allProjects = [];
+      // 汇总并按项目名合并（同名项目合并 actions/problems/next_steps）
+      const projectMap = new Map();
       res.data.forEach(r => {
-        if (Array.isArray(r.projects)) allProjects.push(...r.projects);
+        (r.projects || []).forEach(p => {
+          const name = (p.project_name || '其他工作').trim();
+          if (!projectMap.has(name)) {
+            projectMap.set(name, {
+              project_name: name,
+              actions: [...(p.actions || [])],
+              problems: [...(p.problems || [])],
+              next_steps: [...(p.next_steps || [])],
+            });
+          } else {
+            const existing = projectMap.get(name);
+            existing.actions.push(...(p.actions || []));
+            existing.problems.push(...(p.problems || []));
+            existing.next_steps.push(...(p.next_steps || []));
+          }
+        });
       });
+      const allProjects = Array.from(projectMap.values());
 
       if (allProjects.length === 0) {
         this.setData({ error: '录入数据不完整，请重新录入', loading: false });

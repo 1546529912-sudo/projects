@@ -36,7 +36,6 @@
 
         <!-- Banner -->
         <view class="cbanner-warm">
-          <view class="cbi-warm">✓</view>
           <view class="cbanner-text">
             <view class="cbt">整理完毕 🎉</view>
             <view class="cbs">{{aiResult.projects.length > 1 ? '识别到 ' + aiResult.projects.length + ' 条项目线，请确认' : '已根据您的内容自动生成项目结构'}}</view>
@@ -145,11 +144,11 @@
       <view class="cf-footer">
         <button wx:if="{{editingIdx < 0}}"
           class="btn-confirm" bindtap="onConfirm" loading="{{saving}}">
-          ✅ 确认生成日报
+          确认生成日报
         </button>
         <button wx:else
           class="btn-confirm" bindtap="onSaveEdit">
-          ✓ 保存修改
+          保存修改
         </button>
       </view>
 

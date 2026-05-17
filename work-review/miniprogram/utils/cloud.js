@@ -47,9 +47,22 @@ const doASR = (fileID, format = 'mp3') => {
   });
 };
 
-// 生成日报
+// 生成日报（DeepSeek 最长 50s，客户端给 60s 宽限）
 const createReport = (date, records) =>
-  callCloud('createReport', { date, records });
+  new Promise((resolve, reject) => {
+    wx.cloud.callFunction({
+      name: 'createReport',
+      data: { date, records },
+      config: { timeout: 60000 },
+      success: (res) => {
+        const result = res.result;
+        if (!result) return reject(new Error('云函数 createReport 无返回值'));
+        if (result.code !== 0) return reject(new Error(result.message || `createReport 返回错误码 ${result.code}`));
+        resolve(result.data);
+      },
+      fail: (err) => reject(new Error(`createReport 调用失败：${err.errMsg || JSON.stringify(err)}`)),
+    });
+  });
 
 // 保存日报
 const saveReport = (date, content, template, personalText, formalText) =>
@@ -59,6 +72,10 @@ const saveReport = (date, content, template, personalText, formalText) =>
 const getReportHistory = (page = 1, perPage = 20) =>
   callCloud('getReportHistory', { page, perPage });
 
+// 按日期获取单条已保存日报
+const getReport = (date) =>
+  callCloud('getReportHistory', { date });
+
 module.exports = {
   callCloud,
   healthCheck,
@@ -67,4 +84,5 @@ module.exports = {
   createReport,
   saveReport,
   getReportHistory,
+  getReport,
 };

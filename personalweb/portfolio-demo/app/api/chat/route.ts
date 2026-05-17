@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
 
   const useDeepSeekHost = base.includes("deepseek.com");
   const model =
-    process.env.AI_CHAT_MODEL?.trim() || (useDeepSeekHost ? "deepseek-chat" : "gpt-4o-mini");
+    process.env.AI_CHAT_MODEL?.trim() || (useDeepSeekHost ? "deepseek-v4-flash" : "gpt-4o-mini");
   const url = `${base}/chat/completions`;
 
   let upstream: Response;

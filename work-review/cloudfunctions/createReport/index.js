@@ -41,19 +41,42 @@ async function generateWithAI(date, projects) {
 工作内容：
 ${projectText}
 
-请以 JSON 格式返回：
-{
-  "summary": "执行摘要（2-3句话，温暖自然，概括今日核心成果，100字以内）",
-  "personal_text": "个人版日报（温暖详细，包含完整项目进展、问题和明日计划，适合个人回顾）",
-  "formal_text": "汇报版日报（正式简洁，聚焦完成情况和成果，适合向上级汇报）"
-}
+请以 JSON 格式返回，字段说明如下：
 
-只返回 JSON，不要其他文字。`;
+"summary"：2-3句话的执行摘要，温暖自然，100字以内。
+
+"personal_text"：个人版日报，使用以下固定格式（用\\n换行，严格按格式输出）：
+【${date} 日报】
+
+▌ 项目名称
+  • 完成事项1
+  • 完成事项2
+  ⚠ 问题（没有问题则不写这行）
+
+【明日计划】
+  • 计划1
+  • 计划2
+
+"formal_text"：汇报版日报，使用以下固定格式（用\\n换行，严格按格式输出）：
+${date} 工作汇报
+
+一、今日完成情况
+1. 项目名称
+   - 完成事项1
+   - 完成事项2
+
+二、明日工作计划
+1. 计划1
+2. 计划2
+
+只返回 JSON，不要其他文字：
+{"summary":"...","personal_text":"...","formal_text":"..."}`;
 
   const resp = await httpPost(DEEPSEEK_BASE_URL + '/chat/completions', {
     model: DEEPSEEK_MODEL,
     messages: [{ role: 'user', content: prompt }],
     temperature: 0.3,
+    max_tokens: 2000,
     response_format: { type: 'json_object' },
   }, { Authorization: 'Bearer ' + DEEPSEEK_API_KEY });
 

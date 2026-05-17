@@ -67,7 +67,7 @@ function parseMsg(rawData) {
   }
 }
 
-exports.main = async (event, context) => {
+exports.main = async (event) => {
   const { fileID, format = 'mp3' } = event;
 
   if (!fileID && ASR_PROVIDER !== 'mock') {
@@ -138,22 +138,37 @@ function callDoubaoASR(audioBuffer, format) {
 
     const timer = setTimeout(() => done(new Error('ASR 超时（30s）')), 30000);
 
-    ws.on('open', () => {
-      console.log('[doASR] WebSocket 已连接，发送配置帧');
-      // 第一帧：发送识别配置
-      ws.send(buildMsg(FULL_CLIENT, FLAG_NONE, {
-        app: { appid: DOUBAO_APP_ID, token: DOUBAO_TOKEN, cluster: DOUBAO_CLUSTER },
-        user: { uid: 'wx_user' },
-        audio: { format, sample_rate: 16000, channel: 1, bits: 16 },
-        request: {
-          reqid: reqId,
-          workflow: 'audio_in,resample,partition,asr,itn,punctuate',
-          show_utterances: false,
-        },
-      }));
-      // 第二帧：发送全部音频并标记结束
-      ws.send(buildMsg(AUDIO_ONLY, FLAG_LAST, audioBuffer));
-      console.log('[doASR] 音频已发送（%d bytes），等待响应…', audioBuffer.length);
+    ws.on('open', async () => {
+      try {
+        console.log('[doASR] WebSocket 已连接，发送配置帧');
+        // PCM 直接送原始采样，MP3/其他格式需服务端解码（更耗时）
+        const audioFormat = format.toLowerCase() === 'pcm' ? 'pcm' : format.toLowerCase();
+        ws.send(buildMsg(FULL_CLIENT, FLAG_NONE, {
+          app: { appid: DOUBAO_APP_ID, token: DOUBAO_TOKEN, cluster: DOUBAO_CLUSTER },
+          user: { uid: 'wx_user' },
+          audio: { format: audioFormat, sample_rate: 16000, channel: 1, bits: 16 },
+          request: {
+            reqid: reqId,
+            workflow: 'audio_in,resample,partition,asr,itn,punctuate',
+            show_utterances: false,
+          },
+        }));
+
+        // 分块发送音频（8 KB/帧），让服务端边收边处理，避免 3s 内部超时
+        const CHUNK = 8192;
+        const total = Math.ceil(audioBuffer.length / CHUNK);
+        for (let i = 0; i < total; i++) {
+          if (settled) break;
+          if (ws.readyState !== WebSocket.OPEN) break;
+          const slice = audioBuffer.slice(i * CHUNK, (i + 1) * CHUNK);
+          const isLast = i === total - 1;
+          ws.send(buildMsg(AUDIO_ONLY, isLast ? FLAG_LAST : FLAG_NONE, slice));
+          if (!isLast) await new Promise(r => setTimeout(r, 20));
+        }
+        console.log('[doASR] 音频已发送（%d bytes，%d 帧），等待响应…', audioBuffer.length, total);
+      } catch (err) {
+        done(new Error('音频发送失败：' + err.message));
+      }
     });
 
     ws.on('message', (data) => {
@@ -179,8 +194,12 @@ function callDoubaoASR(audioBuffer, format) {
 
     ws.on('close', (code, reason) => {
       console.log('[doASR] WS 关闭 code=%d reason=%s', code, reason?.toString());
-      // 关闭时若未 done，以已收到的文本结算
-      done(null, texts.join(''));
+      const text = texts.join('');
+      if (text) {
+        done(null, text);
+      } else {
+        done(new Error('ASR 未返回识别结果，请重试'));
+      }
     });
 
     ws.on('error', (err) => {

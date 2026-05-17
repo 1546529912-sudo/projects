@@ -1,16 +1,24 @@
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
-const _ = db.command;
 
-exports.main = async (event, context) => {
+exports.main = async (event) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;
-  const { page = 1, perPage = 20 } = event;
-
-  const skip = (page - 1) * perPage;
+  const { page = 1, perPage = 20, date } = event;
 
   try {
+    // 按日期查单条（report 页 view 模式使用）
+    if (date) {
+      const res = await db.collection('daily_reports')
+        .where({ openid, reportDate: date, isDeleted: false })
+        .orderBy('updateTime', 'desc')
+        .limit(1)
+        .get();
+      return { code: 0, message: 'success', data: { list: res.data } };
+    }
+
+    const skip = (page - 1) * perPage;
     const res = await db.collection('daily_reports')
       .where({ openid, isDeleted: false })
       .orderBy('reportDate', 'desc')

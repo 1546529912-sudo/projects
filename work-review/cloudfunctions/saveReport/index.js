@@ -1,9 +1,8 @@
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
-const _ = db.command;
 
-exports.main = async (event, context) => {
+exports.main = async (event) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;
   const { date, content, template, personalText, formalText } = event;
@@ -33,6 +32,7 @@ exports.main = async (event, context) => {
     } else {
       const res = await db.collection('daily_reports').add({
         data: {
+          _openid: openid,
           openid,
           reportDate: date,
           content,

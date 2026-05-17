@@ -10,6 +10,12 @@
 
 > 无阻塞。
 
+### 手动测试 Bug 记录（2026-05-17）
+
+| # | 问题描述 | 负责角色 | 状态 | 修复说明 |
+|---|---|---|---|---|
+| BUG-001 | 历史页项目数显示为 work_records 条数（如14条），而非实际唯一项目数 | developer | ✅ 已修复 | `report.js loadAndGenerate` 改为按 project_name 合并同名项目，去重后再传 createReport |
+
 ---
 
 ## ⚠️ 核心门控状态
@@ -115,3 +121,4 @@
 | 2026-05-15 | 设计门控 | 新增 Phase 0 设计确认阶段，所有页面实现前须用户确认原型图 |
 | 2026-05-16 | 设计 Agent | P0-001 原型图已输出，等待用户确认（wireframe-record.md）|
 | 2026-05-16 | developer | P1-003 ✅ 云凭证填入；P2-001 aiExtract (DeepSeek) ✅；P2-002 doASR (豆包) ✅ |
+| 2026-05-17 | developer | Phase 2 全部功能完成并上线；修复 BUG-001 历史页项目数合并逻辑 |
