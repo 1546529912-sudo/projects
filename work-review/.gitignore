@@ -1,0 +1,7 @@
+# 密钥文件，绝对不能提交
+**/.env
+
+# 微信开发者工具
+.DS_Store
+node_modules/
+miniprogram/node_modules/

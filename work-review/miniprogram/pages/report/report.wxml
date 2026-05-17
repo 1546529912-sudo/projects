@@ -1,0 +1,74 @@
+<!-- 日报页 -->
+<view class="page-wrap">
+
+  <view class="content-area">
+
+    <!-- ══ 加载中 ══ -->
+    <view class="s-loading" wx:if="{{loading}}">
+      <view class="loading-ring"></view>
+      <text class="loading-title">日报生成中...</text>
+      <text class="loading-sub">AI 正在整理今日工作</text>
+    </view>
+
+    <!-- ══ 出错 ══ -->
+    <view class="s-error" wx:elif="{{error}}">
+      <text class="error-title">生成失败</text>
+      <text class="error-msg">{{error}}</text>
+      <view class="retry-btn" bindtap="onRegenerate">重新生成</view>
+    </view>
+
+    <!-- ══ 日报内容 ══ -->
+    <block wx:elif="{{personalText}}">
+      <scroll-view class="report-scroll" scroll-y>
+
+        <!-- 日期头 -->
+        <view class="report-header">
+          <text class="report-date">{{dateLabel}} 日报</text>
+          <view class="regen-btn" bindtap="onRegenerate">重新生成</view>
+        </view>
+
+        <!-- Tab 切换 -->
+        <view class="tab-bar">
+          <view class="tab-item {{activeTab === 'personal' ? 'active' : ''}}"
+            data-tab="personal" bindtap="onSwitchTab">
+            <text>个人版</text>
+          </view>
+          <view class="tab-item {{activeTab === 'formal' ? 'active' : ''}}"
+            data-tab="formal" bindtap="onSwitchTab">
+            <text>汇报版</text>
+          </view>
+        </view>
+
+        <!-- 日报卡片 -->
+        <view class="report-card">
+          <view class="ai-badge">✨ 由 AI 智能生成</view>
+
+          <view class="summary-block" wx:if="{{summary}}">
+            <view class="summary-label">执行摘要</view>
+            <text class="summary-text">{{summary}}</text>
+          </view>
+
+          <view class="card-divider" wx:if="{{summary}}"></view>
+
+          <text class="report-text" user-select="{{true}}">{{activeTab === 'personal' ? personalText : formalText}}</text>
+        </view>
+
+        <text class="select-hint">长按文字可选中复制</text>
+        <view style="height: 20rpx"></view>
+
+      </scroll-view>
+
+      <!-- 底部操作栏 -->
+      <view class="bottom-bar">
+        <button class="btn-copy" bindtap="onCopy">一键复制</button>
+        <button class="btn-save {{saved ? 'saved' : ''}}" bindtap="onSave" loading="{{saving}}">
+          {{saved ? '已保存 ✓' : '保存日报'}}
+        </button>
+      </view>
+    </block>
+
+  </view>
+
+  <custom-tab-bar />
+
+</view>

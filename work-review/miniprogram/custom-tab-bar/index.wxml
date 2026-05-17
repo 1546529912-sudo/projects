@@ -1,0 +1,24 @@
+<view class="tb">
+
+  <view class="ti" bindtap="onTapMic">
+    <view class="ti-btn {{selected === 0 ? 'ti-btn-act' : ''}}">
+      <view class="ti-icon mic-icon {{selected === 0 ? 'ti-icon-act' : ''}}"></view>
+    </view>
+    <text class="ti-lbl {{selected === 0 ? 'lbl-act' : ''}}">录音</text>
+  </view>
+
+  <view class="ti" bindtap="onTapHistory">
+    <view class="ti-btn {{selected === 1 ? 'ti-btn-act' : ''}}">
+      <view class="ti-icon clock-icon {{selected === 1 ? 'ti-icon-act' : ''}}"></view>
+    </view>
+    <text class="ti-lbl {{selected === 1 ? 'lbl-act' : ''}}">历史</text>
+  </view>
+
+  <view class="ti" bindtap="onTapMine">
+    <view class="ti-btn {{selected === 2 ? 'ti-btn-act' : ''}}">
+      <view class="ti-icon person-icon {{selected === 2 ? 'ti-icon-act' : ''}}"></view>
+    </view>
+    <text class="ti-lbl {{selected === 2 ? 'lbl-act' : ''}}">我的</text>
+  </view>
+
+</view>

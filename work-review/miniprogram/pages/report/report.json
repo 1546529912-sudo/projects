@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "今日日报",
+  "navigationBarBackgroundColor": "#FBF8F4",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#FBF8F4",
+  "usingComponents": {
+    "custom-tab-bar": "/custom-tab-bar/index"
+  }
+}

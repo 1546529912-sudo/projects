@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>原型图 P0-001A - 治愈陪伴风</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:linear-gradient(180deg,#d9d1c5 0%,#ebe4da 100%);
+  font-family:"PingFang SC","Helvetica Neue",sans-serif;
+  padding:32px 16px 60px;
+  color:#2c231d;
+}
+.hero{text-align:center;margin-bottom:22px}
+.hero h1{font-size:20px;font-weight:800}
+.hero p{font-size:12px;color:#7f7268;margin-top:6px}
+.row{display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+.wrap{display:flex;flex-direction:column;gap:8px;align-items:center}
+.label{font-size:11px;font-weight:700;letter-spacing:.8px;color:#6f6258}
+
+.phone{
+  width:330px;height:720px;border-radius:42px;overflow:hidden;
+  border:8px solid #171311;
+  background:linear-gradient(180deg,#f6f0e8 0%,#f4ede5 100%);
+  box-shadow:0 24px 70px rgba(60,41,22,.26),0 8px 20px rgba(0,0,0,.12);
+  display:flex;flex-direction:column;
+}
+.status{
+  height:32px;padding:0 18px;display:flex;align-items:center;
+  justify-content:space-between;font-size:11px;font-weight:700;color:#332822;
+}
+.nav{
+  padding:10px 18px 0;display:flex;justify-content:space-between;align-items:center;
+}
+.avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#fff9f2 0%,#efe1d3 62%,#d6bfa8 100%);
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.7),0 6px 12px rgba(95,70,45,.12);
+  position:relative;
+}
+.avatar:before,.avatar:after{
+  content:"";position:absolute;top:8px;width:8px;height:8px;background:#3a2e28;border-radius:50%;
+}
+.avatar:before{left:10px}
+.avatar:after{right:10px}
+.avatar span{
+  position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
+  width:14px;height:8px;border-radius:0 0 10px 10px;background:#9f7257;
+}
+.nav-actions{display:flex;gap:10px}
+.icon-btn{
+  width:40px;height:40px;border-radius:50%;
+  border:none;background:rgba(255,250,245,.86);color:#6f5847;
+  font-size:18px;box-shadow:0 8px 18px rgba(96,74,51,.08);
+}
+.content{flex:1;padding:8px 18px 0;display:flex;flex-direction:column}
+.hello{margin-top:8px}
+.hello .small{font-size:15px;color:#8d7f74;font-weight:600}
+.hello .big{font-size:31px;line-height:1.15;font-weight:800;margin-top:6px}
+.hello .sub{font-size:13px;line-height:1.7;color:#7f7268;margin-top:10px}
+
+.pet-card{
+  margin-top:18px;background:rgba(255,252,248,.92);border-radius:30px;
+  min-height:246px;position:relative;padding:18px 18px 16px;
+  box-shadow:0 20px 36px rgba(123,91,58,.10),inset 0 1px 0 rgba(255,255,255,.85);
+}
+.pet-title{font-size:13px;color:#9b8a7d;font-weight:700}
+.pet-main{display:flex;justify-content:space-between;align-items:flex-end;height:100%}
+.pet-copy{padding-top:10px;width:43%}
+.pet-copy h3{font-size:27px;line-height:1.2;font-weight:800}
+.pet-copy p{margin-top:10px;font-size:13px;line-height:1.65;color:#7c6d62}
+.pill{
+  margin-top:18px;display:inline-flex;align-items:center;justify-content:center;
+  min-width:128px;height:46px;border-radius:999px;border:none;
+  background:linear-gradient(180deg,#9d6d4f 0%,#87593d 100%);
+  color:#fff8f1;font-size:15px;font-weight:700;
+  box-shadow:0 10px 20px rgba(138,91,61,.24);
+}
+
+.dog{
+  width:150px;height:180px;position:relative;margin-right:8px;
+}
+.dog .ear{
+  position:absolute;top:16px;width:34px;height:48px;background:#efe2d4;
+  border-radius:20px 20px 8px 8px;z-index:1;
+}
+.dog .ear.left{left:18px;transform:rotate(-22deg)}
+.dog .ear.right{right:18px;transform:rotate(22deg)}
+.dog .head{
+  position:absolute;top:24px;left:18px;width:114px;height:100px;border-radius:46px;
+  background:radial-gradient(circle at 50% 26%,#fffdf9 0%,#f5eadf 62%,#ead9ca 100%);
+  z-index:2;box-shadow:0 10px 20px rgba(98,73,49,.10);
+}
+.dog .eye{
+  position:absolute;top:34px;width:14px;height:18px;border-radius:50%;
+  background:#2c231d;
+}
+.dog .eye.left{left:28px}
+.dog .eye.right{right:28px}
+.dog .nose{
+  position:absolute;left:50%;top:48px;transform:translateX(-50%);
+  width:24px;height:18px;border-radius:12px;background:#43342b;
+}
+.dog .mouth{
+  position:absolute;left:50%;top:67px;transform:translateX(-50%);
+  width:40px;height:16px;border-bottom:4px solid #5b463a;border-radius:0 0 20px 20px;
+}
+.dog .tongue{
+  position:absolute;left:50%;top:78px;transform:translateX(-50%);
+  width:20px;height:22px;border-radius:0 0 12px 12px;background:#de8e97;
+}
+.dog .body{
+  position:absolute;left:22px;bottom:18px;width:106px;height:88px;border-radius:38px 38px 28px 28px;
+  background:linear-gradient(180deg,#f8efe5 0%,#ecdacc 100%);
+  box-shadow:0 10px 18px rgba(98,73,49,.08);
+}
+.dog .bow{
+  position:absolute;left:50%;top:114px;transform:translateX(-50%);
+  width:66px;height:18px;background:#7c5443;border-radius:10px;z-index:3;
+}
+.dog .bow:before,.dog .bow:after{
+  content:"";position:absolute;top:-6px;width:22px;height:22px;background:#8c634f;
+  border-radius:4px 14px 4px 14px;
+}
+.dog .bow:before{left:-10px;transform:rotate(-18deg)}
+.dog .bow:after{right:-10px;transform:rotate(18deg)}
+.dog .leg{
+  position:absolute;bottom:0;width:22px;height:34px;background:#f2e3d6;border-radius:14px;
+}
+.dog .leg.l1{left:32px}
+.dog .leg.l2{left:62px}
+.dog .leg.l3{right:32px}
+.dog .tail{
+  position:absolute;right:0;top:122px;width:26px;height:44px;border-right:8px solid #ead7c8;
+  border-top:8px solid transparent;border-bottom:8px solid transparent;border-radius:40px;
+  transform:rotate(20deg);
+}
+
+.section{
+  margin-top:16px;padding:16px 16px 14px;background:rgba(255,252,248,.78);
+  border-radius:24px;box-shadow:0 14px 28px rgba(123,91,58,.08);
+}
+.section h4{font-size:14px;font-weight:800}
+.section p{margin-top:6px;font-size:12px;line-height:1.7;color:#7f7268}
+.mic-wrap{margin-top:16px;display:flex;justify-content:center}
+.mic-shell{
+  width:126px;height:126px;border-radius:50%;
+  background:radial-gradient(circle,#fffaf5 0%,#f2e7da 60%,rgba(242,231,218,.2) 72%,transparent 72%);
+  display:flex;align-items:center;justify-content:center;position:relative;
+}
+.mic-shell:before,.mic-shell:after{
+  content:"";position:absolute;border:2px solid rgba(167,122,92,.24);border-radius:50%;
+}
+.mic-shell:before{inset:10px}
+.mic-shell:after{inset:-8px}
+.mic-btn{
+  width:72px;height:72px;border:none;border-radius:50%;
+  background:linear-gradient(180deg,#b98565 0%,#9e6f53 100%);
+  color:#fff8f2;font-size:28px;box-shadow:0 12px 22px rgba(154,103,72,.26);
+}
+.hint{text-align:center;font-size:12px;color:#8c7d71;margin-top:12px}
+
+.transcript{
+  margin-top:14px;background:#fffaf5;border-radius:18px;padding:14px 14px 12px;
+  border:1px solid rgba(160,125,99,.10);min-height:164px;
+}
+.transcript .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.tag{font-size:11px;padding:5px 9px;border-radius:999px;background:#efe2d5;color:#8c674f;font-weight:700}
+.dot{width:8px;height:8px;border-radius:50%;background:#cf7d76;display:inline-block;margin-right:6px}
+.transcript p{font-size:13px;line-height:1.8;color:#4c4038}
+.wave{display:flex;gap:4px;align-items:flex-end;height:22px}
+.wave span{width:4px;border-radius:4px;background:#b58366}
+.wave span:nth-child(1){height:8px}.wave span:nth-child(2){height:16px}.wave span:nth-child(3){height:22px}.wave span:nth-child(4){height:12px}.wave span:nth-child(5){height:18px}
+
+.processing{
+  margin-top:12px;padding:14px;border-radius:18px;background:linear-gradient(180deg,#fff8f1 0%,#f5ebe0 100%);
+  display:flex;gap:12px;align-items:center;
+}
+.bubble{
+  width:48px;height:48px;border-radius:18px;background:#f0ddcb;color:#9a6f55;
+  display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;
+}
+.processing h5{font-size:14px;font-weight:800}
+.processing p{margin-top:4px;font-size:12px;line-height:1.6;color:#7d6e63}
+
+.footer{
+  height:64px;padding:8px 16px 10px;display:flex;align-items:center;gap:10px;
+  background:rgba(255,249,243,.92);border-top:1px solid rgba(146,116,90,.08);
+}
+.fbtn{
+  flex:1;height:44px;border-radius:999px;border:none;font-size:14px;font-weight:700;
+}
+.ghost{background:#efe5da;color:#86624a}
+.primary{background:linear-gradient(180deg,#a77457 0%,#8d6046 100%);color:#fffaf5}
+</style>
+</head>
+<body>
+  <div class="hero">
+    <h1>P0-001A 录入页新方案</h1>
+    <p>治愈陪伴风 · 奶油色系 · 宠物情绪主角</p>
+  </div>
+
+  <div class="row">
+    <div class="wrap">
+      <div class="label">默认态</div>
+      <div class="phone">
+        <div class="status"><span>11:36</span><span>5G 88%</span></div>
+        <div class="nav">
+          <div class="avatar"><span></span></div>
+          <div class="nav-actions">
+            <button class="icon-btn">♡</button>
+            <button class="icon-btn">⋯</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="hello">
+            <div class="small">中午好，今天也慢慢来</div>
+            <div class="big">想先和我说说<br>今天做了什么吗？</div>
+            <div class="sub">不用整理成正式汇报，先像聊天一样说出来，我会帮你慢慢收好。</div>
+          </div>
+
+          <div class="pet-card">
+            <div class="pet-title">今日陪伴模式</div>
+            <div class="pet-main">
+              <div class="pet-copy">
+                <h3>轻松记录</h3>
+                <p>想到哪就说到哪，不用担心顺序，也不用怕句子不完整。</p>
+                <button class="pill">开始聊聊</button>
+              </div>
+              <div class="dog">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+                <div class="head">
+                  <div class="eye left"></div>
+                  <div class="eye right"></div>
+                  <div class="nose"></div>
+                  <div class="mouth"></div>
+                  <div class="tongue"></div>
+                </div>
+                <div class="body"></div>
+                <div class="bow"></div>
+                <div class="leg l1"></div>
+                <div class="leg l2"></div>
+                <div class="leg l3"></div>
+                <div class="tail"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h4>记录方式</h4>
+            <p>长按说话，松开结束。语音会先转成文字，再由我帮你整理成清楚的工作记录。</p>
+            <div class="mic-wrap">
+              <div>
+                <div class="mic-shell">
+                  <button class="mic-btn">🎙</button>
+                </div>
+                <div class="hint">长按开始说话</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <button class="fbtn ghost">键盘输入</button>
+          <button class="fbtn primary">开始记录</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="label">录音中</div>
+      <div class="phone">
+        <div class="status"><span>11:36</span><span>5G 88%</span></div>
+        <div class="nav">
+          <div class="avatar"><span></span></div>
+          <div class="nav-actions">
+            <button class="icon-btn">♡</button>
+            <button class="icon-btn">⋯</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="hello">
+            <div class="small">我在认真听</div>
+            <div class="big">慢慢说就好，<br>不用一次说完整</div>
+          </div>
+
+          <div class="transcript">
+            <div class="head">
+              <span class="tag"><span class="dot"></span>录音进行中</span>
+              <div class="wave"><span></span><span></span><span></span><span></span><span></span></div>
+            </div>
+            <p>今天上午先把项目文档重新梳理了一遍，然后把 README 和协作文档统一了一下，下午准备继续推进录入页原型和云开发联通...</p>
+          </div>
+
+          <div class="pet-card" style="min-height:220px;margin-top:14px;">
+            <div class="pet-title">陪伴反馈</div>
+            <div class="pet-main">
+              <div class="pet-copy">
+                <h3>我都记着呢</h3>
+                <p>你只管自然表达，我会把重点先接住，再帮你整理成清晰结构。</p>
+              </div>
+              <div class="dog" style="transform:scale(.95)">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+                <div class="head">
+                  <div class="eye left"></div>
+                  <div class="eye right"></div>
+                  <div class="nose"></div>
+                  <div class="mouth"></div>
+                  <div class="tongue"></div>
+                </div>
+                <div class="body"></div>
+                <div class="bow"></div>
+                <div class="leg l1"></div>
+                <div class="leg l2"></div>
+                <div class="leg l3"></div>
+                <div class="tail"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <button class="fbtn ghost">暂停一下</button>
+          <button class="fbtn primary">松开结束</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="label">AI 整理中</div>
+      <div class="phone">
+        <div class="status"><span>11:36</span><span>5G 88%</span></div>
+        <div class="nav">
+          <div class="avatar"><span></span></div>
+          <div class="nav-actions">
+            <button class="icon-btn">♡</button>
+            <button class="icon-btn">⋯</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="hello">
+            <div class="small">快好了</div>
+            <div class="big">我在帮你把刚才的话<br>整理成工作记录</div>
+          </div>
+
+          <div class="pet-card" style="min-height:230px;">
+            <div class="pet-title">整理进度</div>
+            <div class="pet-main">
+              <div class="pet-copy">
+                <h3>别着急</h3>
+                <p>我会把“做了什么、遇到什么、下一步是什么”都拆出来。</p>
+              </div>
+              <div class="dog" style="transform:translateY(4px)">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+                <div class="head">
+                  <div class="eye left"></div>
+                  <div class="eye right"></div>
+                  <div class="nose"></div>
+                  <div class="mouth"></div>
+                  <div class="tongue" style="height:16px"></div>
+                </div>
+                <div class="body"></div>
+                <div class="bow"></div>
+                <div class="leg l1"></div>
+                <div class="leg l2"></div>
+                <div class="leg l3"></div>
+                <div class="tail"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="processing">
+            <div class="bubble">☁</div>
+            <div>
+              <h5>正在安静整理</h5>
+              <p>1. 转成文字<br>2. 拆出项目和事项<br>3. 生成可确认的结构化内容</p>
+            </div>
+          </div>
+        </div>
+        <div class="footer">
+          <button class="fbtn ghost">返回修改</button>
+          <button class="fbtn primary">继续等待</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

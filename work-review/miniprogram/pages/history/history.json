@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "历史日报",
+  "navigationBarBackgroundColor": "#FBF8F4",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#FBF8F4",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "light"
+}

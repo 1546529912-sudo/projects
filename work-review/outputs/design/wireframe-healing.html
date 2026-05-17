@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>原型图 P0-001 — 治愈版</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#E8E0D8;font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;padding:40px 20px 80px}
+
+/* ── LAYOUT ── */
+.ph{text-align:center;margin-bottom:16px}
+.ph h1{font-size:18px;color:#3D2B1A;font-weight:700}
+.ph p{font-size:12px;color:#A0896E;margin-top:4px}
+.gt{text-align:center;font-size:11px;font-weight:800;color:#A0896E;letter-spacing:2px;text-transform:uppercase;margin:44px 0 18px;display:flex;align-items:center;justify-content:center;gap:12px}
+.gt::before,.gt::after{content:'';flex:1;max-width:100px;border-top:1px solid rgba(100,60,20,.15)}
+.row{display:flex;flex-wrap:wrap;gap:20px;justify-content:center}
+.pw{display:flex;flex-direction:column;align-items:center;gap:8px}
+.lbl{font-size:11px;font-weight:700;color:#A0896E;letter-spacing:.5px}
+
+/* ── PHONE SHELL ── */
+.phone{width:320px;height:648px;border-radius:42px;overflow:hidden;
+  box-shadow:0 20px 60px rgba(80,40,10,.25),0 4px 12px rgba(0,0,0,.12);
+  border:7px solid #2A1A0E;display:flex;flex-direction:column;background:#FBF8F4}
+.phone.tall{height:760px}
+
+/* ── STATUS BAR ── */
+.sb{height:32px;padding:0 18px;display:flex;align-items:center;
+  justify-content:space-between;font-size:11px;font-weight:700;color:#3D2B1A;flex-shrink:0}
+
+/* ── NAV HOME ── */
+.nh{height:50px;padding:0 16px;display:flex;align-items:center;
+  justify-content:space-between;flex-shrink:0}
+.nl{display:flex;align-items:center;gap:9px}
+.nt{font-size:16px;font-weight:800;color:#3D2B1A}
+
+/* ── NAV SUB ── */
+.ns{height:48px;padding:0 16px;display:flex;align-items:center;
+  justify-content:space-between;background:rgba(255,255,255,.95);
+  backdrop-filter:blur(10px);border-bottom:1px solid #F0E8DE;
+  flex-shrink:0;z-index:10}
+.bk{font-size:22px;color:#C07048;cursor:pointer;line-height:1}
+.nst{font-size:15px;font-weight:700;color:#3D2B1A;display:flex;align-items:center;gap:6px}
+.more{font-size:18px;color:#A0896E}
+
+/* ── TABBAR ── */
+.tb{height:62px;background:rgba(255,255,255,.97);
+  border-top:1px solid #F0E8DE;display:flex;align-items:center;
+  flex-shrink:0;padding:0 4px 4px;position:relative;z-index:20}
+.ti{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-end;gap:2px;font-size:10px;color:#C4A882;cursor:pointer;padding-bottom:2px}
+.ti.act{color:#C07048;font-weight:600}
+.ticon{font-size:20px}
+.tsvg{width:20px;height:20px;display:block}
+.tm{flex:1;display:flex;flex-direction:column;align-items:center;
+  cursor:pointer;justify-content:flex-end;padding-bottom:2px}
+.tmbtn{width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(145deg,#D4885E,#A85530);
+  display:flex;align-items:center;justify-content:center;
+  margin-top:-22px;box-shadow:0 4px 14px rgba(180,90,40,.45);
+  font-size:22px;color:#fff}
+.tmlbl{font-size:10px;color:#C4A882;margin-top:1px}
+
+/* ── PAGE BODY ── */
+.body{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.body.sc{overflow-y:auto}
+
+/* ── WARM ICON ── */
+.wicon{width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0}
+
+/* ── BUTTONS ── */
+.bm{display:flex;align-items:center;justify-content:center;gap:6px;
+  height:50px;border-radius:100px;border:none;
+  background:linear-gradient(135deg,#D4885E,#A85530);
+  color:#fff;font-size:15px;font-weight:700;
+  box-shadow:0 4px 16px rgba(180,90,40,.4);cursor:pointer;width:100%}
+.bg2{display:flex;align-items:center;justify-content:center;gap:5px;
+  height:40px;border-radius:100px;border:1.5px solid #E8DDD0;
+  color:#8B6E52;font-size:13px;background:rgba(255,255,255,.7);cursor:pointer;flex:1}
+
+/* ════════════════════════════
+   HOME BG GRADIENT
+════════════════════════════ */
+.gbg{flex:1;background:linear-gradient(160deg,#FFF9F2 0%,#FEF5ED 45%,#FFF8F4 100%);display:flex;flex-direction:column}
+
+/* ════════════════════════════
+   1-A DEFAULT HOME
+════════════════════════════ */
+.home-wrap{flex:1;display:flex;flex-direction:column;padding:0 20px 20px}
+.home-greet-area{padding:14px 0 0}
+.home-time{font-size:13px;color:#C4A882;margin-bottom:4px}
+.home-name{font-size:24px;font-weight:800;color:#2C1E12;line-height:1.3;margin-bottom:6px}
+.home-sub{font-size:13px;color:#A0896E;line-height:1.65;margin-bottom:0}
+.home-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.deco-row{display:flex;gap:10px;margin-bottom:16px;font-size:20px}
+.mring-warm{width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(192,112,72,.18) 0%,rgba(192,112,72,.06) 55%,transparent 75%);
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.mbtn-warm{width:86px;height:86px;border-radius:50%;
+  background:linear-gradient(145deg,#D4885E,#A85530);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 32px rgba(180,90,40,.5),0 2px 8px rgba(0,0,0,.08)}
+.mbtn-warm svg{width:36px;height:36px;fill:#fff}
+.mhint-warm{font-size:12px;color:#C4A882;letter-spacing:.5px}
+
+/* ════════════════════════════
+   1-B RECORDING
+════════════════════════════ */
+.rec-body{flex:1;display:flex;flex-direction:column;padding:12px 14px}
+.rh .rt{font-size:17px;font-weight:700;color:#2C1E12}
+.rh .rs{font-size:12px;color:#A0896E;margin-top:2px;margin-bottom:10px}
+.tbox-warm{background:rgba(255,255,255,.88);border-radius:16px;
+  border:1px solid rgba(192,112,72,.2);height:190px;
+  position:relative;overflow:hidden;margin-bottom:8px}
+.tbox-warm::after{content:'';position:absolute;bottom:0;left:0;right:0;height:64px;
+  background:linear-gradient(transparent,rgba(255,255,255,.97));pointer-events:none;z-index:2}
+.ttext{padding:12px 14px;font-size:13.5px;line-height:1.75;color:#4A3322}
+.cur{display:inline-block;width:2px;height:15px;background:#C07048;
+  vertical-align:middle;animation:blink 1s infinite;margin-left:1px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.rrow{display:flex;align-items:center;justify-content:space-between;padding:0 2px;margin-bottom:8px}
+.rdot-r{display:flex;align-items:center;gap:6px;font-size:13px;color:#C05030;font-weight:600}
+.rdot{width:7px;height:7px;border-radius:50%;background:#C05030;animation:blink 1s infinite}
+.wf{display:flex;align-items:flex-end;gap:2.5px;height:20px}
+.wb{width:3px;border-radius:2px;background:#C07048;animation:wave .7s ease-in-out infinite alternate}
+.wb:nth-child(1){height:5px;animation-delay:0s}.wb:nth-child(2){height:13px;animation-delay:.1s}
+.wb:nth-child(3){height:19px;animation-delay:.2s}.wb:nth-child(4){height:9px;animation-delay:.3s}
+.wb:nth-child(5){height:16px;animation-delay:.4s}.wb:nth-child(6){height:7px;animation-delay:.5s}
+.wb:nth-child(7){height:15px;animation-delay:.6s}
+@keyframes wave{from{transform:scaleY(.5)}to{transform:scaleY(1.4)}}
+.rmic{display:flex;flex-direction:column;align-items:center;margin-top:auto;padding-bottom:4px}
+.rring-warm{width:106px;height:106px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;position:relative}
+.wpls{position:absolute;border-radius:50%;border:2px solid rgba(192,80,48,.25);
+  animation:pls 1.5s ease-out infinite}
+.wpls:nth-child(1){width:74px;height:74px;animation-delay:0s}
+.wpls:nth-child(2){width:94px;height:94px;animation-delay:.5s}
+.wpls:nth-child(3){width:114px;height:114px;animation-delay:1s}
+@keyframes pls{0%{opacity:.7;transform:scale(.9)}100%{opacity:0;transform:scale(1.1)}}
+.rbtn-warm{width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(145deg,#D85050,#B02828);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px rgba(200,50,50,.5);position:relative;z-index:2}
+.rbtn-warm svg{width:26px;height:26px;fill:#fff}
+.rtip{font-size:11px;color:#C4A882;margin-top:6px}
+
+/* ════════════════════════════
+   1-C PROCESSING
+════════════════════════════ */
+.proc{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:20px;text-align:center}
+.picon-warm{width:72px;height:72px;border-radius:22px;
+  background:linear-gradient(145deg,#D4885E,#A85530);
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;margin-bottom:20px;
+  box-shadow:0 8px 24px rgba(180,90,40,.45);animation:ap 2s ease-in-out infinite}
+@keyframes ap{0%,100%{box-shadow:0 8px 24px rgba(180,90,40,.45)}50%{box-shadow:0 8px 36px rgba(180,90,40,.7)}}
+.pt{font-size:18px;font-weight:700;color:#2C1E12;margin-bottom:6px}
+.ps{font-size:13px;color:#A0896E;margin-bottom:22px}
+.dots{display:flex;gap:6px;align-items:center;justify-content:center;margin-bottom:22px}
+.dot{width:7px;height:7px;border-radius:50%;background:#C07048;animation:db 1.2s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes db{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-5px);opacity:1}}
+.psteps{background:rgba(255,255,255,.7);border-radius:14px;padding:10px 14px;width:100%;text-align:left}
+.pstep{font-size:12px;color:#C4A882;padding:5px 0;line-height:1.5;text-align:left}
+.pstep.done{color:#C07048;font-weight:600}
+.pstep.cur{color:#2C1E12;font-weight:700;display:flex;align-items:center;gap:8px}
+.step-spin{width:12px;height:12px;border:2px solid #E8DDD0;border-top-color:#2C1E12;
+  border-radius:50%;animation:sspin .8s linear infinite;display:inline-block;flex-shrink:0}
+@keyframes sspin{to{transform:rotate(360deg)}}
+
+/* ════════════════════════════
+   1-D DONE
+════════════════════════════ */
+.done{flex:1;display:flex;flex-direction:column;padding:12px 14px 14px}
+.dbanner-warm{display:flex;align-items:center;gap:7px;
+  background:rgba(192,112,72,.1);border-radius:12px;padding:9px 12px;
+  font-size:13px;font-weight:600;color:#C07048;margin-bottom:10px}
+.dta-warm{flex:1;background:rgba(255,255,255,.9);border:1px solid rgba(192,112,72,.2);
+  border-radius:14px;padding:12px 14px;font-size:14px;color:#4A3322;
+  line-height:1.7;overflow:hidden;margin-bottom:6px}
+.cc{text-align:right;font-size:11px;color:#D4BEA0;margin-bottom:8px}
+.dbr{display:flex;gap:8px;margin-bottom:10px}
+
+/* ════════════════════════════
+   2. AI CONFIRM
+════════════════════════════ */
+.cf-wrap{flex:1;display:flex;flex-direction:column;background:#F8F4EF;overflow:hidden}
+.cf-scroll{flex:1;overflow-y:auto;padding:14px 14px 0}
+.cf-footer{padding:10px 14px 14px;background:#F8F4EF;border-top:1px solid #EEE4D8;flex-shrink:0}
+.eb-wrap{flex:1;display:flex;flex-direction:column;background:#F8F4EF;overflow:hidden}
+.eb-scroll{flex:1;overflow-y:auto;padding:14px 14px 0}
+.eb-footer{padding:10px 14px 14px;background:#F8F4EF;border-top:1px solid #EEE4D8;flex-shrink:0}
+
+.cbanner-warm{display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,#FFF4EC,#FEF0E4);
+  border-radius:14px;padding:12px 14px;margin-bottom:16px;
+  border:1px solid rgba(192,112,72,.15)}
+.cbi-warm{width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#D4885E,#A85530);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:#fff;flex-shrink:0}
+.cbt{font-size:14px;font-weight:700;color:#2C1E12}
+.cbs{font-size:12px;color:#A0896E;margin-top:2px}
+.csh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cst{font-size:15px;font-weight:700;color:#2C1E12;display:flex;align-items:center;gap:6px}
+.cedit{font-size:17px;color:#C07048;cursor:pointer}
+
+.pc-warm{background:#fff;border-radius:14px;padding:14px;
+  box-shadow:0 2px 12px rgba(160,100,50,.08);margin-bottom:10px;
+  border:1px solid #F0E8DE}
+.pfl{font-size:11px;color:#C4A882;margin-bottom:3px}
+.pfv{font-size:15px;color:#2C1E12;font-weight:700;margin-bottom:8px}
+.pft{font-size:14px;color:#4A3322;line-height:1.65;margin-bottom:8px}
+.stag{display:inline-flex;align-items:center;font-size:12px;color:#C07048;
+  background:#FFF4EC;border-radius:100px;padding:2px 10px;font-weight:600;
+  border:1px solid rgba(192,112,72,.2)}
+.stag.prog{color:#D09030;background:#FFF8E8;border-color:rgba(200,140,0,.2)}
+.stag.done-tag{color:#4A9060;background:#EDF8F0;border-color:rgba(60,150,80,.2)}
+.pb-warm{border-left:3px solid #D85050;background:#FFF6F6;border-radius:0 10px 10px 0;
+  padding:9px 12px;margin-top:8px;margin-bottom:8px}
+.pbl{font-size:12px;color:#D85050;font-weight:700;display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.pbt{font-size:13px;color:#7A4A4A;line-height:1.6}
+.nsr{display:flex;align-items:flex-start;gap:7px;font-size:13px;color:#5A4030;
+  margin-bottom:5px;line-height:1.5}
+.nsdot{width:16px;height:16px;border-radius:50%;border:1.5px solid #C07048;
+  flex-shrink:0;margin-top:1px}
+.addp-warm{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;
+  border-radius:100px;border:1.5px dashed rgba(192,112,72,.4);color:#C07048;
+  font-size:13px;background:transparent;cursor:pointer;width:100%;margin-bottom:8px}
+.redo-warm{display:flex;align-items:center;justify-content:center;gap:5px;height:40px;
+  border-radius:100px;border:none;background:rgba(0,0,0,.04);color:#A0896E;
+  font-size:13px;cursor:pointer;width:100%;margin-bottom:0}
+
+.inf{width:100%;border:1.5px solid #EEE0D0;border-radius:10px;padding:8px 11px;
+  font-size:13.5px;color:#2C1E12;background:#FDFAF7;font-family:inherit;outline:none;display:block}
+.inf.focused{border-color:#C07048;background:#fff}
+.inf.big{font-size:15px;font-weight:700}
+.inf.ta3{height:70px;resize:none;line-height:1.6;vertical-align:top}
+.fl{font-size:11px;color:#C4A882;margin-bottom:4px;margin-top:10px;display:flex;align-items:center;gap:4px}
+.req{width:4px;height:4px;border-radius:50%;background:#C07048;flex-shrink:0}
+.ter{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.ter .inf{flex:1}
+.delb{font-size:18px;color:#E0C8B0;cursor:pointer;flex-shrink:0}
+.addb{font-size:12px;color:#C07048;cursor:pointer;display:flex;align-items:center;gap:4px;padding:4px 0;margin-bottom:4px}
+.delp{display:flex;align-items:center;gap:5px;font-size:13px;color:#D85050;cursor:pointer;
+  padding-top:10px;border-top:1px solid #F0E8DE;margin-top:8px}
+
+/* ════════════════════════════
+   3. REPORT
+════════════════════════════ */
+.rbg{flex:1;background:#F8F4EF;display:flex;flex-direction:column;overflow:hidden}
+.rtog{display:flex;background:#EEE4DA;border-radius:10px;padding:3px;
+  margin:12px 14px 0;flex-shrink:0}
+.rtgi{flex:1;text-align:center;font-size:13px;font-weight:600;
+  padding:7px 0;border-radius:8px;cursor:pointer;color:#A0896E}
+.rtgi.act{background:#fff;color:#C07048;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.r-scroll{flex:1;overflow-y:auto;padding:12px 14px 0}
+.rcard-warm{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;
+  box-shadow:0 2px 12px rgba(160,100,50,.08);border:1px solid #F0E8DE}
+.rch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px}
+.rcti{font-size:18px;font-weight:800;color:#2C1E12}
+.rcd{font-size:12px;color:#C4A882}
+.rcby{font-size:12px;color:#C4A882;margin-bottom:12px}
+.rcdiv{border:none;border-top:1px solid #F5EDE4;margin-bottom:14px}
+.secH{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:800;color:#2C1E12;margin-bottom:10px}
+.sumi-warm{background:#FFF8F2;border-left:3px solid #C07048;border-radius:0 10px 10px 0;
+  padding:10px 14px;font-size:13px;color:#5A4030;line-height:1.75;margin-bottom:14px}
+.dp{margin-bottom:10px}
+.dpn{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:#2C1E12;margin-bottom:5px}
+.dpnd{width:8px;height:8px;border-radius:50%;background:#C07048;flex-shrink:0}
+.dpa{display:flex;align-items:flex-start;gap:6px;font-size:12px;color:#5A4030;
+  line-height:1.65;padding-left:14px;margin-bottom:3px}
+.dpab{width:4px;height:4px;border-radius:50%;background:#C4A882;flex-shrink:0;margin-top:6px}
+.dprob{font-size:12px;color:#C05030;padding-left:14px;display:flex;align-items:flex-start;gap:5px;margin-bottom:3px;line-height:1.65}
+.dplnk{color:#C07048}
+.tmr{background:#FBF7F2;border-radius:10px;padding:10px 12px;margin-bottom:8px;border:1px solid #F0E8DE}
+.tmr.pri{background:#FFF4EC;border-color:rgba(192,112,72,.2)}
+.tmrp{font-size:11px;font-weight:700;color:#C07048;margin-bottom:3px}
+.tmrt{font-size:13px;color:#4A3322;line-height:1.5}
+.ucard{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;
+  padding:12px 14px;margin-bottom:14px;box-shadow:0 2px 8px rgba(160,100,50,.06);border:1px solid #F0E8DE}
+.av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#D4885E,#A85530);
+  display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0}
+.un{font-size:14px;font-weight:700;color:#2C1E12}
+.ur{font-size:12px;color:#C4A882}
+.sig{font-size:22px;color:#E8DDD0;cursor:pointer}
+.r-footer{padding:10px 14px 34px;background:rgba(248,244,239,.97);
+  backdrop-filter:blur(10px);border-top:1px solid #EEE4D8;flex-shrink:0}
+.rbr{display:flex;gap:8px}
+.rbtn2{flex:1;height:46px;border-radius:100px;border:1px solid #E8DDD0;
+  background:#fff;color:#7A5C42;font-size:13px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer}
+.rbtn2.warm{border-color:#C07048;color:#C07048;background:#FFF4EC}
+
+</style>
+</head>
+<body>
+
+<div class="ph">
+  <h1>原型图 P0-001 — 治愈版</h1>
+  <p>暖色调 · 个性化问候 · 柔和圆润 · 2026-05-16</p>
+</div>
+
+<!-- WAVE ICON (warm version) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs><clipPath id="wc"><circle cx="17" cy="17" r="17"/></clipPath></defs>
+</svg>
+
+<!-- ══════ 录入页 ══════ -->
+<div class="gt">首页 / 录入页 — 4 个状态</div>
+<div class="row">
+
+<!-- 1-A 默认态 -->
+<div class="pw">
+  <div class="lbl">首页 · 默认态</div>
+  <div class="phone">
+    <div class="sb" style="background:transparent"><span>9:41</span><span>📶🔋</span></div>
+    <div class="nh" style="background:transparent">
+      <div class="nl">
+        <svg class="wicon" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="wc1"><circle cx="17" cy="17" r="17"/></clipPath></defs>
+          <circle cx="17" cy="17" r="17" fill="#FFF4EC"/>
+          <g clip-path="url(#wc1)">
+            <path d="M0 22 Q8.5 17 17 21 Q25.5 25 34 19 L34 34 L0 34Z" fill="rgba(192,112,72,.25)"/>
+            <path d="M0 26 Q8.5 21 17 25 Q25.5 29 34 23 L34 34 L0 34Z" fill="rgba(192,112,72,.45)"/>
+            <path d="M0 30 Q8.5 25 17 29 Q25.5 33 34 27 L34 34 L0 34Z" fill="rgba(192,112,72,.7)"/>
+            <rect x="3" y="13" width="16" height="2.8" rx="1.4" fill="#C07048"/>
+            <path d="M15 15.8 Q18 10 22 13" stroke="#C07048" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            <path d="M20 8 L23 11.5 L28 6" stroke="#C07048" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+        <span class="nt">今天忙啥了</span>
+      </div>
+          </div>
+    <div class="body">
+      <div class="gbg">
+        <div class="home-wrap">
+          <div class="home-greet-area">
+            <div class="home-time">下午好 ☀️</div>
+            <div class="home-name">今天也辛苦啦，</div>
+            <div class="home-sub">把剩下的交给我，<br>让 AI 为您快速生成简报</div>
+          </div>
+          <div class="home-center">
+              <div class="mring-warm">
+              <div class="mbtn-warm">
+                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
+              </div>
+            </div>
+            <div class="mhint-warm">点击或长按 · 倾诉今日成就</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tb">
+      <div class="tm"><div class="tmbtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div><div class="tmlbl">录音</div></div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>历史</div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>我的</div>
+    </div>
+  </div>
+</div>
+
+<!-- 1-B 录音中 -->
+<div class="pw">
+  <div class="lbl">首页 · 录音中</div>
+  <div class="phone">
+    <div class="sb" style="background:transparent"><span>9:41</span><span>📶🔋</span></div>
+    <div class="nh" style="background:transparent">
+      <div class="nl">
+        <svg class="wicon" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="wc2"><circle cx="17" cy="17" r="17"/></clipPath></defs>
+          <circle cx="17" cy="17" r="17" fill="#FFF4EC"/>
+          <g clip-path="url(#wc2)">
+            <path d="M0 22 Q8.5 17 17 21 Q25.5 25 34 19 L34 34 L0 34Z" fill="rgba(192,112,72,.25)"/>
+            <path d="M0 26 Q8.5 21 17 25 Q25.5 29 34 23 L34 34 L0 34Z" fill="rgba(192,112,72,.45)"/>
+            <path d="M0 30 Q8.5 25 17 29 Q25.5 33 34 27 L34 34 L0 34Z" fill="rgba(192,112,72,.7)"/>
+            <rect x="3" y="13" width="16" height="2.8" rx="1.4" fill="#C07048"/>
+            <path d="M15 15.8 Q18 10 22 13" stroke="#C07048" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            <path d="M20 8 L23 11.5 L28 6" stroke="#C07048" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+        <span class="nt">今天忙啥了</span>
+      </div>
+    </div>
+    <div class="body">
+      <div class="gbg">
+        <div class="rec-body">
+          <div class="rh">
+            <div class="rt">说吧，我在听</div>
+            <div class="rs">松开即可结束录音</div>
+          </div>
+          <div class="tbox-warm">
+            <div class="ttext">今天上午参加了产品需求对齐会，讨论了下个版本的核心功能，包括语音录入优化、AI 整理速度提升和历史记录筛选。下午主要处理了智慧物流云平台的前端框架搭建工作，重点解决了动态路由权限校验的逻辑冲突问题。晚些时候和设计团队同步了深色模式的配色规范 Token，确认了 UI 组件库的升级计划。另外还和测试同学确认了回归用例范围<span class="cur"></span></div>
+          </div>
+          <div class="rrow">
+            <div class="rdot-r"><span class="rdot"></span>正在录音 &nbsp;01:24</div>
+            <div class="wf">
+              <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+              <div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div>
+            </div>
+          </div>
+          <div class="rmic">
+            <div class="rring-warm">
+              <div class="wpls"></div><div class="wpls"></div><div class="wpls"></div>
+              <div class="rbtn-warm">
+                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
+              </div>
+            </div>
+            <div class="rtip">松开结束录音</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tb">
+      <div class="tm"><div class="tmbtn" style="background:linear-gradient(145deg,#D85050,#B02828);box-shadow:0 4px 14px rgba(200,50,50,.5)"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div><div class="tmlbl">录音</div></div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>历史</div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>我的</div>
+    </div>
+  </div>
+</div>
+
+<!-- 1-C AI处理中 -->
+<div class="pw">
+  <div class="lbl">首页 · AI 处理中</div>
+  <div class="phone">
+    <div class="sb" style="background:transparent"><span>9:41</span><span>📶🔋</span></div>
+    <div class="nh" style="background:transparent">
+      <div class="nl">
+        <svg class="wicon" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="wc3"><circle cx="17" cy="17" r="17"/></clipPath></defs>
+          <circle cx="17" cy="17" r="17" fill="#FFF4EC"/>
+          <g clip-path="url(#wc3)">
+            <path d="M0 22 Q8.5 17 17 21 Q25.5 25 34 19 L34 34 L0 34Z" fill="rgba(192,112,72,.25)"/>
+            <path d="M0 26 Q8.5 21 17 25 Q25.5 29 34 23 L34 34 L0 34Z" fill="rgba(192,112,72,.45)"/>
+            <path d="M0 30 Q8.5 25 17 29 Q25.5 33 34 27 L34 34 L0 34Z" fill="rgba(192,112,72,.7)"/>
+            <rect x="3" y="13" width="16" height="2.8" rx="1.4" fill="#C07048"/>
+            <path d="M15 15.8 Q18 10 22 13" stroke="#C07048" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            <path d="M20 8 L23 11.5 L28 6" stroke="#C07048" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+        <span class="nt">今天忙啥了</span>
+      </div>
+    </div>
+    <div class="body">
+      <div class="gbg">
+        <div class="proc">
+          <div class="picon-warm">✦</div>
+          <div class="pt">正在帮你整理</div>
+          <div class="ps">让我想想……识别你的项目中</div>
+          <div class="dots">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+          <div class="psteps">
+            <div class="pstep done">✅ &nbsp;语音转文字完成</div>
+            <div class="pstep cur"><span class="step-spin"></span>识别工作项目中…</div>
+            <div class="pstep">○ &nbsp;提取槽位信息</div>
+            <div class="pstep">○ &nbsp;生成结构化结果</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tb">
+      <div class="tm"><div class="tmbtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div><div class="tmlbl">录音</div></div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>历史</div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>我的</div>
+    </div>
+  </div>
+</div>
+
+<!-- 1-D 录音完成 -->
+<div class="pw">
+  <div class="lbl">首页 · 录音完成</div>
+  <div class="phone">
+    <div class="sb" style="background:transparent"><span>9:41</span><span>📶🔋</span></div>
+    <div class="nh" style="background:transparent">
+      <div class="nl">
+        <svg class="wicon" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="wc4"><circle cx="17" cy="17" r="17"/></clipPath></defs>
+          <circle cx="17" cy="17" r="17" fill="#FFF4EC"/>
+          <g clip-path="url(#wc4)">
+            <path d="M0 22 Q8.5 17 17 21 Q25.5 25 34 19 L34 34 L0 34Z" fill="rgba(192,112,72,.25)"/>
+            <path d="M0 26 Q8.5 21 17 25 Q25.5 29 34 23 L34 34 L0 34Z" fill="rgba(192,112,72,.45)"/>
+            <path d="M0 30 Q8.5 25 17 29 Q25.5 33 34 27 L34 34 L0 34Z" fill="rgba(192,112,72,.7)"/>
+            <rect x="3" y="13" width="16" height="2.8" rx="1.4" fill="#C07048"/>
+            <path d="M15 15.8 Q18 10 22 13" stroke="#C07048" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            <path d="M20 8 L23 11.5 L28 6" stroke="#C07048" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+        <span class="nt">今天忙啥了</span>
+      </div>
+    </div>
+    <div class="body">
+      <div class="gbg">
+        <div class="done">
+          <div class="dbanner-warm">✓ 录音完成，可修改后再整理</div>
+          <div class="dta-warm">
+            今天上午参加了产品需求对齐会，确认了下个版本功能列表。下午处理了智慧物流云平台前端框架搭建，解决了动态路由权限校验问题。晚些时候同步了深色模式配色规范 Token。
+            <div class="cc">97 字</div>
+          </div>
+          <div class="dbr">
+            <button class="bg2">🎤 继续录音</button>
+            <button class="bg2">✎ 直接编辑</button>
+          </div>
+          <button class="bm">✨ AI 整理</button>
+        </div>
+      </div>
+    </div>
+    <div class="tb">
+      <div class="tm"><div class="tmbtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div><div class="tmlbl">录音</div></div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>历史</div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>我的</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══════ AI 确认页 ══════ -->
+<div class="gt">AI 整理确认页 — 3 个状态</div>
+<div class="row">
+
+<!-- 2-A 单项目 -->
+<div class="pw">
+  <div class="lbl">2-A 单项目</div>
+  <div class="phone">
+    <div class="sb"><span>9:41</span><span>📶🔋</span></div>
+    <div class="ns">
+      <span class="bk">‹</span>
+      <span class="nst">AI 整理确认</span>
+      <span class="more">···</span>
+    </div>
+    <div class="body">
+      <div class="cf-wrap">
+        <div class="cf-scroll">
+          <div style="height:14px"></div>
+          <div class="cbanner-warm">
+            <div class="cbi-warm">✓</div>
+            <div>
+              <div class="cbt">整理完毕 🎉</div>
+              <div class="cbs">已根据您的语音内容自动生成项目结构</div>
+            </div>
+          </div>
+          <div class="csh">
+            <div class="cst">📂 项目线</div>
+            <span class="cedit">✎</span>
+          </div>
+          <div class="pc-warm">
+            <div class="pfl">项目名称</div>
+            <div class="pfv">智慧物流云平台</div>
+            <div class="pfl">做了什么</div>
+            <div class="pft">完成了前端框架搭建，重点解决了动态路由权限校验的逻辑冲突。</div>
+            <div class="pfl">完成状态</div>
+            <div style="margin-bottom:8px"><span class="stag prog">进行中</span></div>
+            <div class="pb-warm">
+              <div class="pbl">⚠️ 问题/障碍</div>
+              <div class="pbt">后端接口联调延迟，/api/v1/auth 返回结构不匹配。</div>
+            </div>
+            <div class="pfl">下一步计划</div>
+            <div class="nsr"><div class="nsdot"></div>对接 API 接口模拟数据</div>
+            <div class="pfl">协作需求</div>
+            <div class="pft" style="margin-bottom:0">需与设计团队同步深色模式配色规范 Token。</div>
+          </div>
+          <div class="addp-warm">＋ 新增项目</div>
+          <div class="redo-warm">↺ 重新生成</div>
+          <div style="height:14px"></div>
+        </div>
+        <div class="cf-footer">
+          <button class="bm">✅ 确认生成日报</button>
+        </div>
+      </div>
+    </div>
+    <div class="tb">
+      <div class="tm"><div class="tmbtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div><div class="tmlbl">录音</div></div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>历史</div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>我的</div>
+    </div>
+  </div>
+</div>
+
+<!-- 2-B 多项目 -->
+<div class="pw">
+  <div class="lbl">2-B 多项目展示</div>
+  <div class="phone">
+    <div class="sb"><span>9:41</span><span>📶🔋</span></div>
+    <div class="ns">
+      <span class="bk">‹</span>
+      <span class="nst">AI 整理确认</span>
+      <span class="more">···</span>
+    </div>
+    <div class="body">
+      <div class="cf-wrap">
+        <div class="cf-scroll">
+          <div style="height:14px"></div>
+          <div class="cbanner-warm">
+            <div class="cbi-warm">✓</div>
+            <div>
+              <div class="cbt">整理完毕 🎉</div>
+              <div class="cbs">识别到 2 条项目线，请确认</div>
+            </div>
+          </div>
+          <div class="csh">
+            <div class="cst">📂 项目线</div>
+          </div>
+          <div class="pc-warm">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <div class="pfv" style="margin-bottom:0">智慧物流云平台</div>
+              <span class="cedit">✎</span>
+            </div>
+            <div class="pfl">做了什么</div>
+            <div class="pft">完成了前端框架搭建，解决动态路由权限校验逻辑冲突。</div>
+            <div class="pfl">完成状态</div>
+            <div style="margin-bottom:8px"><span class="stag prog">进行中</span></div>
+            <div class="pb-warm" style="margin-bottom:0">
+              <div class="pbl">⚠️ 问题/障碍</div>
+              <div class="pbt">后端接口联调延迟，返回结构不匹配。</div>
+            </div>
+          </div>
+          <div class="pc-warm">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <div class="pfv" style="margin-bottom:0">内部设计规范对齐</div>
+              <span class="cedit">✎</span>
+            </div>
+            <div class="pfl">做了什么</div>
+            <div class="pft">与设计团队同步深色模式配色规范 Token，确认组件库升级计划。</div>
+            <div class="pfl">完成状态</div>
+            <div style="margin-bottom:0"><span class="stag done-tag">已完成</span></div>
+          </div>
+          <div class="addp-warm">＋ 新增项目</div>
+          <div class="redo-warm">↺ 重新生成</div>
+          <div style="height:14px"></div>
+        </div>
+        <div class="cf-footer">
+          <button class="bm">✅ 确认生成日报</button>
+        </div>
+      </div>
+    </div>
+    <div class="tb">
+      <div class="tm"><div class="tmbtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div><div class="tmlbl">录音</div></div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>历史</div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>我的</div>
+    </div>
+  </div>
+</div>
+
+<!-- 2-C 编辑态 -->
+<div class="pw">
+  <div class="lbl">2-C 编辑态</div>
+  <div class="phone">
+    <div class="sb"><span>9:41</span><span>📶🔋</span></div>
+    <div class="ns">
+      <span class="bk">‹</span>
+      <span class="nst">AI 整理确认</span>
+      <span class="more">···</span>
+    </div>
+    <div class="body">
+      <div class="eb-wrap">
+        <div class="eb-scroll">
+          <div style="height:14px"></div>
+          <div class="pc-warm">
+            <div class="fl" style="margin-top:0"><span class="req"></span>项目名称</div>
+            <input class="inf big focused" value="智慧物流云平台">
+            <div class="fl"><span class="req"></span>做了什么</div>
+            <textarea class="inf ta3">完成了前端框架搭建，重点解决了动态路由权限校验的逻辑冲突问题</textarea>
+            <div class="fl">完成状态</div>
+            <input class="inf" value="进行中" style="margin-bottom:4px">
+            <div class="fl">⚠️ 问题/障碍（可选）</div>
+            <input class="inf" value="后端接口联调延迟，返回结构不匹配" style="margin-bottom:4px">
+            <div class="fl">📅 下一步计划（可选）</div>
+            <div class="ter"><input class="inf" value="对接 API 接口模拟数据"><span class="delb">✕</span></div>
+            <div class="ter"><input class="inf" value="更新接口文档"><span class="delb">✕</span></div>
+            <div class="addb">＋ 添加计划</div>
+            <div class="fl">🤝 协作需求（可选）</div>
+            <input class="inf" placeholder="如需他人协作，请说明…" style="color:#D4BEA0">
+            <div class="delp">🗑 删除此项目</div>
+          </div>
+          <div style="height:14px"></div>
+        </div>
+        <div class="eb-footer">
+          <button class="bm">✓ 保存修改</button>
+        </div>
+      </div>
+    </div>
+    <div class="tb">
+      <div class="tm"><div class="tmbtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div><div class="tmlbl">录音</div></div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>历史</div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>我的</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══════ 日报生成页 ══════ -->
+<div class="gt">日报生成页</div>
+<div class="row">
+
+<div class="pw">
+  <div class="lbl">3-A 个人版日报</div>
+  <div class="phone tall">
+    <div class="sb"><span>9:41</span><span>📶🔋</span></div>
+    <div class="ns">
+      <span class="bk">‹</span>
+      <span class="nst">今天忙啥了</span>
+      <span class="more">···</span>
+    </div>
+    <div class="body">
+      <div class="rbg">
+        <div class="rtog">
+          <div class="rtgi act">个人版</div>
+          <div class="rtgi">汇报版</div>
+        </div>
+        <div class="r-scroll">
+          <div style="height:12px"></div>
+          <div class="rcard-warm">
+            <div class="rch">
+              <div class="rcti">工作日报</div>
+              <div class="rcd">2026年5月16日</div>
+            </div>
+            <div class="rcby">由 AI 智能优化 · 温暖版</div>
+            <hr class="rcdiv">
+            <div class="secH">✨ 执行摘要</div>
+            <div class="sumi-warm">
+              今日重点完成了智慧物流云平台前端框架搭建，解决了动态路由权限校验的核心逻辑冲突。同步了设计规范 Token，推进了组件库升级计划。
+            </div>
+            <div class="secH">📋 项目详情</div>
+            <div class="dp">
+              <div class="dpn"><div class="dpnd"></div>智慧物流云平台</div>
+              <div class="dpa"><div class="dpab"></div>完成前端框架搭建，解决动态路由权限校验的逻辑冲突。</div>
+              <div class="dpa"><div class="dpab"></div>对接 API 接口规范，梳理数据流转流程。</div>
+              <div class="dprob">⚠️ 后端接口联调延迟，/api/v1/auth 返回结构不匹配（待修复）。</div>
+            </div>
+            <div class="dp">
+              <div class="dpn"><div class="dpnd"></div>内部设计规范对齐</div>
+              <div class="dpa"><div class="dpab"></div>与设计团队同步深色模式配色规范 Token。</div>
+              <div class="dpa"><div class="dpab" style="background:#C07048"></div><span class="dplnk">已确认：组件库升级至 v2.4 版本。</span></div>
+            </div>
+            <div class="secH">🌱 明日重点</div>
+            <div class="tmr pri">
+              <div class="tmrp">高优先级</div>
+              <div class="tmrt">完成 API 接口联调，修复 auth 返回结构问题。</div>
+            </div>
+            <div class="tmr">
+              <div class="tmrt">跟进组件库升级部署，协调测试同学回归验证。</div>
+            </div>
+            <div class="ucard" style="margin-top:14px">
+              <div class="av">👤</div>
+              <div style="flex:1">
+                <div class="un">林丰</div>
+                <div class="ur">高级前端工程师</div>
+              </div>
+              <span class="sig">✍️</span>
+            </div>
+          </div>
+          <div style="height:10px"></div>
+        </div>
+        <div class="r-footer">
+          <div class="rbr">
+            <button class="rbtn2">✏️ 编辑日报</button>
+            <button class="rbtn2 warm">📋 复制日报文本</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tb">
+      <div class="tm"><div class="tmbtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div><div class="tmlbl">录音</div></div>
+      <div class="ti act"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>历史</div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>我的</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══════ P0-003 历史页 + 首页有记录态 ══════ -->
+<div class="gt">首页·有记录态 / 历史页</div>
+<div class="row">
+
+<!-- 4-A 首页·有记录态 -->
+<div class="pw">
+  <div class="lbl">4-A 首页·有记录态</div>
+  <div class="phone">
+    <div class="sb" style="background:transparent"><span>9:41</span><span>📶🔋</span></div>
+    <div class="nh" style="background:transparent">
+      <div class="nl">
+        <svg class="wicon" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="wc4a"><circle cx="17" cy="17" r="17"/></clipPath></defs>
+          <circle cx="17" cy="17" r="17" fill="#FFF4EC"/>
+          <g clip-path="url(#wc4a)">
+            <path d="M0 22 Q8.5 17 17 21 Q25.5 25 34 19 L34 34 L0 34Z" fill="rgba(192,112,72,.25)"/>
+            <path d="M0 26 Q8.5 21 17 25 Q25.5 29 34 23 L34 34 L0 34Z" fill="rgba(192,112,72,.45)"/>
+            <path d="M0 30 Q8.5 25 17 29 Q25.5 33 34 27 L34 34 L0 34Z" fill="rgba(192,112,72,.7)"/>
+            <rect x="3" y="13" width="16" height="2.8" rx="1.4" fill="#C07048"/>
+            <path d="M15 15.8 Q18 10 22 13" stroke="#C07048" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            <path d="M20 8 L23 11.5 L28 6" stroke="#C07048" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+        <span class="nt">今天忙啥了</span>
+      </div>
+    </div>
+    <div class="body">
+      <div class="gbg">
+        <div class="home-wrap">
+          <div class="home-greet-area">
+            <div class="home-time">下午好 ☀️</div>
+            <div class="home-name">今天也辛苦啦，</div>
+          </div>
+          <!-- 今日多条录入卡片 -->
+          <div style="background:#fff;border-radius:16px;margin:10px 0 0;border:1px solid #F0E8DE;box-shadow:0 2px 12px rgba(160,100,50,.08);overflow:hidden">
+            <!-- 头部汇总 -->
+            <div style="padding:12px 14px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #F5EDE4">
+              <div style="display:flex;align-items:center;gap:6px">
+                <div style="width:7px;height:7px;border-radius:50%;background:#4A9060"></div>
+                <span style="font-size:12px;font-weight:700;color:#4A9060">今日已录入 3 次</span>
+              </div>
+              <span style="font-size:11px;color:#C4A882">4 项目 · 11 条</span>
+            </div>
+            <!-- 录入条目 1 -->
+            <div style="padding:9px 14px;display:flex;align-items:flex-start;gap:8px;border-bottom:1px solid #F5EDE4">
+              <div style="flex-shrink:0;font-size:10px;color:#C4A882;font-weight:600;width:30px;padding-top:2px">10:30</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:700;color:#2C1E12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">产品需求对齐会</div>
+                <div style="font-size:11px;color:#A0896E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px">2个项目 · 确认下版本功能列表，已完成优先级排序</div>
+              </div>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#E0D0C0" style="flex-shrink:0;margin-top:3px"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+            <!-- 录入条目 2 -->
+            <div style="padding:9px 14px;display:flex;align-items:flex-start;gap:8px;border-bottom:1px solid #F5EDE4">
+              <div style="flex-shrink:0;font-size:10px;color:#C4A882;font-weight:600;width:30px;padding-top:2px">14:20</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:700;color:#2C1E12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">前端框架搭建</div>
+                <div style="font-size:11px;color:#A0896E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px">1个项目 · 解决动态路由权限校验的逻辑冲突，对接接口规范</div>
+              </div>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#E0D0C0" style="flex-shrink:0;margin-top:3px"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+            <!-- 录入条目 3 -->
+            <div style="padding:9px 14px;display:flex;align-items:flex-start;gap:8px;border-bottom:1px solid #F5EDE4">
+              <div style="flex-shrink:0;font-size:10px;color:#C4A882;font-weight:600;width:30px;padding-top:2px">16:45</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:700;color:#2C1E12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">设计规范同步</div>
+                <div style="font-size:11px;color:#A0896E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px">1个项目 · Token 确认，组件库升级至 v2.4，协调测试回归</div>
+              </div>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#E0D0C0" style="flex-shrink:0;margin-top:3px"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+            <!-- 操作按钮 -->
+            <div style="padding:10px 14px;display:flex;gap:8px">
+              <button style="flex:1;height:36px;border-radius:100px;border:1.5px solid #E8DDD0;background:#fff;color:#8B6E52;font-size:12px;font-weight:600;cursor:pointer">查看/编辑</button>
+              <button style="flex:1;height:36px;border-radius:100px;border:none;background:linear-gradient(135deg,#D4885E,#A85530);color:#fff;font-size:12px;font-weight:600;cursor:pointer">生成今日日报</button>
+            </div>
+          </div>
+          <!-- 继续录入入口 -->
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;padding:10px 0">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(192,112,72,.12);display:flex;align-items:center;justify-content:center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#C07048"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
+            </div>
+            <span style="font-size:13px;color:#C07048;font-weight:600">继续补充今日内容</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tb">
+      <div class="tm act"><div class="tmbtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div><div class="tmlbl">录音</div></div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>历史</div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>我的</div>
+    </div>
+  </div>
+</div>
+
+<!-- 4-B 历史页 -->
+<div class="pw">
+  <div class="lbl">4-B 历史页</div>
+  <div class="phone tall">
+    <div class="sb"><span>9:41</span><span>📶🔋</span></div>
+    <div class="ns">
+      <span class="bk" style="opacity:0">‹</span>
+      <span class="nst">历史记录</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#A0896E"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+    </div>
+    <div class="body">
+      <div style="flex:1;background:#F8F4EF;display:flex;flex-direction:column;overflow:hidden">
+        <!-- 筛选 tabs -->
+        <div style="display:flex;background:#EEE4DA;border-radius:10px;padding:3px;margin:10px 14px 0;flex-shrink:0">
+          <div style="flex:1;text-align:center;font-size:12px;font-weight:700;padding:6px 0;border-radius:8px;background:#fff;color:#C07048;box-shadow:0 1px 4px rgba(0,0,0,.08)">本周</div>
+          <div style="flex:1;text-align:center;font-size:12px;font-weight:600;padding:6px 0;border-radius:8px;color:#A0896E">本月</div>
+          <div style="flex:1;text-align:center;font-size:12px;font-weight:600;padding:6px 0;border-radius:8px;color:#A0896E">全部</div>
+        </div>
+        <!-- 列表 -->
+        <div style="flex:1;overflow-y:auto;padding:10px 14px 0">
+          <!-- 月份标题 -->
+          <div style="font-size:11px;font-weight:800;color:#A0896E;letter-spacing:1px;margin:8px 0 6px">2026年5月</div>
+          <!-- 记录项 -->
+          <div style="background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid #F0E8DE;box-shadow:0 2px 8px rgba(160,100,50,.06)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="background:#FFF4EC;border-radius:8px;padding:4px 8px;text-align:center;flex-shrink:0">
+                <div style="font-size:16px;font-weight:800;color:#C07048;line-height:1">16</div>
+                <div style="font-size:10px;color:#C4A882">周五</div>
+              </div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:13px;font-weight:700;color:#2C1E12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">2 个项目 · 5 条任务</div>
+                <div style="font-size:11px;color:#A0896E;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">智慧物流云平台、内部设计规范对齐、深色模式</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A882" style="flex-shrink:0"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+            <div style="font-size:12px;color:#8B6E52;padding-top:8px;border-top:1px solid #F5EDE4;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.6">完成前端框架搭建，解决动态路由权限校验冲突。同步深色模式配色规范 Token，确认组件库升级至 v2.4。</div>
+          </div>
+          <div style="background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid #F0E8DE;box-shadow:0 2px 8px rgba(160,100,50,.06)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="background:#F8F4EF;border-radius:8px;padding:4px 8px;text-align:center;flex-shrink:0">
+                <div style="font-size:16px;font-weight:800;color:#8B6E52;line-height:1">15</div>
+                <div style="font-size:10px;color:#C4A882">周四</div>
+              </div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:13px;font-weight:700;color:#2C1E12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">3 个项目 · 8 条任务</div>
+                <div style="font-size:11px;color:#A0896E;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">产品需求评审、核心支付流程修复、用户回归测试</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A882" style="flex-shrink:0"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+            <div style="font-size:12px;color:#8B6E52;padding-top:8px;border-top:1px solid #F5EDE4;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.6">完成产品需求文档评审，修复核心支付流程 3 个 bug，协助测试同学完成回归验证，确认发布节点不受影响。</div>
+          </div>
+          <div style="background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid #F0E8DE;box-shadow:0 2px 8px rgba(160,100,50,.06)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="background:#F8F4EF;border-radius:8px;padding:4px 8px;text-align:center;flex-shrink:0">
+                <div style="font-size:16px;font-weight:800;color:#8B6E52;line-height:1">14</div>
+                <div style="font-size:10px;color:#C4A882">周三</div>
+              </div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:13px;font-weight:700;color:#2C1E12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">2 个项目 · 4 条任务</div>
+                <div style="font-size:11px;color:#A0896E;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">微服务架构设计、用户中心接口联调</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A882"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+            <div style="font-size:12px;color:#8B6E52;padding-top:8px;border-top:1px solid #F5EDE4;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.6">输出微服务拆分方案，完成用户中心接口联调，解决跨域鉴权问题，同步架构评审结论至团队。</div>
+          </div>
+          <div style="height:10px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="tb">
+      <div class="tm"><div class="tmbtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div><div class="tmlbl">录音</div></div>
+      <div class="ti act"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>历史</div>
+      <div class="ti"><svg class="tsvg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>我的</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<p style="text-align:center;font-size:12px;color:#C4A882;margin-top:44px">P0-001~P0-003 · 治愈版 · 2026-05-16 · P0-003 待用户确认</p>
+</body>
+</html>

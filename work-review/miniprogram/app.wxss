@@ -1,0 +1,113 @@
+/* 治愈系全局样式 */
+page {
+  background-color: #FBF8F4;
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+  color: #2C1E12;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+/* ── 通用卡片 ── */
+.card {
+  background: #FFFFFF;
+  border-radius: 28rpx;
+  border: 1px solid #F0E8DE;
+  box-shadow: 0 4rpx 24rpx rgba(160, 100, 50, 0.08);
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+}
+
+/* ── 主按钮 ── */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96rpx;
+  border-radius: 200rpx;
+  background: linear-gradient(135deg, #D4885E, #A85530);
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 8rpx 32rpx rgba(180, 90, 40, 0.4);
+}
+.btn-primary::after { border: none; }
+
+/* ── 次要按钮 ── */
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80rpx;
+  border-radius: 200rpx;
+  background: rgba(255, 255, 255, 0.7);
+  color: #8B6E52;
+  font-size: 26rpx;
+  font-weight: 600;
+  border: 3rpx solid #E8DDD0;
+}
+.btn-secondary::after { border: none; }
+
+/* ── loading 遮罩 ── */
+.loading-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* ── 空状态 ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;
+  color: #C4A882;
+  font-size: 26rpx;
+  gap: 16rpx;
+}
+
+/* ── 表单字段 ── */
+.field-label {
+  font-size: 22rpx;
+  color: #C4A882;
+  margin-bottom: 8rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+.field-req {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: #C07048;
+  flex-shrink: 0;
+}
+.field-input {
+  width: 100%;
+  border: 3rpx solid #EEE0D0;
+  border-radius: 20rpx;
+  padding: 16rpx 22rpx;
+  font-size: 28rpx;
+  color: #2C1E12;
+  background: #FDFAF7;
+  box-sizing: border-box;
+}
+
+/* ── 错误提示 ── */
+.err-tip {
+  font-size: 22rpx;
+  color: #D85050;
+  margin-top: 6rpx;
+}
+
+/* ── 分割线 ── */
+.divider {
+  border: none;
+  border-top: 1px solid #F5EDE4;
+  margin: 0;
+}

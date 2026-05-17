@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WorkReviewReportSchema",
+  "description": "工作记录与智能报告系统 - 日报 Schema v1.0",
+  "type": "object",
+  "required": ["date", "projects"],
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "日报日期，格式 YYYY-MM-DD"
+    },
+    "summary": {
+      "type": "string",
+      "description": "今日工作摘要",
+      "maxLength": 500
+    },
+    "projects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["project_name", "actions"],
+        "properties": {
+          "project_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "项目名称"
+          },
+          "actions": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 },
+            "description": "完成了什么（必填）"
+          },
+          "outputs": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "产出了什么（非必填）"
+          },
+          "problems": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "遇到什么问题（非必填）"
+          },
+          "next_steps": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "下一步计划（非必填）"
+          }
+        }
+      }
+    },
+    "tomorrow_focus": {
+      "type": "array",
+      "items": { "type": "string" },
+      "maxItems": 5,
+      "description": "明日重点（非必填）"
+    }
+  }
+}

@@ -1,0 +1,163 @@
+<!-- AI 整理确认页 -->
+<view class="page-wrap">
+
+  <!-- 自定义导航栏 -->
+  <view class="nav-bar" style="padding-top:{{statusBarHeight}}px">
+    <!-- 列表态：返回；编辑态：取消 -->
+    <view class="nav-cancel" wx:if="{{editingIdx >= 0}}" bindtap="onCancelEdit">取消</view>
+    <view class="nav-back" wx:else bindtap="onBack">‹</view>
+    <text class="nav-title">AI 整理确认</text>
+    <view class="nav-more">···</view>
+  </view>
+
+  <!-- 内容区 -->
+  <view class="content-area">
+
+    <!-- ══ 加载中 ══ -->
+    <view class="s-loading" wx:if="{{loading}}">
+      <view class="loading-ring"></view>
+      <text class="loading-text">AI 正在整理...</text>
+      <text class="loading-sub">提取项目与动作清单</text>
+    </view>
+
+    <!-- ══ 出错 ══ -->
+    <view class="s-error" wx:elif="{{error}}">
+      <text class="error-title">整理失败</text>
+      <text class="error-msg">{{error}}</text>
+      <view class="retry-btn" bindtap="onRegenerate">重新整理</view>
+    </view>
+
+    <!-- ══ 结果 ══ -->
+    <view class="cf-wrap" wx:elif="{{aiResult}}">
+
+      <!-- ── 列表态 ── -->
+      <scroll-view wx:if="{{editingIdx < 0}}"
+        class="cf-scroll" scroll-y>
+
+        <!-- Banner -->
+        <view class="cbanner-warm">
+          <view class="cbi-warm">✓</view>
+          <view class="cbanner-text">
+            <view class="cbt">整理完毕 🎉</view>
+            <view class="cbs">{{aiResult.projects.length > 1 ? '识别到 ' + aiResult.projects.length + ' 条项目线，请确认' : '已根据您的内容自动生成项目结构'}}</view>
+          </view>
+        </view>
+
+        <!-- 项目线标题 -->
+        <view class="csh">
+          <view class="cst">📂 项目线</view>
+        </view>
+
+        <!-- 项目卡片 -->
+        <view class="pc-warm"
+          wx:for="{{aiResult.projects}}"
+          wx:key="project_name"
+          wx:for-index="idx">
+
+          <view class="pc-name-row">
+            <view class="pfv">{{item.project_name}}</view>
+            <view class="cedit" data-idx="{{idx}}" bindtap="onEditProject">✎</view>
+          </view>
+
+          <view class="pfl">做了什么</view>
+          <view class="pft">{{item.actionsText}}</view>
+
+          <view class="pfl">完成状态</view>
+          <view class="stag-wrap">
+            <view class="stag {{item.hasProblems ? 'prog' : 'done-tag'}}">
+              {{item.hasProblems ? '进行中' : '已完成'}}
+            </view>
+          </view>
+
+          <view class="pb-warm" wx:if="{{item.hasProblems}}">
+            <view class="pbl">⚠️ 问题/障碍</view>
+            <view class="pbt">{{item.problemsText}}</view>
+          </view>
+
+          <view wx:if="{{item.next_steps && item.next_steps.length}}">
+            <view class="pfl next-pfl">下一步计划</view>
+            <view class="nsr"
+              wx:for="{{item.next_steps}}"
+              wx:key="*this"
+              wx:for-item="step"
+              wx:for-index="si">
+              <view class="nsdot"></view>
+              <text>{{step}}</text>
+            </view>
+          </view>
+
+        </view>
+
+        <view class="addp-warm" bindtap="onAddProject">＋ 新增项目</view>
+        <view class="redo-warm" bindtap="onRegenerate">↺ 重新生成</view>
+        <view style="height:20rpx"></view>
+
+      </scroll-view>
+
+      <!-- ── 编辑态（2-C）── -->
+      <scroll-view wx:else
+        class="cf-scroll" scroll-y>
+
+        <view class="pc-warm">
+
+          <view class="fl-label"><view class="req-dot"></view><text>项目名称</text></view>
+          <input class="edit-input edit-input-big"
+            value="{{editingProject.project_name}}"
+            data-field="project_name"
+            bindinput="onFieldChange"
+            placeholder="项目名称"
+            focus />
+
+          <view class="fl-label"><view class="req-dot"></view><text>做了什么</text></view>
+          <textarea class="edit-input edit-textarea"
+            value="{{editingProject.actionsText}}"
+            data-field="actionsText"
+            bindinput="onFieldChange"
+            placeholder="每行一条，或用；分隔"
+            auto-height />
+
+          <view class="fl-label"><text>⚠️ 问题/障碍（可选）</text></view>
+          <textarea class="edit-input edit-textarea"
+            value="{{editingProject.problemsText}}"
+            data-field="problemsText"
+            bindinput="onFieldChange"
+            placeholder="无问题可留空"
+            auto-height />
+
+          <view class="fl-label"><text>📅 下一步计划（可选）</text></view>
+          <textarea class="edit-input edit-textarea"
+            value="{{editingProject.nextStepsText}}"
+            data-field="nextStepsText"
+            bindinput="onFieldChange"
+            placeholder="每行一条"
+            auto-height />
+
+          <view class="del-project" bindtap="onDeleteFromEdit">
+            🗑 删除此项目
+          </view>
+
+        </view>
+
+        <view style="height:20rpx"></view>
+      </scroll-view>
+
+      <!-- 底部操作栏 -->
+      <view class="cf-footer">
+        <button wx:if="{{editingIdx < 0}}"
+          class="btn-confirm" bindtap="onConfirm" loading="{{saving}}">
+          ✅ 确认生成日报
+        </button>
+        <button wx:else
+          class="btn-confirm" bindtap="onSaveEdit">
+          ✓ 保存修改
+        </button>
+      </view>
+
+    </view>
+
+  </view>
+
+  <!-- 底部 tab bar -->
+  <custom-tab-bar />
+
+</view>

@@ -1,0 +1,30 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/record/record",
+    "pages/record/ai-confirm/ai-confirm",
+    "pages/report/report",
+    "pages/history/history",
+    "pages/settings/settings"
+  ],
+  "tabBar": {
+    "custom": true,
+    "color": "#C4A882",
+    "selectedColor": "#C07048",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/index/index",       "text": "录音" },
+      { "pagePath": "pages/history/history",   "text": "历史" },
+      { "pagePath": "pages/settings/settings", "text": "我的" }
+    ]
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FBF8F4",
+    "navigationBarTitleText": "今天忙啥了",
+    "navigationBarTextStyle": "black"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

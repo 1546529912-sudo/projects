@@ -1,0 +1,56 @@
+<!-- 我的页面 -->
+<view class="page">
+
+  <!-- 顶部 banner -->
+  <view class="banner">
+    <view class="banner-icon">
+      <view class="mic-icon"></view>
+    </view>
+    <text class="banner-title">工作记录助手</text>
+    <text class="banner-sub">录语音 · AI 整理 · 生成日报</text>
+  </view>
+
+  <!-- AI 状态 -->
+  <view class="section-title">AI 配置</view>
+  <view class="card">
+    <view class="row">
+      <text class="row-label">语音识别</text>
+      <view class="row-right">
+        <view class="badge {{asrProvider === 'mock' ? 'badge-mock' : 'badge-active'}}">
+          <text>{{asrProvider === 'mock' ? '模拟模式' : '豆包 ASR'}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="divider"></view>
+    <view class="row">
+      <text class="row-label">AI 整理</text>
+      <view class="row-right">
+        <view class="badge {{aiProvider === 'mock' ? 'badge-mock' : 'badge-active'}}">
+          <text>{{aiProvider === 'mock' ? '模拟模式' : 'DeepSeek'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他 -->
+  <view class="section-title">其他</view>
+  <view class="card">
+    <view class="row tappable" bindtap="onClearCache">
+      <text class="row-label">清除本地缓存</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="divider"></view>
+    <view class="row tappable" bindtap="onFeedback">
+      <text class="row-label">意见反馈</text>
+      <text class="row-arrow">›</text>
+    </view>
+    <view class="divider"></view>
+    <view class="row tappable" bindtap="onAbout">
+      <text class="row-label">关于</text>
+      <text class="row-arrow">›</text>
+    </view>
+  </view>
+
+  <text class="version">v{{version}}</text>
+
+</view>

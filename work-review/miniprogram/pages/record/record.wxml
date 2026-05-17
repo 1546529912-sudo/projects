@@ -1,0 +1,120 @@
+<!-- 录入页：idle / recording / uploading+transcribing / done -->
+<view class="page">
+
+  <!-- ══ 状态：idle 等待录音 ══ -->
+  <view class="s-idle" wx:if="{{status === 'idle'}}">
+    <text class="date-str">{{dateStr}}</text>
+    <view class="idle-copy">
+      <text class="idle-title">说说今天做了什么</text>
+      <text class="idle-sub">长按按钮开始录音，或直接输入文字</text>
+    </view>
+
+    <!-- 大麦克风 -->
+    <view class="mic-ring-area">
+      <view class="mic-outer">
+        <view class="mic-btn"
+          bindtouchstart="onRecordStart"
+          bindtouchend="onRecordStop">
+          <view class="mic-icon"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 直接输入入口 -->
+    <view wx:if="{{!showTyping && !recordText}}" class="type-link" bindtap="onShowTyping">
+      <text>✎ 直接输入文字</text>
+    </view>
+
+    <!-- 文字输入卡片 -->
+    <view class="text-card" wx:if="{{showTyping || recordText}}">
+      <textarea class="text-edit"
+        placeholder="在这里输入工作内容..."
+        value="{{recordText}}"
+        bindinput="onTextChange"
+        maxlength="3000"
+        auto-height
+        focus="{{showTyping}}"
+      />
+      <text class="char-count">{{recordText.length}} / 3000</text>
+    </view>
+  </view>
+
+  <!-- ══ 状态：录音中 ══ -->
+  <view class="s-recording" wx:if="{{status === 'recording'}}">
+    <view class="rec-header">
+      <text class="rec-label">正在录音</text>
+      <text class="rec-timer">{{recordSecs}}s / 60s</text>
+    </view>
+    <view class="wave-bars">
+      <view class="wbar b1"></view>
+      <view class="wbar b2"></view>
+      <view class="wbar b3"></view>
+      <view class="wbar b4"></view>
+      <view class="wbar b5"></view>
+      <view class="wbar b6"></view>
+      <view class="wbar b7"></view>
+    </view>
+    <view class="mic-ring-area">
+      <view class="mic-outer pulse">
+        <view class="mic-btn active" bindtouchend="onRecordStop">
+          <view class="mic-icon"></view>
+        </view>
+      </view>
+    </view>
+    <text class="stop-hint">松开 结束录音</text>
+  </view>
+
+  <!-- ══ 状态：上传 / 转写中 ══ -->
+  <view class="s-processing" wx:if="{{status === 'uploading' || status === 'transcribing'}}">
+    <text class="proc-title">AI 正在整理...</text>
+    <view class="proc-steps">
+
+      <view class="proc-step">
+        <view class="step-icon done-icon"><text class="step-check">✓</text></view>
+        <text class="step-label">录音完成</text>
+      </view>
+
+      <view class="proc-step {{status === 'uploading' ? '' : 'step-done'}}">
+        <view class="step-icon {{status === 'uploading' ? 'spin-icon' : 'done-icon'}}">
+          <text class="step-check" wx:if="{{status !== 'uploading'}}">✓</text>
+        </view>
+        <text class="step-label">上传音频</text>
+      </view>
+
+      <view class="proc-step {{status === 'transcribing' ? '' : 'step-wait'}}">
+        <view class="step-icon {{status === 'transcribing' ? 'spin-icon' : 'wait-icon'}}"></view>
+        <text class="step-label">语音转文字</text>
+      </view>
+
+    </view>
+  </view>
+
+  <!-- ══ 状态：完成 ══ -->
+  <view class="s-done" wx:if="{{status === 'done'}}">
+    <view class="done-header">
+      <text class="done-title">转写完成，可以修改</text>
+      <view class="redo-btn" bindtap="onRedo"><text>重新录音</text></view>
+    </view>
+    <view class="text-card">
+      <textarea class="text-edit"
+        value="{{recordText}}"
+        bindinput="onTextChange"
+        maxlength="3000"
+        auto-height
+        placeholder="转写结果..."
+      />
+      <text class="char-count">{{recordText.length}} / 3000</text>
+    </view>
+  </view>
+
+  <!-- 错误提示 -->
+  <view class="error-toast" wx:if="{{error}}">
+    <text class="error-text">{{error}}</text>
+  </view>
+
+  <!-- 底部提交按钮（idle 有内容 或 done 状态） -->
+  <view class="bottom-area" wx:if="{{recordText && (status === 'idle' || status === 'done')}}">
+    <button class="btn-submit" bindtap="onSubmitToAI">提交 AI 整理</button>
+  </view>
+
+</view>

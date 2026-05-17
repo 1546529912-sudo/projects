@@ -1,0 +1,416 @@
+/* AI 确认页 — 对齐线框图 2-A/2-B */
+
+.page-wrap {
+  height: 100vh;
+  background: #F8F4EF;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── 自定义导航栏 ── */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  height: 88rpx;
+  padding: 0 28rpx;
+  background: #F8F4EF;
+  flex-shrink: 0;
+}
+
+.nav-cancel {
+  font-size: 28rpx;
+  color: #C07048;
+  min-width: 80rpx;
+}
+
+.nav-back {
+  font-size: 48rpx;
+  color: #2C1E12;
+  min-width: 80rpx;
+  line-height: 1;
+}
+
+.nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #2C1E12;
+}
+
+.nav-more {
+  font-size: 28rpx;
+  color: #A0896E;
+  width: 64rpx;
+  text-align: right;
+  letter-spacing: 3rpx;
+}
+
+/* ── 加载中 ── */
+.s-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  padding-bottom: 120rpx;
+}
+
+.loading-ring {
+  width: 80rpx;
+  height: 80rpx;
+  border: 6rpx solid #F0E8DE;
+  border-top-color: #C07048;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #2C1E12;
+}
+
+.loading-sub {
+  font-size: 24rpx;
+  color: #A0896E;
+}
+
+/* ── 出错 ── */
+.s-error {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 60rpx 120rpx;
+}
+
+.error-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #C04030;
+  margin-bottom: 16rpx;
+}
+
+.error-msg {
+  font-size: 24rpx;
+  color: #A0896E;
+  line-height: 1.65;
+  margin-bottom: 48rpx;
+}
+
+.retry-btn {
+  padding: 20rpx 56rpx;
+  border: 2rpx solid #E8D4BC;
+  border-radius: 100rpx;
+  font-size: 28rpx;
+  color: #C07048;
+  font-weight: 600;
+}
+
+/* ── 主体布局 ── */
+.cf-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cf-scroll {
+  flex: 1;
+  height: 0;   /* flex child: grow to fill, not natural content height */
+  padding: 28rpx 28rpx 0;
+  box-sizing: border-box;
+}
+
+.cf-footer {
+  padding: 20rpx 28rpx 36rpx;
+  background: #F8F4EF;
+  border-top: 1px solid #EEE4D8;
+  flex-shrink: 0;
+}
+
+/* ── Banner ── */
+.cbanner-warm {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  background: linear-gradient(135deg, #FFF4EC, #FEF0E4);
+  border-radius: 28rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 32rpx;
+  border: 1px solid rgba(192, 112, 72, 0.15);
+}
+
+.cbi-warm {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #D4885E, #A85530);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.cbt {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #2C1E12;
+}
+
+.cbs {
+  font-size: 24rpx;
+  color: #A0896E;
+  margin-top: 4rpx;
+}
+
+/* ── 项目线标题 ── */
+.csh {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.cst {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #2C1E12;
+}
+
+/* ── 项目卡片 ── */
+.pc-warm {
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 24rpx rgba(160, 100, 50, 0.08);
+  margin-bottom: 20rpx;
+  border: 1px solid #F0E8DE;
+}
+
+.pc-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.pfv {
+  font-size: 30rpx;
+  color: #2C1E12;
+  font-weight: 700;
+  flex: 1;
+}
+
+.pfl {
+  font-size: 22rpx;
+  color: #C4A882;
+  margin-bottom: 6rpx;
+}
+
+.next-pfl {
+  margin-top: 16rpx;
+}
+
+.pft {
+  font-size: 28rpx;
+  color: #4A3322;
+  line-height: 1.65;
+  margin-bottom: 16rpx;
+}
+
+.cedit {
+  font-size: 36rpx;
+  color: #C07048;
+  padding-left: 16rpx;
+  flex-shrink: 0;
+}
+
+/* ── 状态标签 ── */
+.stag-wrap {
+  margin-bottom: 16rpx;
+}
+
+.stag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: #C07048;
+  background: #FFF4EC;
+  border-radius: 100rpx;
+  padding: 4rpx 20rpx;
+  font-weight: 600;
+  border: 1px solid rgba(192, 112, 72, 0.2);
+}
+
+.stag.prog {
+  color: #D09030;
+  background: #FFF8E8;
+  border-color: rgba(200, 140, 0, 0.2);
+}
+
+.stag.done-tag {
+  color: #4A9060;
+  background: #EDF8F0;
+  border-color: rgba(60, 150, 80, 0.2);
+}
+
+/* ── 问题块 ── */
+.pb-warm {
+  border-left: 6rpx solid #D85050;
+  background: #FFF6F6;
+  border-radius: 0 20rpx 20rpx 0;
+  padding: 18rpx 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.pbl {
+  font-size: 24rpx;
+  color: #D85050;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+}
+
+.pbt {
+  font-size: 26rpx;
+  color: #7A4A4A;
+  line-height: 1.6;
+}
+
+/* ── 下一步计划 ── */
+.nsr {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  font-size: 26rpx;
+  color: #5A4030;
+  margin-bottom: 10rpx;
+  line-height: 1.5;
+}
+
+.nsdot {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  border: 3rpx solid #C07048;
+  flex-shrink: 0;
+  margin-top: 4rpx;
+}
+
+/* ── 新增项目 ── */
+.addp-warm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80rpx;
+  border-radius: 100rpx;
+  border: 3rpx dashed rgba(192, 112, 72, 0.4);
+  color: #C07048;
+  font-size: 26rpx;
+  background: transparent;
+  margin-bottom: 16rpx;
+}
+
+/* ── 重新生成 ── */
+.redo-warm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80rpx;
+  border-radius: 100rpx;
+  background: rgba(0, 0, 0, 0.04);
+  color: #A0896E;
+  font-size: 26rpx;
+}
+
+/* ── 底部按钮 ── */
+.btn-confirm {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 200rpx;
+  background: linear-gradient(135deg, #D4885E, #A85530);
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-weight: 700;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12rpx 40rpx rgba(168, 85, 48, 0.35);
+}
+
+.btn-confirm::after { border: none; }
+
+/* ── 编辑表单（2-C）── */
+.fl-label {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #C4A882;
+  margin-top: 48rpx;
+  margin-bottom: 16rpx;
+}
+
+.req-dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: #C07048;
+  flex-shrink: 0;
+}
+
+.edit-input {
+  width: 100%;
+  border: 1rpx solid #EEE0D0;
+  border-radius: 10rpx;
+  padding: 36rpx 20rpx;
+  font-size: 28rpx;
+  color: #2C1E12;
+  background: #FDFAF7;
+  box-sizing: border-box;
+  display: block;
+  line-height: 1.5;
+}
+
+.edit-input-big {
+  font-size: 30rpx;
+  font-weight: 700;
+  border-color: #C07048;
+  background: #fff;
+  height: 80rpx;
+  line-height: 80rpx;
+  padding: 0 20rpx;
+}
+
+.edit-textarea {
+  min-height: 200rpx;
+  line-height: 1.5;
+}
+
+.del-project {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  font-size: 26rpx;
+  color: #D85050;
+  padding-top: 40rpx;
+  margin-top: 40rpx;
+  border-top: 1px solid #F0E8DE;
+}

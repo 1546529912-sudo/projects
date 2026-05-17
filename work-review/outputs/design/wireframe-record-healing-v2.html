@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P0-001A 录入页高保真方向 v2</title>
+<style>
+  :root{
+    --bg-top:#d8c8b8;
+    --bg-bottom:#f4ece3;
+    --paper:#fcf8f3;
+    --card:#fffdf9;
+    --ink:#241c16;
+    --muted:#847567;
+    --line:rgba(88,66,47,.08);
+    --brown:#8f634a;
+    --brown-deep:#6f4733;
+    --brown-soft:#b89279;
+    --mint:#809b82;
+    --shadow-xl:0 34px 80px rgba(89,61,37,.18);
+    --shadow-lg:0 18px 40px rgba(110,79,54,.10);
+    --shadow-sm:0 8px 18px rgba(115,87,63,.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:"SF Pro Display","PingFang SC","Helvetica Neue",sans-serif;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(255,255,255,.38) 0%, transparent 32%),
+      linear-gradient(180deg,var(--bg-top) 0%, #e8ddd1 22%, var(--bg-bottom) 100%);
+    color:var(--ink);
+    padding:34px 18px 68px;
+  }
+  .page-title{
+    text-align:center;
+    margin-bottom:20px;
+  }
+  .page-title h1{
+    margin:0;
+    font-size:22px;
+    font-weight:800;
+    letter-spacing:.02em;
+  }
+  .page-title p{
+    margin:8px 0 0;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .stage{
+    display:flex;
+    justify-content:center;
+  }
+  .phone{
+    width:355px;
+    height:768px;
+    border-radius:46px;
+    overflow:hidden;
+    border:9px solid #16110e;
+    background:
+      radial-gradient(circle at 80% 10%, rgba(255,255,255,.7) 0%, transparent 26%),
+      linear-gradient(180deg,#f8f1e7 0%, #f7f0e8 100%);
+    box-shadow:0 28px 90px rgba(53,35,20,.28), 0 8px 24px rgba(0,0,0,.12);
+    position:relative;
+  }
+  .status{
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 20px;
+    font-size:12px;
+    font-weight:700;
+  }
+  .screen{
+    display:flex;
+    flex-direction:column;
+    height:calc(100% - 34px);
+    padding:10px 18px 16px;
+  }
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+  }
+  .profile{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .avatar{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:linear-gradient(180deg,#f7eadb 0%, #e9d0b4 100%);
+    box-shadow:inset 0 2px 5px rgba(255,255,255,.7), 0 6px 14px rgba(108,80,57,.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .avatar svg{width:42px;height:42px;display:block}
+  .greet{
+    line-height:1.1;
+  }
+  .greet .tiny{
+    display:block;
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:5px;
+  }
+  .greet .name{
+    font-size:16px;
+    font-weight:700;
+  }
+  .actions{
+    display:flex;
+    gap:10px;
+  }
+  .action{
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:50%;
+    background:rgba(255,251,247,.88);
+    box-shadow:var(--shadow-sm);
+    color:#6e5848;
+    font-size:18px;
+  }
+  .headline{
+    margin-bottom:18px;
+  }
+  .headline h2{
+    margin:0;
+    font-size:38px;
+    line-height:1.08;
+    letter-spacing:-.03em;
+    font-weight:800;
+  }
+  .headline p{
+    margin:12px 0 0;
+    max-width:260px;
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.75;
+  }
+  .hero-card{
+    position:relative;
+    min-height:315px;
+    border-radius:34px;
+    padding:20px 20px 18px;
+    background:
+      radial-gradient(circle at 22% 0%, rgba(255,255,255,.88) 0%, transparent 38%),
+      linear-gradient(180deg,#fffdf9 0%, #fffaf5 100%);
+    box-shadow:var(--shadow-xl);
+    overflow:hidden;
+  }
+  .hero-card:before{
+    content:"";
+    position:absolute;
+    right:-38px;
+    top:18px;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(214,191,171,.32) 0%, rgba(214,191,171,0) 72%);
+  }
+  .chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    height:30px;
+    padding:0 12px;
+    border-radius:999px;
+    background:#f4ebe2;
+    color:#846754;
+    font-size:12px;
+    font-weight:700;
+  }
+  .chip .dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#e3a17d;
+  }
+  .hero-copy{
+    position:relative;
+    z-index:2;
+    width:48%;
+    padding-top:18px;
+  }
+  .hero-copy h3{
+    margin:0;
+    font-size:32px;
+    line-height:1.08;
+    letter-spacing:-.03em;
+  }
+  .hero-copy p{
+    margin:12px 0 0;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.75;
+  }
+  .hero-actions{
+    margin-top:18px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    max-width:148px;
+  }
+  .btn-primary,.btn-soft{
+    height:48px;
+    border:none;
+    border-radius:999px;
+    font-size:15px;
+    font-weight:700;
+  }
+  .btn-primary{
+    background:linear-gradient(180deg,var(--brown-soft) 0%, var(--brown) 100%);
+    color:#fffaf4;
+    box-shadow:0 14px 24px rgba(139,94,66,.22);
+  }
+  .btn-soft{
+    background:#f6eee6;
+    color:#815d48;
+  }
+  .pet-visual{
+    position:absolute;
+    right:10px;
+    bottom:0;
+    width:192px;
+    height:250px;
+    z-index:1;
+  }
+  .pet-visual svg{
+    width:100%;
+    height:100%;
+    display:block;
+    filter:drop-shadow(0 12px 22px rgba(105,79,53,.10));
+  }
+  .section{
+    margin-top:16px;
+    background:rgba(255,252,248,.72);
+    border:1px solid rgba(99,73,54,.05);
+    border-radius:28px;
+    padding:16px;
+    box-shadow:var(--shadow-lg);
+  }
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .section-head h4{
+    margin:0;
+    font-size:15px;
+    font-weight:800;
+  }
+  .section-head span{
+    font-size:12px;
+    color:var(--muted);
+  }
+  .record-panel{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .mic-area{
+    width:86px;
+    height:86px;
+    border-radius:50%;
+    background:radial-gradient(circle, #fffaf5 0%, #f2e6d9 66%, transparent 67%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    position:relative;
+  }
+  .mic-area:before,.mic-area:after{
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    border:1.5px solid rgba(166,122,91,.22);
+  }
+  .mic-area:before{inset:8px}
+  .mic-area:after{inset:-8px}
+  .mic-btn{
+    width:58px;
+    height:58px;
+    border:none;
+    border-radius:50%;
+    background:linear-gradient(180deg,#b6876b 0%, #97674c 100%);
+    color:#fffaf6;
+    font-size:22px;
+    box-shadow:0 12px 20px rgba(139,94,66,.20);
+  }
+  .record-copy h5{
+    margin:0;
+    font-size:17px;
+    font-weight:800;
+  }
+  .record-copy p{
+    margin:7px 0 0;
+    font-size:13px;
+    line-height:1.7;
+    color:var(--muted);
+  }
+  .snippets{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .snippet{
+    background:rgba(255,255,255,.72);
+    border-radius:20px;
+    padding:14px;
+    box-shadow:0 10px 18px rgba(108,79,57,.06);
+  }
+  .snippet .meta{
+    font-size:11px;
+    color:#998a7d;
+    margin-bottom:10px;
+  }
+  .snippet strong{
+    display:block;
+    font-size:15px;
+    margin-bottom:6px;
+  }
+  .snippet p{
+    margin:0;
+    font-size:12px;
+    line-height:1.65;
+    color:var(--muted);
+  }
+  .footer{
+    margin-top:auto;
+    padding-top:14px;
+  }
+  .dock{
+    height:62px;
+    border-radius:26px;
+    background:rgba(255,248,241,.94);
+    border:1px solid var(--line);
+    box-shadow:0 14px 30px rgba(98,68,46,.10);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 10px 0 16px;
+  }
+  .dock-left{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .dock-left .tiny{
+    font-size:11px;
+    color:#a09185;
+  }
+  .dock-left .main{
+    font-size:16px;
+    font-weight:800;
+  }
+  .dock-btn{
+    width:128px;
+    height:46px;
+    border:none;
+    border-radius:999px;
+    background:linear-gradient(180deg,var(--brown-soft) 0%, var(--brown) 100%);
+    color:#fffaf4;
+    font-size:15px;
+    font-weight:700;
+  }
+</style>
+</head>
+<body>
+  <div class="page-title">
+    <h1>录入页新方向 v2</h1>
+    <p>更像展示稿，不再是线框草图</p>
+  </div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="status">
+        <span>11:36</span>
+        <span>5G 80%</span>
+      </div>
+
+      <div class="screen">
+        <div class="topbar">
+          <div class="profile">
+            <div class="avatar">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 20C18 13.4 23.4 8 30 8H34C40.6 8 46 13.4 46 20V40C46 48.8 38.8 56 30 56H34C25.2 56 18 48.8 18 40V20Z" fill="#F7F1E8"/>
+                <path d="M20 16L11 11L13 25L20 16Z" fill="#F0DDC8"/>
+                <path d="M44 16L53 11L51 25L44 16Z" fill="#F0DDC8"/>
+                <circle cx="25.5" cy="28.5" r="3.5" fill="#2D231D"/>
+                <circle cx="38.5" cy="28.5" r="3.5" fill="#2D231D"/>
+                <ellipse cx="32" cy="35" rx="5.5" ry="4.3" fill="#3A2C25"/>
+                <path d="M24 39C26.5 42.3 29.3 44 32 44C34.7 44 37.5 42.3 40 39" stroke="#7F5E4B" stroke-width="2.6" stroke-linecap="round"/>
+                <ellipse cx="21" cy="34.5" rx="3.2" ry="2" fill="#E8C4B5"/>
+                <ellipse cx="43" cy="34.5" rx="3.2" ry="2" fill="#E8C4B5"/>
+              </svg>
+            </div>
+            <div class="greet">
+              <span class="tiny">中午好，今天也辛苦啦</span>
+              <div class="name">陪你慢慢记录</div>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="action">⌕</button>
+            <button class="action">♡</button>
+          </div>
+        </div>
+
+        <div class="headline">
+          <h2>今天先不用<br>整理得很正式</h2>
+          <p>像和一只温柔的小狗聊天一样，把今天做的事慢慢说出来，我会替你收成清楚的工作记录。</p>
+        </div>
+
+        <div class="hero-card">
+          <div class="chip"><span class="dot"></span>治愈陪伴模式</div>
+
+          <div class="hero-copy">
+            <h3>先聊聊吧</h3>
+            <p>想到哪就说到哪，不用担心顺序和措辞。你负责表达，我负责整理。</p>
+            <div class="hero-actions">
+              <button class="btn-primary">开始记录</button>
+              <button class="btn-soft">键盘输入</button>
+            </div>
+          </div>
+
+          <div class="pet-visual">
+            <svg viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="fur" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FFFDF9"/>
+                  <stop offset="100%" stop-color="#F0E2D5"/>
+                </linearGradient>
+                <linearGradient id="fur2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FAF4ED"/>
+                  <stop offset="100%" stop-color="#E8D7C8"/>
+                </linearGradient>
+              </defs>
+              <ellipse cx="126" cy="257" rx="66" ry="16" fill="rgba(122,94,67,.08)"/>
+              <path d="M79 58C82 35 93 22 111 18C129 14 146 22 155 40C174 34 190 43 195 59C201 76 191 91 176 99L174 149C174 189 145 218 109 218C73 218 44 189 44 149L42 96C29 88 22 72 28 57C34 42 48 36 64 39C68 26 73 19 79 58Z" fill="url(#fur)"/>
+              <path d="M75 48L48 26L55 70L75 48Z" fill="#F4E5D7"/>
+              <path d="M150 46L183 24L173 71L150 46Z" fill="#F4E5D7"/>
+              <ellipse cx="80" cy="102" rx="13" ry="15" fill="#2F241D"/>
+              <ellipse cx="136" cy="102" rx="13" ry="15" fill="#2F241D"/>
+              <circle cx="84" cy="98" r="4" fill="white"/>
+              <circle cx="140" cy="98" r="4" fill="white"/>
+              <ellipse cx="108" cy="127" rx="24" ry="18" fill="white"/>
+              <ellipse cx="109" cy="117" rx="18" ry="12" fill="#3B2D24"/>
+              <path d="M86 138C93 151 100 157 109 157C118 157 125 151 132 138" stroke="#6F503C" stroke-width="5" stroke-linecap="round"/>
+              <path d="M99 147C102 153 105 159 109 159C113 159 116 153 119 147V172H99V147Z" fill="#E48C95"/>
+              <ellipse cx="62" cy="122" rx="12" ry="8" fill="#F0CCC1"/>
+              <ellipse cx="156" cy="122" rx="12" ry="8" fill="#F0CCC1"/>
+              <path d="M78 168C67 184 65 207 71 228C76 245 94 255 108 255C122 255 138 245 145 228C151 212 150 189 140 169" fill="url(#fur2)"/>
+              <path d="M74 170C62 175 54 186 49 205C44 223 46 243 58 252C67 258 77 251 80 240C84 227 86 203 86 180L74 170Z" fill="url(#fur2)"/>
+              <path d="M143 170C156 176 164 188 169 207C173 224 170 245 159 253C150 260 140 252 137 241C133 227 132 203 131 180L143 170Z" fill="url(#fur2)"/>
+              <path d="M89 180H129L119 198H99L89 180Z" fill="#7B5646"/>
+              <path d="M77 185L58 202L92 208L88 184L77 185Z" fill="#8B6350"/>
+              <path d="M140 184L160 202L126 208L129 184H140Z" fill="#8B6350"/>
+              <rect x="80" y="232" width="22" height="27" rx="11" fill="#F5E8DD"/>
+              <rect x="109" y="232" width="22" height="27" rx="11" fill="#F5E8DD"/>
+              <path d="M172 198C184 202 191 210 193 219C195 229 191 238 182 239" stroke="#EBDCCD" stroke-width="10" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <h4>最轻松的开始方式</h4>
+            <span>按住说话</span>
+          </div>
+          <div class="record-panel">
+            <div class="mic-area">
+              <button class="mic-btn">🎙</button>
+            </div>
+            <div class="record-copy">
+              <h5>不用想结构，先把今天说出来</h5>
+              <p>长按开始，松开结束。录音会自动转文字，再整理成“做了什么、遇到什么、下一步是什么”。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <h4>你会得到什么</h4>
+            <span>低压力记录</span>
+          </div>
+          <div class="snippets">
+            <div class="snippet">
+              <div class="meta">整理结果</div>
+              <strong>自动归项目</strong>
+              <p>把零散表达收成结构化内容，不用你自己重新排序。</p>
+            </div>
+            <div class="snippet">
+              <div class="meta">汇报输出</div>
+              <strong>一键生成日报</strong>
+              <p>确认一下内容，就能直接得到可复制的日报文本。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="dock">
+            <div class="dock-left">
+              <span class="tiny">准备好了就开始</span>
+              <div class="main">和我聊聊今天</div>
+            </div>
+            <button class="dock-btn">开始记录</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

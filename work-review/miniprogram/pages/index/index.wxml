@@ -1,0 +1,123 @@
+<!-- 首页 -->
+<view class="page-wrap">
+  <view class="grad-bg">
+
+    <!-- ══ 录音中 ══ -->
+    <view class="s-recording" wx:if="{{recordStatus === 'recording'}}">
+      <view class="rec-header">
+        <text class="rec-label">正在录音</text>
+        <text class="rec-timer">{{recordSecs}}s / 60s</text>
+      </view>
+      <view class="wave-bars">
+        <view class="wbar b1"></view>
+        <view class="wbar b2"></view>
+        <view class="wbar b3"></view>
+        <view class="wbar b4"></view>
+        <view class="wbar b5"></view>
+        <view class="wbar b6"></view>
+        <view class="wbar b7"></view>
+      </view>
+      <view class="mic-ring pulse" bindtouchend="onRecordStop">
+        <view class="mic-btn active">
+          <view class="mic-icon-lg"></view>
+        </view>
+      </view>
+      <text class="stop-hint">松开 结束录音</text>
+    </view>
+
+    <!-- ══ 处理中 ══ -->
+    <view class="s-processing" wx:elif="{{recordStatus === 'uploading' || recordStatus === 'transcribing'}}">
+      <text class="proc-title">AI 正在整理...</text>
+      <view class="proc-steps">
+        <view class="proc-step">
+          <view class="step-icon done-icon"><text class="step-check">✓</text></view>
+          <text class="step-label">录音完成</text>
+        </view>
+        <view class="proc-step {{recordStatus === 'uploading' ? '' : 'step-done'}}">
+          <view class="step-icon {{recordStatus === 'uploading' ? 'spin-icon' : 'done-icon'}}">
+            <text class="step-check" wx:if="{{recordStatus !== 'uploading'}}">✓</text>
+          </view>
+          <text class="step-label">上传音频</text>
+        </view>
+        <view class="proc-step {{recordStatus === 'transcribing' ? '' : 'step-wait'}}">
+          <view class="step-icon {{recordStatus === 'transcribing' ? 'spin-icon' : 'wait-icon'}}"></view>
+          <text class="step-label">语音转文字</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ══ 正常首页 ══ -->
+    <block wx:else>
+
+      <!-- 问候区 -->
+      <view class="greet-area">
+        <text class="greet-time">{{timeOfDay}}</text>
+        <text class="greet-name">今天也辛苦啦，</text>
+        <text class="greet-sub" wx:if="{{!hasTodayRecord}}">把剩下的交给我，让 AI 为您快速生成简报</text>
+      </view>
+
+      <!-- 无记录态：大麦克风 -->
+      <view class="center-area" wx:if="{{!hasTodayRecord}}">
+        <view class="mic-ring"
+          bindtouchstart="onRecordStart"
+          bindtouchend="onRecordStop">
+          <view class="mic-btn">
+            <view class="mic-icon-lg"></view>
+          </view>
+        </view>
+        <text class="mic-hint">长按 · 倾诉今日成就</text>
+        <view class="type-link" bindtap="onTextInput">
+          <text>✎ 文字录入</text>
+        </view>
+      </view>
+
+      <!-- 有记录态：录入列表卡片 -->
+      <block wx:else>
+        <view class="records-card">
+          <view class="records-header">
+            <view class="status-row">
+              <view class="status-dot"></view>
+              <text class="status-text">今日已录入 {{todayRecords.length}} 次</text>
+            </view>
+            <text class="status-meta">{{todayProjectCount}} 项目 · {{todayTaskCount}} 条</text>
+          </view>
+
+          <view class="record-item" wx:for="{{todayRecords}}" wx:key="_id"
+            bindtap="onTapRecord" data-id="{{item._id}}">
+            <text class="rec-time">{{item.recordTime}}</text>
+            <view class="rec-content">
+              <text class="rec-title">{{item.title}}</text>
+              <text class="rec-desc">{{item.summary}}</text>
+            </view>
+            <view class="rec-arrow">›</view>
+          </view>
+
+          <view class="records-actions">
+            <button class="btn-view" bindtap="onViewReport">查看 / 编辑</button>
+            <button class="btn-gen" bindtap="onGenerateReport">生成今日日报</button>
+          </view>
+        </view>
+
+        <!-- 补充录入 -->
+        <view class="add-record"
+          bindtouchstart="onRecordStart"
+          bindtouchend="onRecordStop">
+          <view class="add-mic-btn">
+            <view class="mic-icon-sm"></view>
+          </view>
+          <text class="add-record-text">长按 · 继续补充今日内容</text>
+        </view>
+        <view class="type-link" bindtap="onTextInput">
+          <text>✎ 文字补充</text>
+        </view>
+      </block>
+
+    </block>
+
+  </view>
+
+  <!-- 调试栏 -->
+  <view class="debug-bar" wx:if="{{isDev && cloudStatus}}">
+    <text class="debug-text">云: {{cloudStatus}}  {{cloudMsg}}</text>
+  </view>
+</view>

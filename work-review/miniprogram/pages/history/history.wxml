@@ -1,0 +1,74 @@
+<!-- 历史日报页 -->
+<view class="page">
+
+  <!-- 筛选 Tab -->
+  <view class="filter-bar">
+    <view class="filter-item {{filter === 'week' ? 'active' : ''}}"
+      data-f="week" bindtap="onFilterChange"><text>本周</text></view>
+    <view class="filter-item {{filter === 'month' ? 'active' : ''}}"
+      data-f="month" bindtap="onFilterChange"><text>本月</text></view>
+    <view class="filter-item {{filter === 'all' ? 'active' : ''}}"
+      data-f="all" bindtap="onFilterChange"><text>全部</text></view>
+  </view>
+
+  <!-- 首次加载（无历史数据时全屏展示） -->
+  <view class="s-loading" wx:if="{{loading && !hasLoaded}}">
+    <view class="loading-ring"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="s-empty" wx:elif="{{!loading && displayList.length === 0 && !error}}">
+    <view class="empty-icon"></view>
+    <text class="empty-title">暂无日报记录</text>
+    <text class="empty-sub">完成工作录入并保存日报后，会在这里显示</text>
+  </view>
+
+  <!-- 出错 -->
+  <view class="s-error" wx:elif="{{error && !hasLoaded}}">
+    <text class="error-msg">{{error}}</text>
+    <view class="retry-btn" bindtap="onPullDownRefresh">重试</view>
+  </view>
+
+  <!-- 列表（有数据时始终显示，刷新不消失） -->
+  <view class="list" wx:if="{{displayList.length > 0}}">
+    <block wx:for="{{displayList}}" wx:key="index">
+
+      <!-- 月份标题 -->
+      <view class="month-header" wx:if="{{item.type === 'month'}}">
+        <text>{{item.label}}</text>
+      </view>
+
+      <!-- 日报卡片 -->
+      <view class="report-card" wx:else
+        data-date="{{item.reportDate}}"
+        bindtap="onViewDetail">
+
+        <view class="card-top">
+          <view class="date-block {{item.isToday ? 'today' : ''}}">
+            <text class="day-num {{item.isToday ? 'today-num' : ''}}">{{item.day}}</text>
+            <text class="week-label">{{item.weekLabel}}</text>
+          </view>
+          <view class="card-meta">
+            <text class="meta-count">{{item.projectCount}} 个项目 · {{item.taskCount}} 条任务</text>
+            <text class="meta-projects">{{item.projectNames}}</text>
+          </view>
+          <view class="card-chevron">
+            <view class="chevron-icon"></view>
+          </view>
+        </view>
+
+        <view class="card-bottom" wx:if="{{item.summary}}">
+          <text class="card-summary">{{item.summary}}</text>
+        </view>
+
+      </view>
+    </block>
+  </view>
+
+  <!-- 覆层刷新转圈（有数据时切换 tab 刷新用） -->
+  <view class="overlay-loading" wx:if="{{loading && hasLoaded}}">
+    <view class="overlay-ring"></view>
+  </view>
+
+</view>
