@@ -78,6 +78,23 @@ const getReportHistory = (page = 1, perPage = 20) =>
 const getReport = (date) =>
   callCloud('getReportHistory', { date });
 
+// 顾问视角建议
+const getAdvisorAdvice = (advisor, summary, projects, reportType) =>
+  new Promise((resolve, reject) => {
+    wx.cloud.callFunction({
+      name: 'getAdvisorAdvice',
+      data: { advisor, summary, projects, reportType },
+      config: { timeout: 60000 },
+      success: (res) => {
+        const result = res.result;
+        if (!result) return reject(new Error('云函数 getAdvisorAdvice 无返回值'));
+        if (result.code !== 0) return reject(new Error(result.message || '建议生成失败'));
+        resolve(result.data.advice);
+      },
+      fail: (err) => reject(new Error(`getAdvisorAdvice 调用失败：${err.errMsg || JSON.stringify(err)}`)),
+    });
+  });
+
 // 生成周报/月报
 const createPeriodReport = (type, startDate, endDate) =>
   new Promise((resolve, reject) => {
@@ -95,6 +112,9 @@ const createPeriodReport = (type, startDate, endDate) =>
     });
   });
 
+// 获取顾问头像和 title（结果存 DB 供所有用户复用）
+const fetchAdvisorAvatar = (name) => callCloud('fetchAdvisorAvatar', { name });
+
 module.exports = {
   callCloud,
   healthCheck,
@@ -105,4 +125,6 @@ module.exports = {
   getReportHistory,
   getReport,
   createPeriodReport,
+  getAdvisorAdvice,
+  fetchAdvisorAvatar,
 };

@@ -32,6 +32,49 @@
     </view>
   </view>
 
+  <!-- 顾问管理 -->
+  <view class="section-title">顾问管理</view>
+  <view class="card advisor-card">
+    <view class="advisor-list">
+      <view class="advisor-item" wx:for="{{advisors}}" wx:key="id">
+        <view class="advisor-dot"></view>
+        <view class="advisor-info">
+          <text class="advisor-name">{{item.name}}</text>
+          <text class="advisor-title" wx:if="{{item.title}}">{{item.title}}</text>
+        </view>
+        <view class="advisor-del" bindtap="onDeleteAdvisor" data-id="{{item.id}}">
+          <text>×</text>
+        </view>
+      </view>
+    </view>
+    <view class="add-advisor-btn" bindtap="onAddAdvisor">
+      <text>＋ 添加顾问</text>
+    </view>
+  </view>
+
+  <!-- 添加顾问弹窗 -->
+  <view class="modal-mask" wx:if="{{showAddAdvisor}}" bindtap="onCancelAddAdvisor">
+    <view class="modal-box" catchtap="">
+      <text class="modal-title">添加顾问</text>
+      <input
+        class="advisor-input"
+        placeholder="输入顾问名字，如：任正非、彼得·德鲁克"
+        placeholder-class="modal-placeholder"
+        value="{{newAdvisorName}}"
+        bindinput="onNewAdvisorInput"
+        focus
+      />
+      <view class="modal-actions">
+        <view class="modal-btn modal-btn-cancel" bindtap="onCancelAddAdvisor">
+          <text>取消</text>
+        </view>
+        <view class="modal-btn modal-btn-submit" bindtap="onConfirmAddAdvisor">
+          <text>添加</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
   <!-- 个人背景 -->
   <view class="section-title">个人背景</view>
   <view class="card context-card">

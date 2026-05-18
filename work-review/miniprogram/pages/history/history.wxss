@@ -5,6 +5,7 @@ page { background: #F8F4EF; }
 .page {
   min-height: 100vh;
   background: #F8F4EF;
+  padding-top: 110rpx;
   padding-bottom: 240rpx;
 }
 
@@ -37,12 +38,21 @@ page { background: #F8F4EF; }
 .btn-period::after { border: none; }
 
 /* ── 筛选 Tab ── */
+.filter-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: #F8F4EF;
+  padding: 20rpx 28rpx 16rpx;
+}
+
 .filter-bar {
   display: flex;
   background: #EEE4DA;
   border-radius: 20rpx;
   padding: 6rpx;
-  margin: 20rpx 28rpx 0;
 }
 
 .filter-item {

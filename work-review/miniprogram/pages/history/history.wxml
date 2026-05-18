@@ -2,13 +2,15 @@
 <view class="page">
 
   <!-- 筛选 Tab -->
-  <view class="filter-bar">
-    <view class="filter-item {{filter === 'week' ? 'active' : ''}}"
-      data-f="week" bindtap="onFilterChange"><text>本周</text></view>
-    <view class="filter-item {{filter === 'month' ? 'active' : ''}}"
-      data-f="month" bindtap="onFilterChange"><text>本月</text></view>
-    <view class="filter-item {{filter === 'all' ? 'active' : ''}}"
-      data-f="all" bindtap="onFilterChange"><text>全部</text></view>
+  <view class="filter-wrap">
+    <view class="filter-bar">
+      <view class="filter-item {{filter === 'week' ? 'active' : ''}}"
+        data-f="week" bindtap="onFilterChange"><text>本周</text></view>
+      <view class="filter-item {{filter === 'month' ? 'active' : ''}}"
+        data-f="month" bindtap="onFilterChange"><text>本月</text></view>
+      <view class="filter-item {{filter === 'all' ? 'active' : ''}}"
+        data-f="all" bindtap="onFilterChange"><text>全部</text></view>
+    </view>
   </view>
 
   <!-- 首次加载（无历史数据时全屏展示） -->

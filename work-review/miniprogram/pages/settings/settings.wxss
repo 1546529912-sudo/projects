@@ -118,6 +118,92 @@
 }
 .badge-active text { color: #4A9060; }
 
+/* ── 顾问管理 ── */
+.advisor-card { padding: 28rpx; }
+
+.advisor-list { margin-bottom: 24rpx; }
+
+.advisor-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 16rpx 0;
+  border-bottom: 1px solid #F5EDE4;
+}
+.advisor-item:last-child { border-bottom: none; }
+
+.advisor-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #D4885E, #A85530);
+  flex-shrink: 0;
+}
+
+.advisor-info {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8rpx;
+  overflow: hidden;
+}
+
+.advisor-name {
+  font-size: 28rpx;
+  color: #2C1E12;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.advisor-title {
+  font-size: 20rpx;
+  color: #A0896E;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.advisor-tag {
+  background: rgba(192, 112, 72, 0.1);
+  border-radius: 100rpx;
+  padding: 4rpx 16rpx;
+}
+.advisor-tag text { font-size: 20rpx; color: #C07048; }
+
+.advisor-del {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.advisor-del text { font-size: 36rpx; color: #C4A882; }
+
+.add-advisor-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72rpx;
+  border-radius: 100rpx;
+  border: 3rpx dashed rgba(192, 112, 72, 0.4);
+  color: #C07048;
+  font-size: 26rpx;
+}
+
+.advisor-input {
+  width: 100%;
+  height: 88rpx;
+  background: #FBF8F4;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #2C1E12;
+  box-sizing: border-box;
+  margin-bottom: 32rpx;
+}
+
 /* ── 个人背景卡片 ── */
 .context-card {
   padding: 28rpx;

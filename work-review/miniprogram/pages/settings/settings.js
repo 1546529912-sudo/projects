@@ -1,4 +1,4 @@
-const { healthCheck } = require('../../utils/cloud');
+const { healthCheck, fetchAdvisorAvatar } = require('../../utils/cloud');
 
 Page({
   data: {
@@ -10,19 +10,89 @@ Page({
     showFeedbackModal: false,
     feedbackText: '',
     feedbackSubmitting: false,
+    advisors: [],
+    showAddAdvisor: false,
+    newAdvisorName: '',
   },
 
   async onLoad() {
     this.setData({ userContext: wx.getStorageSync('userContext') || '' });
+    this.loadAdvisors();
     try {
       const info = await healthCheck();
       this.setData({
         asrProvider: info.asrProvider || 'mock',
         aiProvider: info.aiProvider || 'mock',
       });
-    } catch (_) {
-      // 保持默认 mock 显示
+    } catch (_) {}
+  },
+
+  loadAdvisors() {
+    const saved = wx.getStorageSync('advisors');
+    const defaults = [
+      { id: 'musk',    name: '马斯克',   preset: true, title: 'Tesla · SpaceX CEO' },
+      { id: 'jobs',    name: '乔布斯',   preset: true, title: 'Apple 联合创始人' },
+      { id: 'inamori', name: '稻盛和夫', preset: true, title: '京瓷创始人 · 阿米巴之父' },
+    ];
+    let advisors;
+    if (saved && saved.length > 0) {
+      const defMap = {};
+      defaults.forEach(d => { defMap[d.id] = d; });
+      advisors = saved.map(a => {
+        const def = defMap[a.id];
+        return def ? { title: def.title, ...a } : a;
+      });
+    } else {
+      advisors = defaults;
     }
+    this.setData({ advisors });
+  },
+
+  onAddAdvisor() {
+    this.setData({ showAddAdvisor: true, newAdvisorName: '' });
+  },
+
+  onNewAdvisorInput(e) {
+    this.setData({ newAdvisorName: e.detail.value });
+  },
+
+  async onConfirmAddAdvisor() {
+    const name = this.data.newAdvisorName.trim();
+    if (!name) { wx.showToast({ title: '请输入顾问名字', icon: 'none' }); return; }
+    const newAdvisor = { id: `custom_${Date.now()}`, name, preset: false };
+    const advisors = [...this.data.advisors, newAdvisor];
+    wx.setStorageSync('advisors', advisors);
+    this.setData({ advisors, showAddAdvisor: false, newAdvisorName: '' });
+    // 后台拉 title（和头像，如 DB 中管理员已上传）
+    const info = await fetchAdvisorAvatar(name).catch(() => null);
+    if (info && (info.title || info.avatarFileID)) {
+      const title = (info.title || '').slice(0, 20);
+      const updated = this.data.advisors.map(a =>
+        a.id === newAdvisor.id ? { ...a, ...info, title } : a
+      );
+      wx.setStorageSync('advisors', updated);
+      this.setData({ advisors: updated });
+      if (info.avatarFileID) this.refreshAvatarUrls(updated);
+    }
+  },
+
+  onCancelAddAdvisor() {
+    this.setData({ showAddAdvisor: false, newAdvisorName: '' });
+  },
+
+  onDeleteAdvisor(e) {
+    const id = e.currentTarget.dataset.id;
+    wx.showModal({
+      title: '删除顾问',
+      content: '确认删除这位顾问吗？',
+      confirmColor: '#C07048',
+      success: (res) => {
+        if (!res.confirm) return;
+        const advisors = this.data.advisors.filter(a => a.id !== id);
+        wx.setStorageSync('advisors', advisors);
+        this.setData({ advisors });
+      },
+    });
   },
 
   onContextChange(e) {

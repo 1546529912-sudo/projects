@@ -1,0 +1,10 @@
+{
+  "name": "getAdvisorAdvice",
+  "version": "1.0.0",
+  "description": "顾问视角建议云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3",
+    "dotenv": "^16.0.0"
+  }
+}
