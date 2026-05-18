@@ -1,4 +1,4 @@
-const { createReport, saveReport, getReport } = require('../../utils/cloud');
+const { createReport, saveReport, getReport, createPeriodReport } = require('../../utils/cloud');
 
 Page({
   data: {
@@ -14,18 +14,61 @@ Page({
     activeTab: 'personal',
     saved: false,
     mode: 'generate',
+    periodType: '',
   },
 
   onLoad(options) {
-    const date = options.date || new Date().toISOString().slice(0, 10);
     const mode = options.mode || 'generate';
+    this.setData({ mode });
+
+    if (mode === 'period') {
+      const type = options.type || 'week';
+      const start = options.start || '';
+      const end = options.end || '';
+      const label = type === 'week' ? '本周报告' : '本月报告';
+      this.setData({ periodType: type, dateLabel: label });
+
+      if (options.saved === '1') {
+        // 直接从本地读已保存版本
+        const cached = wx.getStorageSync(`period_${type}_${start}`);
+        if (cached) {
+          this.setData({ summary: cached.summary, personalText: cached.personalText, formalText: cached.formalText, loading: false });
+          return;
+        }
+      }
+      this.loadAndGeneratePeriod(type, start, end);
+      return;
+    }
+
+    const date = options.date || new Date().toISOString().slice(0, 10);
     const [, m, d] = date.split('-');
-    this.setData({ date, dateLabel: `${+m}月${+d}日`, mode });
+    this.setData({ date, dateLabel: `${+m}月${+d}日` });
 
     if (mode === 'view') {
       this.loadSaved(date);
     } else {
       this.loadAndGenerate(date);
+    }
+  },
+
+  async loadAndGeneratePeriod(type, startDate, endDate) {
+    this.setData({ loading: true, error: null });
+    try {
+      const result = await createPeriodReport(type, startDate, endDate);
+      this.setData({
+        summary: result.summary || '',
+        personalText: result.personal_text,
+        formalText: result.formal_text,
+        loading: false,
+      });
+      // 生成成功后自动缓存到本地，供历史页判断和下次直接查看
+      wx.setStorageSync(`period_${type}_${startDate}`, {
+        summary: result.summary || '',
+        personalText: result.personal_text,
+        formalText: result.formal_text,
+      });
+    } catch (err) {
+      this.setData({ error: err.message, loading: false });
     }
   },
 

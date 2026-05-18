@@ -1,8 +1,8 @@
 # progress.md — 任务进度（唯一真相源）
 
 > 【必须遵守】只有主控 Agent 可回写本文件  
-> 【当前焦点】Phase 1 — 工程初始化（云开发环境联通）  
-> 最后更新：2026-05-16 by orchestrator
+> 【当前焦点】Phase 5 — 体验优化与新功能（周报/月报、意见反馈、首页智能按钮）  
+> 最后更新：2026-05-18 by orchestrator
 
 ---
 
@@ -54,7 +54,7 @@
 | P1-006 | utils/cloud.js 封装 | developer | ✅ | `miniprogram/utils/cloud.js` | 封装完整 |
 | P1-007 | 前端联通链路 | developer | ✅ | `miniprogram/pages/index/index.js` | onShow 调用 healthCheck，降级处理完成 |
 | P1-008 | Report Schema 定义 | architect | ✅ | `outputs/architecture/report-schema.json` | Schema v1.0 完成 |
-| P1-009 | 基础测试用例 | tester | ⬜ | `outputs/testing/phase1-acceptance-report.md` | 待云环境联通后执行 |
+| P1-009 | 基础测试用例 | tester | ✅ | `outputs/testing/phase1-acceptance-report.md` | 用户 2026-05-18 实测验收通过 |
 
 ---
 
@@ -67,36 +67,46 @@
 |---|---|---|---|---|---|
 | P2-001 | aiExtract 云函数 | developer | ✅ | `cloudfunctions/aiExtract/index.js` | DeepSeek 集成完成，待配置 DEEPSEEK_API_KEY 环境变量 |
 | P2-002 | doASR 云函数 | developer | ✅ | `cloudfunctions/doASR/index.js` | 豆包（火山引擎）ASR 集成完成，待配置 DOUBAO_APP_ID/TOKEN 环境变量 |
-| P2-003 | createReport 云函数 | developer | ⬜ | - | 返回 Report Schema |
-| P2-004 | saveReport 云函数 | developer | ⬜ | - | 数据写入云数据库 |
-| P2-005 | getReportHistory 云函数 | developer | ⬜ | - | 返回分页列表 |
-| P2-006 | 录入页面实现 | developer | ⬜ | ⬜ 待确认 | 长按录音流程可用 |
-| P2-007 | AI 确认页面实现 | developer | ⬜ | ⬜ 待确认 | 显示 AI 结果并可编辑 |
-| P2-008 | 日报结果页面实现 | developer | ⬜ | ⬜ 待确认 | 可显示+复制日报 |
-| P2-009 | 首页实现 | developer | ⬜ | ⬜ 待确认 | 首页完整可用 |
-| P2-010 | 产品 Agent 验收 | product | ⬜ | - | PRD P0 功能全部覆盖 |
-| P2-011 | 测试 Agent 验收 | tester | ⬜ | - | 所有 P0 测试通过 |
+| P2-003 | createReport 云函数 | developer | ✅ | `cloudfunctions/createReport/index.js` | 用户 2026-05-17 实测通过 |
+| P2-004 | saveReport 云函数 | developer | ✅ | `cloudfunctions/saveReport/index.js` | 数据写入 daily_reports 验证通过 |
+| P2-005 | getReportHistory 云函数 | developer | ✅ | `cloudfunctions/getReportHistory/index.js` | 返回分页列表正常 |
+| P2-006 | 录入页面实现 | developer | ✅ | `miniprogram/pages/record/` | 长按录音流程完整可用 |
+| P2-007 | AI 确认页面实现 | developer | ✅ | `miniprogram/pages/record/ai-confirm/` | 显示 AI 结果并可编辑 |
+| P2-008 | 日报结果页面实现 | developer | ✅ | `miniprogram/pages/report/` | 可显示+复制+保存日报 |
+| P2-009 | 首页实现 | developer | ✅ | `miniprogram/pages/index/` | 首页完整可用，含智能按钮逻辑 |
+| P2-010 | 产品 Agent 验收 | product | ✅ | - | P0 功能用户实测全部通过 |
+| P2-011 | 测试 Agent 验收 | tester | ✅ | - | 用户 2026-05-18 全流程验收通过 |
 
 ---
 
-## Phase 3：AI 集成优化（未开始）
+## Phase 3：AI 集成优化
 
-| Task ID | 任务 | 状态 |
-|---|---|---|
-| P3-001 | DeepSeek 真实接入云函数 | ⬜ |
-| P3-002 | Prompt 优化迭代 | ⬜ |
-| P3-003 | AI 输出稳定性测试 | ⬜ |
-| P3-004 | Token 消耗统计 | ⬜ |
+| Task ID | 任务 | 状态 | 说明 |
+|---|---|---|---|
+| P3-001 | DeepSeek 真实接入云函数 | ✅ | .env 配置 DeepSeek API Key，实测通过 |
+| P3-002 | Prompt 优化迭代 | ✅ | aiExtract/createReport 均拆出 system 消息，去除无用字段 |
+| P3-003 | AI 输出稳定性测试 | ✅ | 用户多轮实测，输出稳定 |
+| P3-004 | Token 消耗统计 | ⬜ | 暂缓，优先级低 |
 
 ---
 
-## Phase 4：历史记录 + 我的（未开始）
+## Phase 4：历史记录 + 我的
 
-| Task ID | 任务 | 状态 |
-|---|---|---|
-| P4-001 | 历史列表页实现 | ⬜ |
-| P4-002 | 日期/项目筛选 | ⬜ |
-| P4-003 | 我的页面 + Prompt 设置 | ⬜ |
+| Task ID | 任务 | 状态 | 说明 |
+|---|---|---|---|
+| P4-001 | 历史列表页实现 | ✅ | 含月份分组、项目/任务数展示 |
+| P4-002 | 日期/项目筛选 | ✅ | 本周/本月/全部三档筛选 |
+| P4-003 | 我的页面 + 个人背景设置 | ✅ | 个人背景注入 AI system 消息；意见反馈写入 feedback 集合 |
+
+---
+
+## Phase 5：体验优化与新功能（2026-05-18 新增）
+
+| Task ID | 任务 | 状态 | 说明 |
+|---|---|---|---|
+| P5-001 | 意见反馈功能 | ✅ | 弹窗输入，写入云数据库 feedback 集合，含 openid/时间/内容 |
+| P5-002 | 周报/月报生成 | ✅ | createPeriodReport 云函数，历史页底部固定按钮触发，已生成后显示"查看" |
+| P5-003 | 首页智能日报按钮 | ✅ | 已保存日报显示"查看今日日报"；新增录音后显示"查看"+"生成今日日报" |
 
 ---
 
@@ -122,3 +132,4 @@
 | 2026-05-16 | 设计 Agent | P0-001 原型图已输出，等待用户确认（wireframe-record.md）|
 | 2026-05-16 | developer | P1-003 ✅ 云凭证填入；P2-001 aiExtract (DeepSeek) ✅；P2-002 doASR (豆包) ✅ |
 | 2026-05-17 | developer | Phase 2 全部功能完成并上线；修复 BUG-001 历史页项目数合并逻辑 |
+| 2026-05-18 | orchestrator | Phase 3/4 全部完成；新增 Phase 5：意见反馈、周报/月报、首页智能按钮，用户验收通过 |

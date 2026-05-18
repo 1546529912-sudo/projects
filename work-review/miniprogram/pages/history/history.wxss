@@ -5,8 +5,36 @@ page { background: #F8F4EF; }
 .page {
   min-height: 100vh;
   background: #F8F4EF;
-  padding-bottom: 160rpx;
+  padding-bottom: 240rpx;
 }
+
+/* ── 底部生成周报/月报按钮 ── */
+.period-footer {
+  position: fixed;
+  bottom: 140rpx;
+  left: 0;
+  right: 0;
+  padding: 20rpx 28rpx;
+  background: #F8F4EF;
+  border-top: 1px solid #EEE4D8;
+}
+
+.btn-period {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 200rpx;
+  background: linear-gradient(135deg, #D4885E, #A85530);
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-weight: 700;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12rpx 40rpx rgba(168, 85, 48, 0.35);
+}
+
+.btn-period::after { border: none; }
 
 /* ── 筛选 Tab ── */
 .filter-bar {

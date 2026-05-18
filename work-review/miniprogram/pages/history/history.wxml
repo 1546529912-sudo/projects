@@ -71,4 +71,11 @@
     <view class="overlay-ring"></view>
   </view>
 
+  <!-- 底部生成按钮 -->
+  <view class="period-footer" wx:if="{{filter !== 'all' && displayList.length > 0}}">
+    <button class="btn-period" bindtap="onGeneratePeriodReport">
+      {{hasPeriodReport ? '查看' : '生成'}}{{filter === 'week' ? '周报' : '月报'}}
+    </button>
+  </view>
+
 </view>

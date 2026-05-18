@@ -8,6 +8,9 @@ Page({
     filter: 'week',
     allReports: [],
     displayList: [],
+    periodStart: '',
+    periodEnd: '',
+    hasPeriodReport: false,
   },
 
   onLoad() {
@@ -66,15 +69,21 @@ Page({
   applyFilter() {
     const { filter, allReports } = this.data;
     const now = new Date();
+    const today = now.toISOString().slice(0, 10);
 
     let filtered = allReports;
+    let periodStart = '', periodEnd = today;
     if (filter === 'week') {
-      const start = new Date(now - 6 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-      filtered = allReports.filter(r => r.reportDate >= start);
+      periodStart = new Date(now - 6 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+      filtered = allReports.filter(r => r.reportDate >= periodStart);
     } else if (filter === 'month') {
       const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2, '0');
+      periodStart = `${y}-${m}-01`;
       filtered = allReports.filter(r => r.reportDate.startsWith(`${y}-${m}`));
     }
+    const periodType = filter === 'week' ? 'week' : 'month';
+    const hasPeriodReport = filter !== 'all' && !!wx.getStorageSync(`period_${periodType}_${periodStart}`);
+    this.setData({ periodStart, periodEnd, hasPeriodReport });
 
     // 按月分组，打平为带 type 标记的列表
     const displayList = [];
@@ -91,5 +100,15 @@ Page({
 
   onViewDetail(e) {
     wx.navigateTo({ url: `/pages/report/report?date=${e.currentTarget.dataset.date}&mode=view` });
+  },
+
+  onGeneratePeriodReport() {
+    const { filter, periodStart, periodEnd, hasPeriodReport } = this.data;
+    if (filter === 'all') return;
+    const type = filter === 'week' ? 'week' : 'month';
+    const saved = hasPeriodReport ? '&saved=1' : '';
+    wx.navigateTo({
+      url: `/pages/report/report?mode=period&type=${type}&start=${periodStart}&end=${periodEnd}${saved}`,
+    });
   },
 });

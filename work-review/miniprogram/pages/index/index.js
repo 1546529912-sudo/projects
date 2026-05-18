@@ -7,6 +7,8 @@ Page({
   data: {
     timeOfDay: '下午好',
     hasTodayRecord: false,
+    hasTodayReport: false,
+    hasNewRecords: false,
     todayRecords: [],
     todayProjectCount: 0,
     todayTaskCount: 0,
@@ -60,12 +62,12 @@ Page({
     const today = new Date().toISOString().slice(0, 10);
     try {
       const db = wx.cloud.database();
-      const res = await db.collection('work_records')
-        .where({ date: today })
-        .orderBy('createTime', 'asc')
-        .get();
+      const [recordsRes, reportRes] = await Promise.all([
+        db.collection('work_records').where({ date: today }).orderBy('createTime', 'asc').get(),
+        db.collection('daily_reports').where({ reportDate: today }).orderBy('updateTime', 'desc').limit(1).get(),
+      ]);
 
-      const records = (res.data || []).map(r => ({
+      const records = (recordsRes.data || []).map(r => ({
         ...r,
         recordTime: (() => {
           if (!r.createTime) return '--:--';
@@ -85,15 +87,30 @@ Page({
         });
       });
 
+      const todayReport = reportRes.data?.[0];
+      const hasTodayReport = !!todayReport;
+
+      const getMs = v => {
+        if (!v) return 0;
+        if (v instanceof Date) return v.getTime();
+        if (typeof v === 'object' && v.$date) return v.$date;
+        return new Date(v).getTime();
+      };
+      const latestRecord = records[records.length - 1];
+      const hasNewRecords = hasTodayReport && !!latestRecord &&
+        getMs(latestRecord.createTime) > getMs(todayReport.updateTime);
+
       this.setData({
         todayRecords: records,
         hasTodayRecord: records.length > 0,
+        hasTodayReport,
+        hasNewRecords,
         todayProjectCount: projectSet.size || records.length,
         todayTaskCount: taskCount,
       });
     } catch (err) {
       console.error('[loadTodayRecords]', err.message);
-      this.setData({ hasTodayRecord: false, todayRecords: [] });
+      this.setData({ hasTodayRecord: false, hasTodayReport: false, hasNewRecords: false, todayRecords: [] });
     }
   },
 

@@ -93,8 +93,15 @@
           </view>
 
           <view class="records-actions">
-            <button class="btn-view" bindtap="onViewReport">查看 / 编辑</button>
-            <button class="btn-gen" bindtap="onGenerateReport">生成今日日报</button>
+            <!-- 已有日报且无新录音：只显示查看 -->
+            <block wx:if="{{hasTodayReport && !hasNewRecords}}">
+              <button class="btn-gen btn-full" bindtap="onViewReport">查看今日日报</button>
+            </block>
+            <!-- 无日报，或有日报但新增了录音：显示两个按钮 -->
+            <block wx:else>
+              <button class="btn-view" bindtap="onViewReport">查看</button>
+              <button class="btn-gen" bindtap="onGenerateReport">生成今日日报</button>
+            </block>
           </view>
         </view>
 

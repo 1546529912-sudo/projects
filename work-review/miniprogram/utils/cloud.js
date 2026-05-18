@@ -78,6 +78,23 @@ const getReportHistory = (page = 1, perPage = 20) =>
 const getReport = (date) =>
   callCloud('getReportHistory', { date });
 
+// 生成周报/月报
+const createPeriodReport = (type, startDate, endDate) =>
+  new Promise((resolve, reject) => {
+    wx.cloud.callFunction({
+      name: 'createPeriodReport',
+      data: { type, startDate, endDate },
+      config: { timeout: 60000 },
+      success: (res) => {
+        const result = res.result;
+        if (!result) return reject(new Error('云函数 createPeriodReport 无返回值'));
+        if (result.code !== 0) return reject(new Error(result.message || `createPeriodReport 返回错误码 ${result.code}`));
+        resolve(result.data);
+      },
+      fail: (err) => reject(new Error(`createPeriodReport 调用失败：${err.errMsg || JSON.stringify(err)}`)),
+    });
+  });
+
 module.exports = {
   callCloud,
   healthCheck,
@@ -87,4 +104,5 @@ module.exports = {
   saveReport,
   getReportHistory,
   getReport,
+  createPeriodReport,
 };

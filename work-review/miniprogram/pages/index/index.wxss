@@ -217,6 +217,8 @@
 }
 .btn-gen::after { border: none; }
 
+.btn-full { flex: 1; }
+
 .add-record {
   display: flex;
   align-items: center;
