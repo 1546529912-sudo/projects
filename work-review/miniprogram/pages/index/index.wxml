@@ -52,7 +52,7 @@
       <!-- 问候区 -->
       <view class="greet-area">
         <text class="greet-time">{{timeOfDay}}</text>
-        <text class="greet-name">今天也辛苦啦，</text>
+        <text class="greet-name">今天也辛苦啦</text>
         <text class="greet-sub" wx:if="{{!hasTodayRecord}}">把剩下的交给我，让 AI 为您快速生成简报</text>
       </view>
 

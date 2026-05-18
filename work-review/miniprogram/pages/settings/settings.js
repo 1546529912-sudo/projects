@@ -5,9 +5,15 @@ Page({
     asrProvider: 'mock',
     aiProvider: 'mock',
     version: '0.1.0',
+    userContext: '',
+    contextSaved: false,
+    showFeedbackModal: false,
+    feedbackText: '',
+    feedbackSubmitting: false,
   },
 
   async onLoad() {
+    this.setData({ userContext: wx.getStorageSync('userContext') || '' });
     try {
       const info = await healthCheck();
       this.setData({
@@ -19,6 +25,16 @@ Page({
     }
   },
 
+  onContextChange(e) {
+    this.setData({ userContext: e.detail.value, contextSaved: false });
+  },
+
+  onSaveContext() {
+    wx.setStorageSync('userContext', this.data.userContext);
+    this.setData({ contextSaved: true });
+    wx.showToast({ title: '已保存', icon: 'success' });
+  },
+
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar().setSelected) {
       this.getTabBar().setSelected(2);
@@ -26,7 +42,40 @@ Page({
   },
 
   onFeedback() {
-    wx.showToast({ title: '感谢反馈 ❤️', icon: 'none' });
+    this.setData({ showFeedbackModal: true, feedbackText: '' });
+  },
+
+  onFeedbackInput(e) {
+    this.setData({ feedbackText: e.detail.value });
+  },
+
+  onFeedbackCancel() {
+    this.setData({ showFeedbackModal: false, feedbackText: '' });
+  },
+
+  async onFeedbackSubmit() {
+    const text = this.data.feedbackText.trim();
+    if (!text) {
+      wx.showToast({ title: '请填写反馈内容', icon: 'none' });
+      return;
+    }
+    if (this.data.feedbackSubmitting) return;
+    this.setData({ feedbackSubmitting: true });
+    try {
+      const db = wx.cloud.database();
+      await db.collection('feedback').add({
+        data: {
+          content: text,
+          appVersion: this.data.version,
+          createTime: db.serverDate(),
+        },
+      });
+      this.setData({ showFeedbackModal: false, feedbackText: '', feedbackSubmitting: false });
+      wx.showToast({ title: '感谢你的反馈！', icon: 'success' });
+    } catch (err) {
+      this.setData({ feedbackSubmitting: false });
+      wx.showToast({ title: '提交失败，请重试', icon: 'none' });
+    }
   },
 
   onAbout() {

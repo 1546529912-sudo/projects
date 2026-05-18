@@ -13,7 +13,7 @@ exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;
 
-  const { text, recordId } = event;
+  const { text } = event;
 
   if (!text || text.trim().length < 3) {
     return { code: 4001, message: '参数错误：文字内容不能为空', data: null };
@@ -39,11 +39,10 @@ exports.main = async (event, context) => {
   }
 };
 
-async function callDeepSeek(text) {
-  const prompt = buildExtractPrompt(text);
+async function callDeepSeek(text, userContext) {
   const response = await httpPost(DEEPSEEK_BASE_URL + '/chat/completions', {
     model: DEEPSEEK_MODEL,
-    messages: [{ role: 'user', content: prompt }],
+    messages: buildExtractMessages(text, userContext),
     temperature: 0.1,
     response_format: { type: 'json_object' },
   }, { Authorization: 'Bearer ' + DEEPSEEK_API_KEY });
@@ -52,31 +51,40 @@ async function callDeepSeek(text) {
   return parseAndValidate(content);
 }
 
-function buildExtractPrompt(text) {
-  return `你是一个工作记录提取助手。请从以下工作描述中提取结构化信息。
+function buildExtractMessages(text, userContext) {
+  const sysBase = '你是一名工作记录整理助手，帮助用户将口述或文字工作内容整理为结构化数据，以便生成日报。输入可能来自语音转文字，存在口语化表达或轻微识别错误，请智能理解原意。';
+  return [
+    {
+      role: 'system',
+      content: userContext ? `${sysBase}\n\n用户背景：${userContext}` : sysBase,
+    },
+    {
+      role: 'user',
+      content: `请从以下工作描述中提取结构化信息，以 JSON 格式返回。
 
 工作描述：
 ${text}
 
-请以 JSON 格式返回，结构如下：
+返回结构：
 {
   "projects": [
     {
-      "project_name": "项目名称",
-      "actions": ["做了什么"],
-      "outputs": ["产出了什么"],
-      "problems": ["遇到什么问题"],
-      "next_steps": ["下一步计划"]
+      "project_name": "项目或工作模块名称，简短，5字以内",
+      "actions": ["具体完成了什么，每条一件事，10-20字，不要把多件事合并"],
+      "problems": ["遇到的问题或阻塞，没有则返回空数组"],
+      "next_steps": ["后续计划，没有则返回空数组"]
     }
   ],
-  "summary": "今日工作简要摘要",
-  "tomorrow_focus": ["明日重点"]
+  "summary": "今日工作一句话摘要，50字以内",
+  "tomorrow_focus": ["明日重点事项，最多3条，没有则返回空数组"]
 }
 
-要求：
-1. project_name 和 actions 为必填
-2. 如果文字中没有明确的项目，归入"日常工作"
-3. 只返回 JSON，不要其他文字`;
+规则：
+1. project_name 和 actions 必填，不能为空
+2. 无明确项目名时归入"日常工作"
+3. 只返回 JSON，不要其他文字`,
+    },
+  ];
 }
 
 function parseAndValidate(content) {

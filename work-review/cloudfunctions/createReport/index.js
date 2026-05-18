@@ -35,46 +35,34 @@ async function generateWithAI(date, projects) {
     return t;
   }).join('\n\n');
 
-  const prompt = `你是一位工作汇报助手，请根据以下今日工作数据生成工作日报。
+  const resp = await httpPost(DEEPSEEK_BASE_URL + '/chat/completions', {
+    model: DEEPSEEK_MODEL,
+    messages: [
+      {
+        role: 'system',
+        content: '你是一名专业的工作日报撰写助手，擅长将工作记录整理成简洁、专业的日报文本。严格按照用户指定的格式输出，不添加多余内容。',
+      },
+      {
+        role: 'user',
+        content: `请根据以下工作数据生成日报，以 JSON 格式返回三个字段。
 
 日期：${date}
 工作内容：
 ${projectText}
 
-请以 JSON 格式返回，字段说明如下：
+字段要求：
 
-"summary"：2-3句话的执行摘要，温暖自然，100字以内。
+"summary"：2-3句执行摘要，自然流畅，80字以内。
 
-"personal_text"：个人版日报，使用以下固定格式（用\\n换行，严格按格式输出）：
-【${date} 日报】
+"personal_text"：个人版日报，严格使用以下格式，符号原样保留：
+【${date} 日报】\n\n▌ {项目名}\n  • {完成事项}\n  ⚠ {问题，没有则省略此行}\n\n【明日计划】\n  • {计划}
 
-▌ 项目名称
-  • 完成事项1
-  • 完成事项2
-  ⚠ 问题（没有问题则不写这行）
+"formal_text"：汇报版日报，严格使用以下格式：
+${date} 工作汇报\n\n一、今日完成情况\n{序号}. {项目名}\n   - {完成事项}\n\n二、明日工作计划\n{序号}. {计划}
 
-【明日计划】
-  • 计划1
-  • 计划2
-
-"formal_text"：汇报版日报，使用以下固定格式（用\\n换行，严格按格式输出）：
-${date} 工作汇报
-
-一、今日完成情况
-1. 项目名称
-   - 完成事项1
-   - 完成事项2
-
-二、明日工作计划
-1. 计划1
-2. 计划2
-
-只返回 JSON，不要其他文字：
-{"summary":"...","personal_text":"...","formal_text":"..."}`;
-
-  const resp = await httpPost(DEEPSEEK_BASE_URL + '/chat/completions', {
-    model: DEEPSEEK_MODEL,
-    messages: [{ role: 'user', content: prompt }],
+只返回 JSON，不要其他文字：{"summary":"...","personal_text":"...","formal_text":"..."}`,
+      },
+    ],
     temperature: 0.3,
     max_tokens: 2000,
     response_format: { type: 'json_object' },

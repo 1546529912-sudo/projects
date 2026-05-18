@@ -26,8 +26,10 @@ const callCloud = async (name, data = {}) => {
 const healthCheck = () => callCloud('healthCheck');
 
 // AI 提取
-const aiExtract = (text, recordId) =>
-  callCloud('aiExtract', { text, recordId });
+const aiExtract = (text, recordId) => {
+  const userContext = wx.getStorageSync('userContext') || '';
+  return callCloud('aiExtract', { text, recordId, userContext });
+};
 
 // ASR 转写（超时设 60s，对应云函数执行时间）
 const doASR = (fileID, format = 'mp3') => {

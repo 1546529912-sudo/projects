@@ -6,7 +6,7 @@
     <view class="banner-icon">
       <view class="mic-icon"></view>
     </view>
-    <text class="banner-title">工作记录助手</text>
+    <text class="banner-title">今天忙啥了</text>
     <text class="banner-sub">录语音 · AI 整理 · 生成日报</text>
   </view>
 
@@ -32,6 +32,27 @@
     </view>
   </view>
 
+  <!-- 个人背景 -->
+  <view class="section-title">个人背景</view>
+  <view class="card context-card">
+    <text class="context-hint">填写后 AI 会更准确地理解你的工作内容</text>
+    <textarea
+      class="context-input"
+      placeholder="例如：我是一名销售经理，日常工作包括客户拜访、数据分析和团队管理"
+      placeholder-class="context-placeholder"
+      value="{{userContext}}"
+      bindinput="onContextChange"
+      maxlength="200"
+      auto-height
+    />
+    <view class="context-footer">
+      <text class="context-count">{{userContext.length}}/200</text>
+      <view class="save-btn {{contextSaved ? 'save-btn-saved' : ''}}" bindtap="onSaveContext">
+        <text>{{contextSaved ? '已保存 ✓' : '保存'}}</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 其他 -->
   <view class="section-title">其他</view>
   <view class="card">
@@ -52,5 +73,31 @@
   </view>
 
   <text class="version">v{{version}}</text>
+
+  <!-- 意见反馈弹窗 -->
+  <view class="modal-mask" wx:if="{{showFeedbackModal}}" bindtap="onFeedbackCancel">
+    <view class="modal-box" catchtap="">
+      <text class="modal-title">意见反馈</text>
+      <textarea
+        class="modal-input"
+        placeholder="请输入你的意见或建议…"
+        placeholder-class="modal-placeholder"
+        value="{{feedbackText}}"
+        bindinput="onFeedbackInput"
+        maxlength="500"
+        auto-height
+        focus
+      />
+      <view class="modal-count">{{feedbackText.length}}/500</view>
+      <view class="modal-actions">
+        <view class="modal-btn modal-btn-cancel" bindtap="onFeedbackCancel">
+          <text>取消</text>
+        </view>
+        <view class="modal-btn modal-btn-submit {{feedbackSubmitting ? 'btn-disabled' : ''}}" bindtap="onFeedbackSubmit">
+          <text>{{feedbackSubmitting ? '提交中…' : '提交'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
 
 </view>
