@@ -11,6 +11,7 @@ Page({
     periodStart: '',
     periodEnd: '',
     hasPeriodReport: false,
+    hasNewReports: false,
   },
 
   onLoad() {
@@ -74,7 +75,12 @@ Page({
     let filtered = allReports;
     let periodStart = '', periodEnd = today;
     if (filter === 'week') {
-      periodStart = new Date(now - 6 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+      // 用本周一作为稳定 key，避免每天变化导致找不到已保存的周报
+      const day = now.getDay();
+      const daysFromMon = day === 0 ? 6 : day - 1;
+      const mon = new Date(now);
+      mon.setDate(now.getDate() - daysFromMon);
+      periodStart = mon.toISOString().slice(0, 10);
       filtered = allReports.filter(r => r.reportDate >= periodStart);
     } else if (filter === 'month') {
       const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2, '0');
@@ -82,8 +88,11 @@ Page({
       filtered = allReports.filter(r => r.reportDate.startsWith(`${y}-${m}`));
     }
     const periodType = filter === 'week' ? 'week' : 'month';
-    const hasPeriodReport = filter !== 'all' && !!wx.getStorageSync(`period_${periodType}_${periodStart}`);
-    this.setData({ periodStart, periodEnd, hasPeriodReport });
+    const periodData = filter !== 'all' ? wx.getStorageSync(`period_${periodType}_${periodStart}`) : null;
+    const hasPeriodReport = !!periodData;
+    const hasNewReports = hasPeriodReport && !!periodData.generatedDate &&
+      filtered.some(r => r.reportDate > periodData.generatedDate);
+    this.setData({ periodStart, periodEnd, hasPeriodReport, hasNewReports });
 
     // 按月分组，打平为带 type 标记的列表
     const displayList = [];
@@ -102,13 +111,20 @@ Page({
     wx.navigateTo({ url: `/pages/report/report?date=${e.currentTarget.dataset.date}&mode=view` });
   },
 
+  onViewPeriodReport() {
+    const { filter, periodStart, periodEnd } = this.data;
+    const type = filter === 'week' ? 'week' : 'month';
+    wx.navigateTo({
+      url: `/pages/report/report?mode=period&type=${type}&start=${periodStart}&end=${periodEnd}&saved=1`,
+    });
+  },
+
   onGeneratePeriodReport() {
-    const { filter, periodStart, periodEnd, hasPeriodReport } = this.data;
+    const { filter, periodStart, periodEnd } = this.data;
     if (filter === 'all') return;
     const type = filter === 'week' ? 'week' : 'month';
-    const saved = hasPeriodReport ? '&saved=1' : '';
     wx.navigateTo({
-      url: `/pages/report/report?mode=period&type=${type}&start=${periodStart}&end=${periodEnd}${saved}`,
+      url: `/pages/report/report?mode=period&type=${type}&start=${periodStart}&end=${periodEnd}`,
     });
   },
 });

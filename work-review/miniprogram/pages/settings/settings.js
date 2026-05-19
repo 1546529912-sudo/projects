@@ -1,4 +1,4 @@
-const { healthCheck, fetchAdvisorAvatar } = require('../../utils/cloud');
+const { healthCheck, fetchAdvisorAvatar, getUserContext, saveUserContext } = require('../../utils/cloud');
 
 Page({
   data: {
@@ -16,6 +16,7 @@ Page({
   },
 
   async onLoad() {
+    // 先用本地缓存立即显示，再从云端拉取最新值并同步
     this.setData({ userContext: wx.getStorageSync('userContext') || '' });
     this.loadAdvisors();
     try {
@@ -24,6 +25,11 @@ Page({
         asrProvider: info.asrProvider || 'mock',
         aiProvider: info.aiProvider || 'mock',
       });
+    } catch (_) {}
+    try {
+      const { userContext } = await getUserContext();
+      wx.setStorageSync('userContext', userContext);
+      this.setData({ userContext });
     } catch (_) {}
   },
 
@@ -99,10 +105,14 @@ Page({
     this.setData({ userContext: e.detail.value, contextSaved: false });
   },
 
-  onSaveContext() {
-    wx.setStorageSync('userContext', this.data.userContext);
+  async onSaveContext() {
+    const { userContext } = this.data;
+    wx.setStorageSync('userContext', userContext);
     this.setData({ contextSaved: true });
     wx.showToast({ title: '已保存', icon: 'success' });
+    try {
+      await saveUserContext(userContext);
+    } catch (_) {}
   },
 
   onShow() {

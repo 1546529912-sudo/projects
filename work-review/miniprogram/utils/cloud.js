@@ -115,6 +115,10 @@ const createPeriodReport = (type, startDate, endDate) =>
 // 获取顾问头像和 title（结果存 DB 供所有用户复用）
 const fetchAdvisorAvatar = (name) => callCloud('fetchAdvisorAvatar', { name });
 
+// 个人背景（按 openid 隔离，存云端）
+const getUserContext = () => callCloud('getUserContext');
+const saveUserContext = (userContext) => callCloud('saveUserContext', { userContext });
+
 module.exports = {
   callCloud,
   healthCheck,
@@ -127,4 +131,6 @@ module.exports = {
   createPeriodReport,
   getAdvisorAdvice,
   fetchAdvisorAvatar,
+  getUserContext,
+  saveUserContext,
 };

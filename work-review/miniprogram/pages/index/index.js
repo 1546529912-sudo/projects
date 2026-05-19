@@ -18,6 +18,7 @@ Page({
     // 录音覆层状态
     recordStatus: 'idle', // idle | recording | uploading | transcribing
     recordSecs: 0,
+    dogStyle: '',
   },
 
   _timer: null,
@@ -26,6 +27,7 @@ Page({
     this.setTimeOfDay();
     this.checkCloud();
     this.initRecorder();
+    this.startDogWalk();
   },
 
   onShow() {
@@ -39,6 +41,13 @@ Page({
   onUnload() {
     recorderManager.stop();
     this.clearTimer();
+  },
+
+  startDogWalk() {
+    const sys = wx.getSystemInfoSync();
+    const dogPx = Math.round(sys.windowWidth / 750 * 200);
+    const x = sys.windowWidth - dogPx;
+    this.setData({ dogStyle: `left:${x}px;top:0px;` });
   },
 
   setTimeOfDay() {

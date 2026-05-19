@@ -54,6 +54,45 @@
         </view>
 
         <text class="select-hint">长按文字可选中复制</text>
+
+        <!-- 顾问视角 -->
+        <view class="advisor-section">
+          <view class="advisor-section-title">
+            <text class="advisor-icon">💡</text>
+            <text>顾问视角</text>
+          </view>
+          <scroll-view class="advisor-chips" scroll-x>
+            <view class="advisor-chip {{selectedAdvisor === item.name ? 'chip-active' : ''}}"
+              wx:for="{{advisors}}" wx:key="id"
+              data-name="{{item.name}}"
+              bindtap="onSelectAdvisor">
+              <text>{{item.name}}</text>
+            </view>
+          </scroll-view>
+
+          <!-- 加载中 -->
+          <view class="advice-loading" wx:if="{{adviceLoading}}">
+            <view class="advice-spin"></view>
+            <text>{{selectedAdvisor}} 正在思考...</text>
+          </view>
+
+          <!-- 建议内容 -->
+          <view class="advice-card" wx:elif="{{advice}}">
+            <view class="advice-header">
+              <text class="advice-who">{{selectedAdvisor}} 的建议</text>
+              <view class="advice-regen-btn" bindtap="onRegenerateAdvice">
+                <text>重新生成</text>
+              </view>
+            </view>
+            <text class="advice-text" user-select="{{true}}">{{advice}}</text>
+          </view>
+
+          <!-- 出错 -->
+          <view class="advice-error" wx:elif="{{adviceError}}">
+            <text>{{adviceError}}</text>
+          </view>
+        </view>
+
         <view style="height: 20rpx"></view>
 
       </scroll-view>

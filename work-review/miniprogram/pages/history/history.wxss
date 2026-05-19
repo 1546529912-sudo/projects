@@ -37,6 +37,18 @@ page { background: #F8F4EF; }
 
 .btn-period::after { border: none; }
 
+.period-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.btn-period-ghost {
+  background: transparent;
+  border: 3rpx solid #D4885E;
+  color: #C07048;
+  box-shadow: none;
+}
+
 /* ── 筛选 Tab ── */
 .filter-wrap {
   position: fixed;

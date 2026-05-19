@@ -1,4 +1,15 @@
-const { createReport, saveReport, getReport, createPeriodReport } = require('../../utils/cloud');
+const { createReport, saveReport, getReport, createPeriodReport, getAdvisorAdvice } = require('../../utils/cloud');
+
+function stripMd(text) {
+  return (text || '')
+    .replace(/#{1,6}\s+/g, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/^[ \t]*[-*+]\s+/gm, '• ')
+    .replace(/^[ \t]*\d+\.\s+/gm, '')
+    .trim();
+}
 
 Page({
   data: {
@@ -15,11 +26,17 @@ Page({
     saved: false,
     mode: 'generate',
     periodType: '',
+    advisors: [],
+    selectedAdvisor: '',
+    advice: '',
+    adviceLoading: false,
+    adviceError: '',
   },
 
   onLoad(options) {
     const mode = options.mode || 'generate';
     this.setData({ mode });
+    this.loadAdvisors();
 
     if (mode === 'period') {
       const type = options.type || 'week';
@@ -27,9 +44,9 @@ Page({
       const end = options.end || '';
       const label = type === 'week' ? '本周报告' : '本月报告';
       this.setData({ periodType: type, dateLabel: label });
+      this._adviceCacheKey = `advice_period_${type}_${start}`;
 
       if (options.saved === '1') {
-        // 直接从本地读已保存版本
         const cached = wx.getStorageSync(`period_${type}_${start}`);
         if (cached) {
           this.setData({ summary: cached.summary, personalText: cached.personalText, formalText: cached.formalText, loading: false });
@@ -43,6 +60,7 @@ Page({
     const date = options.date || new Date().toISOString().slice(0, 10);
     const [, m, d] = date.split('-');
     this.setData({ date, dateLabel: `${+m}月${+d}日` });
+    this._adviceCacheKey = `advice_daily_${date}`;
 
     if (mode === 'view') {
       this.loadSaved(date);
@@ -55,17 +73,18 @@ Page({
     this.setData({ loading: true, error: null });
     try {
       const result = await createPeriodReport(type, startDate, endDate);
+      this._clearAdviceCache();
       this.setData({
         summary: result.summary || '',
         personalText: result.personal_text,
         formalText: result.formal_text,
         loading: false,
       });
-      // 生成成功后自动缓存到本地，供历史页判断和下次直接查看
       wx.setStorageSync(`period_${type}_${startDate}`, {
         summary: result.summary || '',
         personalText: result.personal_text,
         formalText: result.formal_text,
+        generatedDate: new Date().toISOString().slice(0, 10),
       });
     } catch (err) {
       this.setData({ error: err.message, loading: false });
@@ -150,6 +169,63 @@ Page({
     }
   },
 
+  loadAdvisors() {
+    const saved = wx.getStorageSync('advisors');
+    const advisors = saved && saved.length > 0 ? saved : [
+      { id: 'musk', name: '马斯克' },
+      { id: 'jobs', name: '乔布斯' },
+      { id: 'inamori', name: '稻盛和夫' },
+    ];
+    this.setData({ advisors });
+  },
+
+  async onSelectAdvisor(e) {
+    const name = e.currentTarget.dataset.name;
+    if (this.data.adviceLoading) return;
+    this.setData({ selectedAdvisor: name, advice: '', adviceError: '', adviceLoading: true });
+    try {
+      await this._fetchAdvice(name);
+    } catch (err) {
+      this.setData({ adviceError: err.message, adviceLoading: false });
+    }
+  },
+
+  async _fetchAdvice(name) {
+    const cacheKey = `${this._adviceCacheKey}_${name}`;
+    const cached = wx.getStorageSync(cacheKey);
+    if (cached) {
+      this.setData({ advice: cached, adviceLoading: false });
+      return;
+    }
+    const { summary, personalText, reportContent, mode, periodType } = this.data;
+    const content = summary || personalText?.slice(0, 400) || '';
+    const projects = reportContent?.projects || [];
+    const reportType = mode === 'period' ? periodType : 'daily';
+    const raw = await getAdvisorAdvice(name, content, projects, reportType);
+    const advice = stripMd(raw);
+    wx.setStorageSync(cacheKey, advice);
+    this.setData({ advice, adviceLoading: false });
+  },
+
+  async onRegenerateAdvice() {
+    const { selectedAdvisor, adviceLoading } = this.data;
+    if (!selectedAdvisor || adviceLoading) return;
+    wx.removeStorageSync(`${this._adviceCacheKey}_${selectedAdvisor}`);
+    this.setData({ advice: '', adviceError: '', adviceLoading: true });
+    try {
+      await this._fetchAdvice(selectedAdvisor);
+    } catch (err) {
+      this.setData({ adviceError: err.message, adviceLoading: false });
+    }
+  },
+
+  _clearAdviceCache() {
+    (this.data.advisors || []).forEach(a => {
+      wx.removeStorageSync(`${this._adviceCacheKey}_${a.name}`);
+    });
+    this.setData({ advice: '', adviceError: '', selectedAdvisor: '' });
+  },
+
   onSwitchTab(e) {
     this.setData({ activeTab: e.currentTarget.dataset.tab });
   },
@@ -188,6 +264,7 @@ Page({
   },
 
   onRegenerate() {
+    this._clearAdviceCache();
     this.loadAndGenerate(this.data.date);
   },
 });

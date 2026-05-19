@@ -9,15 +9,18 @@ const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_BASE_URL = 'https://api.deepseek.com/v1';
 const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
 
-exports.main = async (event, context) => {
+exports.main = async (event) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;
 
-  const { text } = event;
+  const { text, userContext = '' } = event;
 
   if (!text || text.trim().length < 3) {
     return { code: 4001, message: '参数错误：文字内容不能为空', data: null };
   }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const existingProjects = await getTodayProjectNames(openid, today);
 
   const startTime = Date.now();
 
@@ -26,7 +29,7 @@ exports.main = async (event, context) => {
     if (AI_PROVIDER === 'mock') {
       result = mockExtract(text);
     } else {
-      result = await callDeepSeek(text);
+      result = await callDeepSeek(text, userContext, existingProjects);
     }
 
     const duration = Date.now() - startTime;
@@ -39,10 +42,28 @@ exports.main = async (event, context) => {
   }
 };
 
-async function callDeepSeek(text, userContext) {
+async function getTodayProjectNames(openid, date) {
+  try {
+    const res = await db.collection('work_records')
+      .where({ _openid: openid, date })
+      .field({ projects: true })
+      .get();
+    const names = new Set();
+    (res.data || []).forEach(r => {
+      (r.projects || []).forEach(p => {
+        if (p.project_name) names.add(p.project_name);
+      });
+    });
+    return Array.from(names);
+  } catch (_) {
+    return [];
+  }
+}
+
+async function callDeepSeek(text, userContext, existingProjects = []) {
   const response = await httpPost(DEEPSEEK_BASE_URL + '/chat/completions', {
     model: DEEPSEEK_MODEL,
-    messages: buildExtractMessages(text, userContext),
+    messages: buildExtractMessages(text, userContext, existingProjects),
     temperature: 0.1,
     response_format: { type: 'json_object' },
   }, { Authorization: 'Bearer ' + DEEPSEEK_API_KEY });
@@ -51,12 +72,15 @@ async function callDeepSeek(text, userContext) {
   return parseAndValidate(content);
 }
 
-function buildExtractMessages(text, userContext) {
-  const sysBase = '你是一名工作记录整理助手，帮助用户将口述或文字工作内容整理为结构化数据，以便生成日报。输入可能来自语音转文字，存在口语化表达或轻微识别错误，请智能理解原意。';
+function buildExtractMessages(text, userContext, existingProjects = []) {
+  const sysBase = '你是一名工作记录整理助手，帮助用户将口述或文字工作内容整理为结构化数据，以便生成日报。输入来自语音转文字，经常存在识别错误（如字词被替换、语气词混入），请大胆推断原意，不要因为局部字词奇怪就放弃提取。例如"忙了吗系统"应理解为"忙了某系统"，"吗"是识别错误，仍应提取项目名。';
+  const existingHint = existingProjects.length > 0
+    ? `\n\n今天已有的项目名称：${existingProjects.join('、')}。命名新项目时，若内容明显属于上述某个项目，请直接复用该名称，保持一致。`
+    : '';
   return [
     {
       role: 'system',
-      content: userContext ? `${sysBase}\n\n用户背景：${userContext}` : sysBase,
+      content: (userContext ? `${sysBase}\n\n用户背景：${userContext}` : sysBase) + existingHint,
     },
     {
       role: 'user',
@@ -81,8 +105,12 @@ ${text}
 
 规则：
 1. project_name 和 actions 必填，不能为空
-2. 无明确项目名时归入"日常工作"
-3. 只返回 JSON，不要其他文字`,
+2. 识别项目名时按以下优先级：
+   - 高置信度词（项目、系统、平台、产品、小程序、应用、网站、服务、工程）：包含这类词的名称直接作为独立项目
+   - 低置信度词（模块、功能、需求、版本、迭代、方案、业务线、专题）：结合上下文判断——若明确归属于某个高置信度项目则合并进去，否则单独列项
+   - 项目名应尽量提取完整词组（如"报表系统""支付平台"），若上下文中确实只提到裸关键词（如只说了"系统"），则保留该词作为项目名，不要丢弃
+3. 无明确项目名时归入"日常工作"
+4. 只返回 JSON，不要其他文字`,
     },
   ];
 }
@@ -100,7 +128,7 @@ function parseAndValidate(content) {
   return data;
 }
 
-function mockExtract(text) {
+function mockExtract(_text) {
   return {
     projects: [{
       project_name: '示例项目（Mock）',
@@ -114,7 +142,7 @@ function mockExtract(text) {
   };
 }
 
-async function logAI(openid, taskType, result, duration, db) {
+async function logAI(openid, taskType, _result, duration, db) {
   try {
     await db.collection('ai_logs').add({
       data: {

@@ -75,8 +75,24 @@
 
   <!-- 底部生成按钮 -->
   <view class="period-footer" wx:if="{{filter !== 'all' && displayList.length > 0}}">
-    <button class="btn-period" bindtap="onGeneratePeriodReport">
-      {{hasPeriodReport ? '查看' : '生成'}}{{filter === 'week' ? '周报' : '月报'}}
+    <!-- 有已生成的报告 + 有新日报 → 两个按钮 -->
+    <block wx:if="{{hasPeriodReport && hasNewReports}}">
+      <view class="period-actions">
+        <button class="btn-period btn-period-ghost" bindtap="onViewPeriodReport">
+          查看{{filter === 'week' ? '周报' : '月报'}}
+        </button>
+        <button class="btn-period" bindtap="onGeneratePeriodReport">
+          生成新{{filter === 'week' ? '周报' : '月报'}}
+        </button>
+      </view>
+    </block>
+    <!-- 有已生成的报告，无新数据 → 只查看 -->
+    <button wx:elif="{{hasPeriodReport}}" class="btn-period" bindtap="onViewPeriodReport">
+      查看{{filter === 'week' ? '周报' : '月报'}}
+    </button>
+    <!-- 未生成过 → 生成 -->
+    <button wx:else class="btn-period" bindtap="onGeneratePeriodReport">
+      生成{{filter === 'week' ? '周报' : '月报'}}
     </button>
   </view>
 
