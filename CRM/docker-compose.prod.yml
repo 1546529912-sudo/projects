@@ -1,0 +1,87 @@
+# CRM 生产环境完整部署
+#
+# 启动：docker compose --env-file .env.production -f docker-compose.prod.yml up -d
+# 停止：docker compose -f docker-compose.prod.yml down
+# 日志：docker compose -f docker-compose.prod.yml logs -f
+# 重启：docker compose -f docker-compose.prod.yml restart
+#
+# 注意：开发环境继续使用 docker-compose.yml（只跑 postgres + redis），不受本文件影响。
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: crm-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-crm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD 必须在 .env.production 中设置}
+      POSTGRES_DB: ${POSTGRES_DB:-crm}
+    volumes:
+      - crm-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-crm} -d ${POSTGRES_DB:-crm}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    # 默认不暴露端口到宿主机（仅容器网络访问，更安全）
+    # 如运维需要用 pgAdmin/DBeaver 远程连接，临时打开下面这段：
+    # ports:
+    #   - "127.0.0.1:5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    container_name: crm-redis
+    restart: unless-stopped
+    volumes:
+      - crm-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: crm-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      API_PORT: 3001
+      DATABASE_URL: postgresql://${POSTGRES_USER:-crm}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-crm}
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 必须在 .env.production 中设置，至少 32 位随机字符串}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-8h}
+      PASSWORD_SALT_ROUNDS: ${PASSWORD_SALT_ROUNDS:-10}
+      LOGIN_MAX_FAILED: ${LOGIN_MAX_FAILED:-5}
+    volumes:
+      # 上传文件持久化（容器重建时数据不丢）
+      - crm-api-uploads:/repo/apps/api/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # API 不直接暴露端口，由 web 容器内 nginx 反向代理访问
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        # 构建时注入：生产用同源 /api/v1，由容器内 nginx 转发到 api 服务
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api/v1}
+    container_name: crm-web
+    restart: unless-stopped
+    ports:
+      # 对外暴露端口：默认 8080（避免与宝塔自带 nginx 抢 80）
+      # 运维可再用宝塔 nginx 反向代理 80/443 -> 8080
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - api
+
+volumes:
+  crm-postgres-data:
+  crm-redis-data:
+  crm-api-uploads:

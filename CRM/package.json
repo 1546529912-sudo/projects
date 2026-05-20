@@ -13,7 +13,14 @@
     "db:generate": "pnpm --filter @crm/api db:generate",
     "db:migrate": "pnpm --filter @crm/api db:migrate",
     "db:seed": "pnpm --filter @crm/api db:seed",
-    "api:audit": "node scripts/api-route-audit.mjs"
+    "api:audit": "node scripts/api-route-audit.mjs",
+    "prod:up": "docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build",
+    "prod:down": "docker compose --env-file .env.production -f docker-compose.prod.yml down",
+    "prod:restart": "docker compose --env-file .env.production -f docker-compose.prod.yml restart",
+    "prod:logs": "docker compose --env-file .env.production -f docker-compose.prod.yml logs -f",
+    "prod:status": "docker compose --env-file .env.production -f docker-compose.prod.yml ps",
+    "prod:seed": "docker exec -w /repo/apps/api crm-api npx prisma db seed",
+    "prod:reset": "docker compose --env-file .env.production -f docker-compose.prod.yml down -v && docker compose --env-file .env.production -f docker-compose.prod.yml up -d"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
