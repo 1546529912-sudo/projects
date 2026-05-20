@@ -47,26 +47,6 @@ type Project = {
 
 const projects: Project[] = [
   {
-    id: "story",
-    title: "英语小故事",
-    tag: "个人项目 · 内容产品实践",
-    desc: "围绕英语阅读体验展开的个人产品实践，通过 AI 朗读、点词翻译、生词本与内容生成，探索更轻量的阅读产品形态。",
-    highlights: ["AI朗读", "点词翻译", "生词本", "AI故事生成"],
-    outcomes: ["强化沉浸式英语输入", "兼顾阅读理解与词汇积累", "支持内容快速迭代生产"],
-    caseStudy: {
-      userProblem: "英语阅读存在理解门槛，内容难度不匹配且缺乏持续输入动力。",
-      productGoal: "以更轻量的个人内容产品形态验证阅读闭环，兼顾理解与进阶。",
-      coreDesign: "构建分级故事、点词翻译、生词本复习和阅读进度管理的完整路径。",
-      aiInvolvement: "利用 AI 朗读、内容生成和表达优化，提高内容产能与个性化体验。",
-      productTradeoff: "优先保证阅读流程顺畅和可理解性，暂缓复杂社群互动功能。",
-      mvpDecision: "先验证核心阅读功能与复习闭环，再补充更多题型和互动模块。",
-      result: "形成可迭代的沉浸式输入模型，作为个人侧的探索载体。",
-    },
-    actionType: "qr",
-    actionLabel: "微信小程序体验码",
-    qrSrc: "/story-miniprogram-qr.png",
-  },
-  {
     id: "worklog",
     title: "今天忙啥了",
     tag: "个人项目 · AI 工作记录实践",
@@ -104,6 +84,26 @@ const projects: Project[] = [
     },
     actionType: "link",
     actionLabel: "方案与实践说明（演示）",
+  },
+  {
+    id: "story",
+    title: "英语小故事",
+    tag: "个人项目 · 内容产品实践",
+    desc: "围绕英语阅读体验展开的个人产品实践，通过 AI 朗读、点词翻译、生词本与内容生成，探索更轻量的阅读产品形态。",
+    highlights: ["AI朗读", "点词翻译", "生词本", "AI故事生成"],
+    outcomes: ["强化沉浸式英语输入", "兼顾阅读理解与词汇积累", "支持内容快速迭代生产"],
+    caseStudy: {
+      userProblem: "英语阅读存在理解门槛，内容难度不匹配且缺乏持续输入动力。",
+      productGoal: "以更轻量的个人内容产品形态验证阅读闭环，兼顾理解与进阶。",
+      coreDesign: "构建分级故事、点词翻译、生词本复习和阅读进度管理的完整路径。",
+      aiInvolvement: "利用 AI 朗读、内容生成和表达优化，提高内容产能与个性化体验。",
+      productTradeoff: "优先保证阅读流程顺畅和可理解性，暂缓复杂社群互动功能。",
+      mvpDecision: "先验证核心阅读功能与复习闭环，再补充更多题型和互动模块。",
+      result: "形成可迭代的沉浸式输入模型，作为个人侧的探索载体。",
+    },
+    actionType: "qr",
+    actionLabel: "微信小程序体验码",
+    qrSrc: "/story-miniprogram-qr.png",
   },
 ];
 
@@ -157,9 +157,9 @@ const aboutParagraphs = [
 ];
 
 const heroProjects = [
+  { id: "worklog", label: "今天忙啥了", target: "worklog" },
   { id: "crm", label: "CRM系统", target: "crm" },
   { id: "story", label: "英语小故事", target: "story" },
-  { id: "worklog", label: "今天忙啥了", target: "worklog" },
 ];
 
 const navItems = [
