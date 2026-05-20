@@ -41,6 +41,8 @@ type Project = {
   };
   actionType: "qr" | "link";
   actionLabel: string;
+  qrSrc?: string;
+  qrScale?: number;
 };
 
 const projects: Project[] = [
@@ -62,6 +64,27 @@ const projects: Project[] = [
     },
     actionType: "qr",
     actionLabel: "微信小程序体验码",
+    qrSrc: "/story-miniprogram-qr.png",
+  },
+  {
+    id: "worklog",
+    title: "今天忙啥了",
+    tag: "个人项目 · AI 工作记录实践",
+    desc: "面向「想不起今天做了啥」的日常场景，通过语音或文字快速录入工作内容，AI 自动整理日报，并支持一键生成周报、月报。",
+    highlights: ["语音/文字录入", "AI 日报", "周/月报聚合", "个人背景"],
+    outcomes: ["降低日报撰写成本", "沉淀工作记录与汇报闭环", "贴合个人岗位与项目背景"],
+    caseStudy: {
+      userProblem: "上班忙完一天难以回忆具体处理了哪些事，写日报、周报、月报费时费力，表述也容易遗漏关键信息。",
+      productGoal: "用更轻量的方式记录每日工作，并由 AI 自动整理成可直接使用的日报与周月汇报。",
+      coreDesign: "构建「碎片录入—AI 整理日报—历史检索—一键周/月报聚合」的闭环，并通过个人背景信息让生成内容更贴合岗位与项目。",
+      aiInvolvement: "利用大模型对语音/文字输入进行归类、要点提炼与口径统一，结合个人背景做个性化生成。",
+      productTradeoff: "优先保证主链路顺畅与录入低门槛（语音优先），社交分享、协作编辑等延后。",
+      mvpDecision: "先打通日报闭环和周/月报聚合，背景信息以简单表单跑通；模板编排与多端协作留待后续。",
+      result: "形成可日常使用的工作记录与汇报小程序，验证 AI 写作类个人工具的产品形态。",
+    },
+    actionType: "qr",
+    actionLabel: "微信小程序体验码",
+    qrSrc: "/worklog-miniprogram-qr.png",
   },
   {
     id: "crm",
@@ -136,6 +159,7 @@ const aboutParagraphs = [
 const heroProjects = [
   { id: "crm", label: "CRM系统", target: "crm" },
   { id: "story", label: "英语小故事", target: "story" },
+  { id: "worklog", label: "今天忙啥了", target: "worklog" },
 ];
 
 const navItems = [
@@ -165,6 +189,7 @@ export function ApprovedPortfolioPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeNavIndex, setActiveNavIndex] = useState(0);
   const [showDevModal, setShowDevModal] = useState(false);
+  const [previewQr, setPreviewQr] = useState<{ src: string; title: string } | null>(null);
   /** 顶部 Tab 点击后短暂暂停 scroll-spy：避免平滑滚过中段时高亮乱跳 */
   const navSpyPausedUntilRef = useRef(0);
 
@@ -444,17 +469,32 @@ export function ApprovedPortfolioPage() {
                   <div className="mt-8 flex items-center justify-between rounded-3xl border border-[#e5d9cf] bg-[#faf8f4] px-5 py-4">
                     <div>
                       <p className="text-sm font-medium text-[#8c675a]">{project.actionLabel}</p>
-                      <p className="mt-1 text-xs text-gray-400">可扫码查看对应产品形态或体验入口</p>
+                      <p className="mt-1 text-xs text-gray-400">点击放大后扫码体验</p>
                     </div>
-                    <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-[1.4rem] border border-[#e5d9cf] bg-white shadow-sm">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPreviewQr({
+                          src: project.qrSrc ?? "/story-miniprogram-qr.png",
+                          title: project.title,
+                        })
+                      }
+                      className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-[1.4rem] border border-[#e5d9cf] bg-white shadow-sm transition hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a47463]/55"
+                      aria-label={`放大 ${project.title} 二维码`}
+                    >
                       <Image
-                        src="/story-miniprogram-qr.png"
+                        src={project.qrSrc ?? "/story-miniprogram-qr.png"}
                         alt={`${project.title} 二维码`}
                         width={96}
                         height={96}
-                        className="h-full w-full scale-[1.35] object-contain"
+                        className="h-full w-full object-contain"
+                        style={
+                          project.qrScale && project.qrScale !== 1
+                            ? { transform: `scale(${project.qrScale})` }
+                            : undefined
+                        }
                       />
-                    </div>
+                    </button>
                   </div>
                 ) : (
                   <div className="mt-8 flex items-center justify-between rounded-3xl border border-[#e5d9cf] bg-[#faf8f4] px-5 py-4">
@@ -688,6 +728,49 @@ export function ApprovedPortfolioPage() {
                 className="mt-6 inline-flex h-11 items-center justify-center rounded-2xl bg-[#111827] px-6 text-sm font-medium text-white transition hover:bg-[#1f2937]"
               >
                 我知道了
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {previewQr && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/55 px-6 backdrop-blur-[2px]"
+            onClick={() => setPreviewQr(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${previewQr.title} 二维码`}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 6 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 4 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] as const }}
+              className="w-full max-w-sm rounded-3xl border border-[#e5d9cf] bg-[#faf8f4] p-8 text-center shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p className="text-sm font-medium text-[#8c675a]">{previewQr.title}</p>
+              <p className="mt-1 text-xs text-gray-400">用微信扫一扫识别小程序码</p>
+              <div className="mx-auto mt-5 flex h-72 w-72 items-center justify-center rounded-2xl border border-[#e5d9cf] bg-white p-3 shadow-inner">
+                <Image
+                  src={previewQr.src}
+                  alt={`${previewQr.title} 二维码`}
+                  width={320}
+                  height={320}
+                  className="h-full w-full object-contain"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewQr(null)}
+                className="mt-6 inline-flex h-11 items-center justify-center rounded-2xl bg-[#111827] px-6 text-sm font-medium text-white transition hover:bg-[#1f2937]"
+              >
+                关闭
               </button>
             </motion.div>
           </motion.div>
