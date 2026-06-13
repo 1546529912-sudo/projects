@@ -1,0 +1,15 @@
+<view class="page-result">
+  <view class="icon-box">
+    <view wx:if="{{success}}" class="icon-ok">✓</view>
+    <view wx:else class="icon-fail">✗</view>
+  </view>
+  <view class="title">{{success ? '支付成功' : '支付失败'}}</view>
+  <view wx:if="{{!success && msg}}" class="msg">{{msg}}</view>
+  <view class="order-no">订单号 {{orderNo}}</view>
+
+  <view class="btns">
+    <button class="btn-primary btn-block" bindtap="onViewOrder">查看订单</button>
+    <button wx:if="{{!success}}" class="btn-secondary btn-block" bindtap="onRetry">重新支付</button>
+    <view class="link" bindtap="onHome">返回首页</view>
+  </view>
+</view>

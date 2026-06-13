@@ -1,0 +1,42 @@
+<view class="page-cart">
+  <view wx:if="{{!isLogin}}" class="empty">
+    <view>登录后查看购物车</view>
+    <button class="btn-primary" style="margin-top:32rpx;" bindtap="onLogin">立即登录</button>
+  </view>
+
+  <block wx:elif="{{loading}}">
+    <view class="loading">加载中...</view>
+  </block>
+
+  <block wx:elif="{{list.length === 0}}">
+    <view class="empty">购物车空空如也</view>
+  </block>
+
+  <block wx:else>
+    <view wx:for="{{list}}" wx:key="id" class="row card">
+      <view class="check {{item.selected ? 'on' : ''}}" bindtap="onToggle" data-id="{{item.id}}">{{item.selected ? '✓' : ''}}</view>
+      <view class="thumb">{{item.sku.spu_name || item.sku_code}}</view>
+      <view class="meta">
+        <view class="name">{{item.sku.spu_name || item.sku_code}}</view>
+        <view class="attrs">{{item.sku_code}}</view>
+        <view class="price-line">
+          <text class="price">¥{{item.priceYuan}}</text>
+          <view class="qty-row">
+            <view class="qty-btn" bindtap="onMinus" data-id="{{item.id}}">-</view>
+            <view class="qty-num">{{item.qty}}</view>
+            <view class="qty-btn" bindtap="onPlus" data-id="{{item.id}}">+</view>
+          </view>
+        </view>
+        <view wx:if="{{!item.available}}" class="invalid">已下架</view>
+      </view>
+      <view class="del" bindtap="onDelete" data-id="{{item.id}}">删除</view>
+    </view>
+
+    <view style="height: 140rpx;"></view>
+
+    <view class="bottom-bar">
+      <view class="sum">合计 <text class="price">¥{{totalAmountYuan}}</text></view>
+      <button class="btn-primary checkout" bindtap="onCheckout">结算({{selectedQty}})</button>
+    </view>
+  </block>
+</view>

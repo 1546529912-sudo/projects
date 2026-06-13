@@ -1,0 +1,52 @@
+<view class="page">
+  <view class="hint">仅 shipped/completed 订单可申请；同一订单项一次只可有一个进行中的换货单</view>
+
+  <view wx:if="{{order}}" class="order-card">
+    <view class="row"><text class="lbl">订单</text><text>{{order.order_no}}</text></view>
+    <view class="row"><text class="lbl">状态</text><text>{{order.status}}</text></view>
+  </view>
+
+  <view class="block">
+    <view class="block-title">勾选要换的商品 + 填要换成的 SKU</view>
+    <view wx:for="{{items}}" wx:key="order_item_id" class="item" wx:for-item="it" wx:for-index="idx">
+      <view class="item-head" bindtap="onCheck" data-idx="{{idx}}">
+        <view class="check {{it.checked ? 'on' : ''}}"></view>
+        <view class="item-body">
+          <view class="item-name">{{it.name}}</view>
+          <view class="item-meta">旧 SKU: {{it.old_sku_code}} · ¥{{it.priceYuan}} × {{it.qty}}</view>
+        </view>
+      </view>
+      <view wx:if="{{it.checked}}" class="item-form">
+        <view class="form-row">
+          <text class="lbl-sm">数量</text>
+          <input class="qty" type="number" value="{{it.qty}}" data-idx="{{idx}}" bindblur="onQtyChange" />
+          <text class="hint-sm">/{{it.max}}</text>
+        </view>
+        <view class="form-row">
+          <text class="lbl-sm">换成 SKU</text>
+          <input class="new-sku" placeholder="如 SPU001-002" value="{{it.new_sku_code}}" data-idx="{{idx}}" bindinput="onNewSku" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="block">
+    <view class="block-title">原因（必填）</view>
+    <textarea class="reason" placeholder="例如：尺码不合适 / 颜色色差" value="{{reason}}" bindinput="onReason" />
+  </view>
+
+  <view class="block">
+    <view class="block-title">凭证图（选填，最多 5 张）</view>
+    <view class="evid">
+      <view wx:for="{{evidencePreviews}}" wx:key="*this" class="evid-item">
+        <image src="{{item}}" mode="aspectFill" />
+        <view class="del" data-idx="{{index}}" bindtap="onRemoveImage">×</view>
+      </view>
+      <view wx:if="{{evidencePreviews.length < 5}}" class="evid-add" bindtap="onPickImage">
+        <text>{{uploading ? '上传中...' : '+'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <button class="submit" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">提交申请</button>
+</view>

@@ -1,0 +1,11 @@
+.page-my-rev { padding: 24rpx; }
+.empty { text-align: center; color: #999; padding: 200rpx 0; }
+.rev-card { background: #FFFFFF; border-radius: 12rpx; padding: 24rpx; margin-bottom: 16rpx; box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04); }
+.row1 { display: flex; align-items: center; gap: 16rpx; margin-bottom: 12rpx; }
+.stars { color: #FFB400; font-size: 30rpx; }
+.hidden-badge { background: #FFE3E3; color: #FF385C; font-size: 22rpx; padding: 2rpx 12rpx; border-radius: 16rpx; }
+.date { color: #999; font-size: 22rpx; margin-left: auto; }
+.content { color: #333; font-size: 28rpx; line-height: 1.5; margin-bottom: 12rpx; }
+.image-grid { display: flex; flex-wrap: wrap; gap: 8rpx; margin-bottom: 12rpx; }
+.img { width: 140rpx; height: 140rpx; border-radius: 8rpx; background: #F7F7F7; }
+.meta { color: #999; font-size: 22rpx; }

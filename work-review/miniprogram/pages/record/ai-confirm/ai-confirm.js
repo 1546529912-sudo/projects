@@ -12,6 +12,9 @@ Page({
     statusBarHeight: 0,
     editingIdx: -1,
     editingProject: null,
+    projectSuggestions: [],
+    showProjectPicker: false,
+    pickerNewName: '',
   },
 
   onLoad(options) {
@@ -28,6 +31,29 @@ Page({
       this.setData({ rawText });
       this.doAIExtract(rawText);
     }
+    this.loadProjectSuggestions();
+  },
+
+  async loadProjectSuggestions() {
+    try {
+      const db = wx.cloud.database();
+      const res = await db.collection('work_records')
+        .orderBy('createTime', 'desc')
+        .limit(50)
+        .get();
+      const seen = new Set();
+      const suggestions = [];
+      (res.data || []).forEach(r => {
+        (r.projects || []).forEach(p => {
+          const name = (p.project_name || '').trim();
+          if (name && !seen.has(name)) {
+            seen.add(name);
+            suggestions.push(name);
+          }
+        });
+      });
+      this.setData({ projectSuggestions: suggestions.slice(0, 20) });
+    } catch (_) {}
   },
 
   async loadExistingRecord(recordId) {
@@ -127,6 +153,32 @@ Page({
     this.setData({ [`editingProject.${field}`]: e.detail.value });
   },
 
+  onOpenProjectPicker() {
+    this.setData({ showProjectPicker: true, pickerNewName: this.data.editingProject?.project_name || '' });
+  },
+
+  onCloseProjectPicker() {
+    this.setData({ showProjectPicker: false });
+  },
+
+  onPickerNewNameInput(e) {
+    this.setData({ pickerNewName: e.detail.value });
+  },
+
+  onPickerConfirm() {
+    const name = this.data.pickerNewName.trim();
+    if (name) {
+      this.setData({ 'editingProject.project_name': name, showProjectPicker: false });
+    } else {
+      this.setData({ showProjectPicker: false });
+    }
+  },
+
+  onSelectSuggestion(e) {
+    const name = e.currentTarget.dataset.name;
+    this.setData({ 'editingProject.project_name': name, showProjectPicker: false });
+  },
+
   // 保存编辑
   onSaveEdit() {
     const { editingIdx, editingProject } = this.data;
@@ -178,16 +230,18 @@ Page({
       };
 
       if (recordId) {
-        // 已有记录：更新
-        await db.collection('work_records').doc(recordId).update({ data: payload });
+        // 已有记录：更新（updateTime 让首页能检测到"有新数据"）
+        await db.collection('work_records').doc(recordId).update({
+          data: { ...payload, updateTime: db.serverDate() },
+        });
+        wx.switchTab({ url: '/pages/index/index' });
       } else {
-        // 新记录：新增
+        // 新记录：保存后回首页，由用户决定何时生成日报
         await db.collection('work_records').add({
           data: { date: today, rawText, ...payload, createTime: db.serverDate() },
         });
+        wx.switchTab({ url: '/pages/index/index' });
       }
-
-      wx.navigateTo({ url: `/pages/report/report?date=${today}` });
     } catch (err) {
       this.setData({ saving: false });
       wx.showToast({ title: '保存失败：' + err.message, icon: 'none', duration: 2500 });

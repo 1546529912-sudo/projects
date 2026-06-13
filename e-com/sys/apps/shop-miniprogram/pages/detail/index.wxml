@@ -1,0 +1,74 @@
+<view class="page-detail">
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:elif="{{error}}" class="error">{{error}}</view>
+
+  <block wx:else>
+    <view class="img-placeholder">
+      <text>{{spuInfo.name}}</text>
+    </view>
+
+    <view class="card info">
+      <view class="price">¥{{priceYuan}}</view>
+      <view class="name">{{spuInfo.name}}</view>
+      <view class="sku-code">规格：{{sku}}</view>
+      <view class="stock {{available > 0 ? '' : 'sold-out'}}">{{available > 0 ? '库存 ' + available + ' 件' : '已售罄'}}</view>
+      <view wx:if="{{storeInfo}}" class="shop-tag">
+        🏪 由 <text class="shop-name">{{storeInfo.name}}</text> 提供
+      </view>
+    </view>
+
+    <view wx:if="{{spuInfo.selling_points && spuInfo.selling_points.length}}" class="card">
+      <view class="section-title">卖点</view>
+      <view wx:for="{{spuInfo.selling_points}}" wx:key="*this" class="bullet">· {{item}}</view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">数量</view>
+      <view class="qty-row">
+        <view class="qty-btn" bindtap="onMinus">-</view>
+        <view class="qty-num">{{qty}}</view>
+        <view class="qty-btn" bindtap="onPlus">+</view>
+      </view>
+    </view>
+
+    <view wx:if="{{spuInfo.detail_html}}" class="card detail-html">
+      <view class="section-title">详情</view>
+      <rich-text nodes="{{spuInfo.detail_html}}"></rich-text>
+    </view>
+
+    <!-- iter-20 评价区 -->
+    <view class="card reviews-section">
+      <view class="reviews-head">
+        <text class="section-title">评价（{{reviewCount}}）</text>
+        <text wx:if="{{ratingAvg > 0}}" class="rating-avg">★ {{ratingAvg}}</text>
+      </view>
+      <view wx:if="{{reviews.length === 0}}" class="rev-empty">暂无评价</view>
+      <view wx:for="{{reviews}}" wx:key="id" class="rev-item">
+        <view class="rev-r1">
+          <text class="stars">{{item.stars}}</text>
+          <text class="date">{{item.created_at}}</text>
+        </view>
+        <view wx:if="{{item.content}}" class="rev-content">{{item.content}}</view>
+        <view wx:if="{{item.previews.length}}" class="rev-images">
+          <image
+            wx:for="{{item.previews}}" wx:key="*this" wx:for-item="p"
+            class="rev-img" src="{{p}}" mode="aspectFill"
+          />
+        </view>
+      </view>
+    </view>
+
+    <!-- 占位用，避免被底部按钮遮挡 -->
+    <view style="height: 160rpx;"></view>
+
+    <view class="bottom-bar">
+      <view class="bar-fav" bindtap="onToggleFav">
+        <text class="heart {{favored ? 'on' : ''}}">{{favored ? '♥' : '♡'}}</text>
+        <text class="bar-fav-label">{{favored ? '已收藏' : '收藏'}}</text>
+      </view>
+      <view class="bar-cart" bindtap="onGoCart">🛒</view>
+      <button class="btn-secondary bar-btn" bindtap="onAddCart">加入购物车</button>
+      <button class="btn-primary bar-btn" bindtap="onBuyNow">立即购买</button>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,82 @@
+/**
+ * Design Tokens · 与 outputs/design/design-system.md 一一对应
+ * 任何 CSS 不允许 hard code，必须用 var(--xxx)
+ */
+:root {
+  /* Brand · 工业克莱因蓝 (International Klein Blue) */
+  --color-primary: #002fa7;
+  --color-primary-active: #001f70;
+  --color-primary-disabled: #b5c1ed;
+  --color-primary-tint: #e8edfa;
+
+  /* Neutral */
+  --color-ink: #222222;
+  --color-body: #3f3f3f;
+  --color-muted: #6a6a6a;
+  --color-muted-soft: #929292;
+  --color-hairline: #dddddd;
+  --color-hairline-soft: #ebebeb;
+  --color-border-strong: #c1c1c1;
+
+  /* Surface */
+  --color-canvas: #ffffff;
+  --color-surface-soft: #f7f7f7;
+  --color-surface-strong: #f2f2f2;
+
+  /* Semantic */
+  --color-success: #27ae60;
+  --color-warning: #f39c12;
+  --color-error: #c13515;
+  --color-info: #428bff;
+
+  /* Shadow */
+  --shadow-hover-float:
+    rgba(0, 0, 0, 0.02) 0 0 0 1px,
+    rgba(0, 0, 0, 0.04) 0 2px 6px 0,
+    rgba(0, 0, 0, 0.1) 0 4px 8px 0;
+
+  /* Typography */
+  --font-display: Inter, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', -apple-system, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Spacing */
+  --space-xxs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-base: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-section: 64px;
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  /* Element Plus 主题色映射 */
+  --el-color-primary: var(--color-primary);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-ink);
+  background-color: var(--color-canvas);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: var(--color-ink);
+  text-decoration: none;
+}

@@ -1,0 +1,54 @@
+.page-coupon-center { padding: 24rpx; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24rpx; }
+.title { font-size: 36rpx; font-weight: bold; }
+.my-link { color: #FF385C; font-size: 28rpx; }
+.empty { text-align: center; color: #999; padding: 200rpx 0; }
+
+.coupon-card {
+  display: flex;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  margin-bottom: 24rpx;
+  padding: 32rpx 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+.coupon-card.disabled { opacity: 0.45; }
+
+.left {
+  width: 200rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: 1rpx dashed #DDDDDD;
+  padding-right: 16rpx;
+}
+.amount { color: #FF385C; font-size: 28rpx; }
+.amount .big { font-size: 56rpx; font-weight: bold; }
+.min { color: #999; font-size: 22rpx; margin-top: 8rpx; }
+
+.mid {
+  flex: 1;
+  padding: 0 24rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.name { font-size: 30rpx; font-weight: bold; margin-bottom: 8rpx; }
+.desc { color: #717171; font-size: 24rpx; }
+.period { color: #999; font-size: 22rpx; margin-top: 8rpx; }
+.claim-count { color: #999; font-size: 22rpx; margin-top: 4rpx; }
+
+.right {
+  width: 140rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-claim {
+  background: #FF385C;
+  color: #FFFFFF;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+}
+.status { color: #999; font-size: 24rpx; }

@@ -86,8 +86,8 @@
             bindtap="onTapRecord" data-id="{{item._id}}">
             <text class="rec-time">{{item.recordTime}}</text>
             <view class="rec-content">
-              <text class="rec-title">{{item.title}}</text>
-              <text class="rec-desc">{{item.summary}}</text>
+              <text class="rec-title">{{item.projectNames}}</text>
+              <text class="rec-desc">{{item.actionsSummary}}</text>
             </view>
             <view class="rec-arrow">›</view>
           </view>
@@ -97,10 +97,14 @@
             <block wx:if="{{hasTodayReport && !hasNewRecords}}">
               <button class="btn-gen btn-full" bindtap="onViewReport">查看今日日报</button>
             </block>
-            <!-- 无日报，或有日报但新增了录音：显示两个按钮 -->
-            <block wx:else>
+            <!-- 已有日报但有新录音：查看旧版 + 重新生成 -->
+            <block wx:elif="{{hasTodayReport && hasNewRecords}}">
               <button class="btn-view" bindtap="onViewReport">查看</button>
-              <button class="btn-gen" bindtap="onGenerateReport">生成今日日报</button>
+              <button class="btn-gen" bindtap="onGenerateReport">重新生成日报</button>
+            </block>
+            <!-- 无日报：只显示生成 -->
+            <block wx:else>
+              <button class="btn-gen btn-full" bindtap="onGenerateReport">生成今日日报</button>
             </block>
           </view>
         </view>

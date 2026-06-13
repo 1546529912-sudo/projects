@@ -112,6 +112,13 @@ const createPeriodReport = (type, startDate, endDate) =>
     });
   });
 
+// 保存/获取周报月报（云端持久化，跨设备可用）
+const savePeriodReport = (type, periodStart, periodEnd, summary, personalText, formalText) =>
+  callCloud('savePeriodReport', { type, periodStart, periodEnd, summary, personalText, formalText });
+
+const getPeriodReport = (type, periodStart) =>
+  callCloud('getPeriodReport', { type, periodStart });
+
 // 获取顾问头像和 title（结果存 DB 供所有用户复用）
 const fetchAdvisorAvatar = (name) => callCloud('fetchAdvisorAvatar', { name });
 
@@ -129,6 +136,8 @@ module.exports = {
   getReportHistory,
   getReport,
   createPeriodReport,
+  savePeriodReport,
+  getPeriodReport,
   getAdvisorAdvice,
   fetchAdvisorAvatar,
   getUserContext,

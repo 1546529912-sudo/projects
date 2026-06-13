@@ -1,4 +1,4 @@
-const { createReport, saveReport, getReport, createPeriodReport, getAdvisorAdvice } = require('../../utils/cloud');
+const { createReport, saveReport, getReport, createPeriodReport, savePeriodReport, getPeriodReport, getAdvisorAdvice } = require('../../utils/cloud');
 
 function stripMd(text) {
   return (text || '')
@@ -52,6 +52,9 @@ Page({
           this.setData({ summary: cached.summary, personalText: cached.personalText, formalText: cached.formalText, loading: false });
           return;
         }
+        // localStorage 没有（清缓存或换设备），从云端加载
+        this.loadSavedPeriod(type, start, end);
+        return;
       }
       this.loadAndGeneratePeriod(type, start, end);
       return;
@@ -74,18 +77,48 @@ Page({
     try {
       const result = await createPeriodReport(type, startDate, endDate);
       this._clearAdviceCache();
+      const generatedDate = new Date().toISOString().slice(0, 10);
       this.setData({
         summary: result.summary || '',
         personalText: result.personal_text,
         formalText: result.formal_text,
         loading: false,
       });
-      wx.setStorageSync(`period_${type}_${startDate}`, {
+      const cacheData = {
         summary: result.summary || '',
         personalText: result.personal_text,
         formalText: result.formal_text,
-        generatedDate: new Date().toISOString().slice(0, 10),
-      });
+        generatedDate,
+      };
+      wx.setStorageSync(`period_${type}_${startDate}`, cacheData);
+      // 同步保存到云端，跨设备可查
+      savePeriodReport(type, startDate, endDate, result.summary || '', result.personal_text, result.formal_text).catch(() => {});
+    } catch (err) {
+      this.setData({ error: err.message, loading: false });
+    }
+  },
+
+  async loadSavedPeriod(type, startDate, endDate) {
+    this.setData({ loading: true, error: null });
+    try {
+      const result = await getPeriodReport(type, startDate);
+      if (result && result.personalText) {
+        wx.setStorageSync(`period_${type}_${startDate}`, {
+          summary: result.summary || '',
+          personalText: result.personalText,
+          formalText: result.formalText,
+          generatedDate: result.generatedDate || '',
+        });
+        this.setData({
+          summary: result.summary || '',
+          personalText: result.personalText,
+          formalText: result.formalText,
+          loading: false,
+        });
+      } else {
+        // 云端也没有，重新生成
+        this.loadAndGeneratePeriod(type, startDate, endDate);
+      }
     } catch (err) {
       this.setData({ error: err.message, loading: false });
     }
@@ -164,6 +197,11 @@ Page({
         formalText: result.formal_text,
         loading: false,
       });
+      // 自动保存，确保历史页可查到
+      try {
+        await saveReport(date, result.content, 'personal', result.personal_text, result.formal_text);
+        this.setData({ saved: true });
+      } catch (_) {}
     } catch (err) {
       this.setData({ error: err.message, loading: false });
     }

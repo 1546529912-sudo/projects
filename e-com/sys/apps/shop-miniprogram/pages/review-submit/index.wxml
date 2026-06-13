@@ -1,0 +1,46 @@
+<view class="page-review">
+  <view class="card">
+    <view class="section-title">评分</view>
+    <view class="rating-row">
+      <slider min="1" max="5" step="1" value="{{rating}}" show-value bindchange="onRating" activeColor="#FF385C" />
+      <view class="stars">
+        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" class="star {{rating >= item ? 'on' : ''}}">★</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">说说你的感受</view>
+    <textarea
+      class="content"
+      placeholder="可以从商品质量、物流、服务等角度评价"
+      maxlength="1000"
+      value="{{content}}"
+      bindinput="onContent"
+    />
+    <view class="count">{{content.length}} / 1000</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">上传图片（最多 9 张）</view>
+    <view class="image-grid">
+      <view
+        wx:for="{{previews}}" wx:key="*this"
+        class="img-cell"
+        data-idx="{{index}}"
+        bindtap="onPreview"
+      >
+        <image src="{{item}}" mode="aspectFill" class="img" />
+        <view class="img-remove" data-idx="{{index}}" catchtap="onRemoveImage">×</view>
+      </view>
+      <view wx:if="{{images.length < 9}}" class="img-cell add" bindtap="onAddImage">
+        <text class="plus">+</text>
+      </view>
+    </view>
+  </view>
+
+  <view style="height: 140rpx;"></view>
+  <view class="bottom-bar">
+    <button class="btn-primary" disabled="{{submitting}}" bindtap="onSubmit">{{submitting ? '提交中…' : '发表评价'}}</button>
+  </view>
+</view>

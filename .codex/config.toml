@@ -1,0 +1,3 @@
+[mcp_servers.drawio]
+args = ["@next-ai-drawio/mcp-server@latest"]
+command = "npx"

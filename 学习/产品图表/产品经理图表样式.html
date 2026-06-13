@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品经理制图手册</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1e9; --paper2:#efeadf; --ink:#26211c; --ink-soft:#615a4f; --ink-faint:#938b7d;
+  --accent:#1f6f5c; --accent2:#bb5a2e; --card:#fffdf8; --line:#e2dbcb; --line2:#ece6d8;
+  /* diagram tokens */
+  --p:#2b2b2f; --b:#d6d9dd; --bg2:#eef0f2;
+  --color-success-text:#0c6b4d; --color-info-text:#1f4f9e; --color-error-text:#b14a22;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans SC',sans-serif;background:var(--paper);color:var(--ink);
+  line-height:1.75;font-weight:400;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(var(--line2) 1px,transparent 1px);background-size:22px 22px;
+}
+/* ---------- hero ---------- */
+header.hero{
+  padding:64px 28px 40px;max-width:1180px;margin:0 auto;position:relative;
+}
+.hero .eyebrow{
+  font-size:12px;letter-spacing:.32em;color:var(--accent2);font-weight:700;
+  text-transform:uppercase;margin-bottom:18px;
+}
+.hero h1{
+  font-family:'Noto Serif SC',serif;font-weight:900;font-size:clamp(38px,6vw,72px);
+  line-height:1.08;letter-spacing:-.01em;color:var(--ink);
+}
+.hero h1 em{font-style:normal;color:var(--accent);}
+.hero p.sub{max-width:620px;margin-top:20px;font-size:17px;color:var(--ink-soft);font-weight:300;}
+.hero .rule{height:3px;width:72px;background:var(--accent2);margin-top:30px;}
+/* ---------- layout ---------- */
+.shell{max-width:1180px;margin:0 auto;padding:20px 28px 100px;display:grid;
+  grid-template-columns:248px 1fr;gap:46px;align-items:start;}
+/* nav */
+nav.toc{position:sticky;top:24px;}
+nav.toc .toc-title{font-size:11px;letter-spacing:.28em;color:var(--ink-faint);
+  font-weight:700;text-transform:uppercase;margin:6px 0 14px 4px;}
+.nav-link{
+  display:flex;align-items:center;gap:11px;padding:9px 13px;margin:2px 0;border-radius:11px;
+  color:var(--ink-soft);text-decoration:none;font-size:14.5px;font-weight:500;
+  cursor:pointer;transition:all .18s ease;border:1px solid transparent;
+}
+.nav-link .num{font-family:'Noto Serif SC',serif;font-size:12px;color:var(--ink-faint);
+  width:22px;text-align:center;flex:none;transition:all .18s ease;}
+.nav-link:hover{background:var(--paper2);color:var(--ink);}
+.nav-link.current{background:var(--ink);color:#fff;border-color:var(--ink);}
+.nav-link.current .num{color:var(--accent2);}
+/* main */
+main{min-width:0;}
+.panel{display:none;animation:fade .45s ease both;}
+.panel.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.kicker{display:inline-block;font-size:11.5px;letter-spacing:.16em;font-weight:700;
+  color:var(--accent);background:rgba(31,111,92,.09);padding:5px 12px;border-radius:30px;
+  text-transform:uppercase;margin-bottom:16px;}
+.panel h2{font-family:'Noto Serif SC',serif;font-weight:900;font-size:clamp(30px,4.4vw,46px);
+  line-height:1.12;letter-spacing:-.01em;}
+.answers{font-size:17.5px;color:var(--accent2);font-weight:500;margin-top:12px;
+  padding-left:16px;border-left:3px solid var(--accent2);}
+.panel h3{font-family:'Noto Serif SC',serif;font-weight:700;font-size:21px;margin:38px 0 12px;
+  display:flex;align-items:center;gap:10px;}
+.panel h3::before{content:"";width:9px;height:9px;background:var(--accent);border-radius:50%;flex:none;}
+.panel p{margin:12px 0;color:#3a352e;font-size:15.5px;}
+.panel p .hl{color:var(--ink);font-weight:700;background:linear-gradient(transparent 62%,rgba(187,90,46,.22) 62%);}
+/* diagram card */
+figure.diagram{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;
+  margin:20px 0;box-shadow:0 1px 0 rgba(0,0,0,.02),0 18px 40px -28px rgba(60,50,30,.35);
+}
+figure.diagram svg{display:block;width:100%;height:auto;}
+figure.diagram figcaption{margin-top:14px;font-size:13px;color:var(--ink-faint);
+  text-align:center;font-weight:400;border-top:1px dashed var(--line);padding-top:12px;}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:20px 0;}
+.compare-grid figure.diagram{margin:0;}
+.compare-grid .clabel{font-family:'Noto Serif SC',serif;font-weight:700;font-size:15px;
+  margin-bottom:10px;color:var(--ink);}
+.compare-grid .clabel.a{color:var(--accent);}
+.compare-grid .clabel.b{color:var(--accent2);}
+/* tip box */
+.tip{background:var(--paper2);border:1px solid var(--line);border-left:4px solid var(--accent2);
+  border-radius:0 14px 14px 0;padding:16px 20px;margin:24px 0;font-size:14.5px;color:#3a352e;}
+.tip strong{color:var(--accent2);}
+/* svg text/colors */
+figure.diagram svg text{font-family:'Noto Sans SC',sans-serif;}
+figure.diagram svg .th{font-weight:600;font-size:14px;fill:var(--p);}
+figure.diagram svg .t{font-weight:400;font-size:14px;fill:var(--p);}
+figure.diagram svg .ts{font-weight:400;font-size:12px;fill:#6b7078;}
+figure.diagram svg .arr{stroke:#8c9097;stroke-width:1.5;fill:none;}
+figure.diagram svg .leader{stroke:#c4c8cd;stroke-width:1;}
+figure.diagram svg .c-teal rect,figure.diagram svg .c-teal polygon,figure.diagram svg .c-teal circle{fill:#d2efe5;stroke:#1aa079;stroke-width:1.2;}
+figure.diagram svg .c-teal text{fill:#0c6b4d;}
+figure.diagram svg .c-blue rect,figure.diagram svg .c-blue polygon,figure.diagram svg .c-blue circle{fill:#dde9fb;stroke:#4a82e0;stroke-width:1.2;}
+figure.diagram svg .c-blue text{fill:#1f4f9e;}
+figure.diagram svg .c-amber rect,figure.diagram svg .c-amber polygon,figure.diagram svg .c-amber circle{fill:#fbeccb;stroke:#d99e1f;stroke-width:1.2;}
+figure.diagram svg .c-amber text{fill:#8a5800;}
+figure.diagram svg .c-coral rect,figure.diagram svg .c-coral polygon,figure.diagram svg .c-coral circle{fill:#fbe0d4;stroke:#e07549;stroke-width:1.2;}
+figure.diagram svg .c-coral text{fill:#b14a22;}
+figure.diagram svg .c-purple rect,figure.diagram svg .c-purple polygon,figure.diagram svg .c-purple circle{fill:#e7e3f8;stroke:#7d75d8;stroke-width:1.2;}
+figure.diagram svg .c-purple text{fill:#4b3fa0;}
+figure.diagram svg .c-gray rect,figure.diagram svg .c-gray polygon,figure.diagram svg .c-gray circle{fill:#e9eaed;stroke:#9aa0a8;stroke-width:1.2;}
+figure.diagram svg .c-gray text{fill:#41464d;}
+/* prev/next */
+.pager{display:flex;justify-content:space-between;gap:14px;margin-top:46px;
+  padding-top:26px;border-top:1px solid var(--line);}
+.pager button{font-family:'Noto Sans SC';flex:1;background:var(--card);border:1px solid var(--line);
+  border-radius:13px;padding:14px 18px;cursor:pointer;text-align:left;transition:all .18s;color:var(--ink);}
+.pager button:hover:not(:disabled){border-color:var(--accent);transform:translateY(-2px);
+  box-shadow:0 12px 24px -16px rgba(31,111,92,.5);}
+.pager button:disabled{opacity:.35;cursor:default;}
+.pager button.next{text-align:right;}
+.pager .pl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;}
+.pager .pt{font-family:'Noto Serif SC';font-weight:700;font-size:16px;margin-top:3px;}
+footer{max-width:1180px;margin:0 auto;padding:30px 28px 60px;color:var(--ink-faint);
+  font-size:13px;border-top:1px solid var(--line);}
+/* mobile */
+@media(max-width:860px){
+  .shell{grid-template-columns:1fr;gap:8px;padding-top:8px;}
+  nav.toc{position:sticky;top:0;z-index:40;background:var(--paper);
+    margin:0 -28px 14px;padding:10px 16px;border-bottom:1px solid var(--line);}
+  nav.toc .toc-title{display:none;}
+  nav.toc .links{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+  .nav-link{white-space:nowrap;flex:none;padding:8px 12px;}
+  .nav-link .num{display:none;}
+  .compare-grid{grid-template-columns:1fr;}
+  header.hero{padding:40px 22px 24px;}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">Product Manager · Diagram Handbook</div>
+  <h1>产品经理<br><em>制图手册</em></h1>
+  <p class="sub">九类图，一套心法。每一张都讲清楚：它回答什么问题、长什么样、和最容易混的那张图差在哪——并把区别画出来给你看。</p>
+  <div class="rule"></div>
+</header>
+
+<div class="shell">
+  <nav class="toc">
+    <div class="toc-title">目录</div>
+    <div class="links">
+      <a class="nav-link current" data-target="p0"><span class="num">00</span>设计原则</a>
+      <a class="nav-link" data-target="p1"><span class="num">01</span>思维导图</a>
+      <a class="nav-link" data-target="p2"><span class="num">02</span>流程图 / 泳道图</a>
+      <a class="nav-link" data-target="p3"><span class="num">03</span>状态图</a>
+      <a class="nav-link" data-target="p4"><span class="num">04</span>架构图</a>
+      <a class="nav-link" data-target="p5"><span class="num">05</span>结构图</a>
+      <a class="nav-link" data-target="p6"><span class="num">06</span>优先级矩阵</a>
+      <a class="nav-link" data-target="p7"><span class="num">07</span>用户旅程图</a>
+      <a class="nav-link" data-target="p8"><span class="num">08</span>服务蓝图</a>
+      <a class="nav-link" data-target="p9"><span class="num">09</span>全景图</a>
+    </div>
+  </nav>
+
+  <main>
+
+  <!-- ============ 00 设计原则 ============ -->
+  <section class="panel active" id="p0">
+    <span class="kicker">基本功</span>
+    <h2>让任何图都好看的设计原则</h2>
+    <p class="answers">好看 = 克制 + 对齐 + 留白，不是加装饰。</p>
+    <p>下面是同一个流程（提需求 → 评审 → 上线）的两种画法。左边「随手画」，右边只是套了几条规则——内容没变，专业度天差地别。九成的丑图，是因为东西太多、太花、没对齐。</p>
+    <figure class="diagram">
+      <svg width="100%" viewBox="0 0 680 336" role="img"><title>随手画 vs 讲究过</title>
+      <defs><marker id="m_arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <text class="th" x="150" y="46" text-anchor="middle">随手画</text>
+      <text class="th" x="505" y="46" text-anchor="middle">讲究过</text>
+      <line class="leader" x1="345" y1="36" x2="345" y2="312"/>
+      <g class="c-red c-coral"><rect x="70" y="72" width="160" height="44" rx="8"/><text class="th" x="150" y="94" text-anchor="middle" dominant-baseline="central">提出需求</text></g>
+      <g class="c-amber"><rect x="95" y="164" width="140" height="44" rx="8"/><text class="th" x="165" y="186" text-anchor="middle" dominant-baseline="central">需求评审</text></g>
+      <g class="c-green c-teal"><rect x="55" y="256" width="178" height="44" rx="8"/><text class="th" x="144" y="278" text-anchor="middle" dominant-baseline="central">排期上线</text></g>
+      <line x1="150" y1="120" x2="165" y2="160" class="arr" marker-end="url(#m_arrow)"/>
+      <line x1="165" y1="212" x2="144" y2="252" class="arr" marker-end="url(#m_arrow)"/>
+      <g class="c-gray"><rect x="415" y="72" width="180" height="44" rx="8"/><text class="th" x="505" y="94" text-anchor="middle" dominant-baseline="central">提出需求</text></g>
+      <g class="c-gray"><rect x="415" y="164" width="180" height="44" rx="8"/><text class="th" x="505" y="186" text-anchor="middle" dominant-baseline="central">需求评审</text></g>
+      <g class="c-teal"><rect x="415" y="256" width="180" height="44" rx="8"/><text class="th" x="505" y="278" text-anchor="middle" dominant-baseline="central">排期上线</text></g>
+      <line x1="505" y1="120" x2="505" y2="160" class="arr" marker-end="url(#m_arrow)"/>
+      <line x1="505" y1="212" x2="505" y2="252" class="arr" marker-end="url(#m_arrow)"/>
+      </svg>
+      <figcaption>左：颜色杂乱、宽窄不一、连线歪斜　|　右：居中对齐、中性灰 + 一个强调色、连线垂直</figcaption>
+    </figure>
+    <h3>六条通用规则</h3>
+    <p><span class="hl">① 对齐</span>：所有元素卡在同一条隐形网格线上，这是业余感的头号来源。<br>
+    <span class="hl">② 配色克制</span>：全图最多 2–3 色，且颜色代表含义（状态 / 分类），不为好看而上色。<br>
+    <span class="hl">③ 一致性</span>：同类元素长一样——等宽等高、圆角统一、箭头统一。<br>
+    <span class="hl">④ 间距统一</span>：留白相等、舍得留白，挤是第二大业余感来源。<br>
+    <span class="hl">⑤ 视觉层级</span>：重要的更大、更重、更突出，眼睛知道先看哪。<br>
+    <span class="hl">⑥ 少交叉走直线</span>：连线尽量横平竖直，宁可绕路也别穿过别的框。</p>
+    <div class="tip"><strong>一句话心法：</strong>先想清楚结构（发散 → 收敛），再用对齐、留白、克制配色把它画出来，复杂了就拆成多张图。工具只是执行这套规则的手。</div>
+  </section>
+
+  <!-- ============ 01 思维导图 ============ -->
+  <section class="panel" id="p1">
+    <span class="kicker">思考发散</span>
+    <h2>思维导图</h2>
+    <p class="answers">回答：「关于这件事，有哪些想法？」</p>
+    <h3>是什么</h3>
+    <p>一个中心主题向外发散出主干和细枝，用来穷举和归类想法。它的本质是<span class="hl">先发散、再收敛</span>：先把想到的全列出来（别评判），再归类成几条大主干、去重、排序。</p>
+    <p>三条让它好看的规则：主干控制在 <span class="hl">4–7 条</span>（米勒定律）；<span class="hl">颜色按主干分组</span>，同一枝同色；每个节点用短词且结构平行。</p>
+    <h3>案例：提升用户留存</h3>
+    <figure class="diagram">
+      <svg width="100%" viewBox="0 0 680 480" role="img"><title>留存思维导图</title>
+      <path d="M170 242 C205 242 200 80 235 80" fill="none" stroke="#7d75d8" stroke-width="1.5"/>
+      <path d="M170 242 C205 242 200 188 235 188" fill="none" stroke="#1aa079" stroke-width="1.5"/>
+      <path d="M170 242 C205 242 200 296 235 296" fill="none" stroke="#e07549" stroke-width="1.5"/>
+      <path d="M170 242 C205 242 200 404 235 404" fill="none" stroke="#d99e1f" stroke-width="1.5"/>
+      <path d="M363 80 C397 80 393 57 425 57" fill="none" stroke="#7d75d8" stroke-width="1.5"/>
+      <path d="M363 80 C397 80 393 103 425 103" fill="none" stroke="#7d75d8" stroke-width="1.5"/>
+      <path d="M363 188 C397 188 393 165 425 165" fill="none" stroke="#1aa079" stroke-width="1.5"/>
+      <path d="M363 188 C397 188 393 211 425 211" fill="none" stroke="#1aa079" stroke-width="1.5"/>
+      <path d="M363 296 C397 296 393 273 425 273" fill="none" stroke="#e07549" stroke-width="1.5"/>
+      <path d="M363 296 C397 296 393 319 425 319" fill="none" stroke="#e07549" stroke-width="1.5"/>
+      <path d="M363 404 C397 404 393 381 425 381" fill="none" stroke="#d99e1f" stroke-width="1.5"/>
+      <path d="M363 404 C397 404 393 427 425 427" fill="none" stroke="#d99e1f" stroke-width="1.5"/>
+      <g class="c-gray"><rect x="30" y="214" width="140" height="56" rx="10"/><text class="th" x="100" y="242" text-anchor="middle" dominant-baseline="central">提升用户留存</text></g>
+      <g class="c-purple"><rect x="235" y="58" width="128" height="44" rx="8"/><text class="th" x="299" y="80" text-anchor="middle" dominant-baseline="central">新手引导</text></g>
+      <g class="c-teal"><rect x="235" y="166" width="128" height="44" rx="8"/><text class="th" x="299" y="188" text-anchor="middle" dominant-baseline="central">内容运营</text></g>
+      <g class="c-coral"><rect x="235" y="274" width="128" height="44" rx="8"/><text class="th" x="299" y="296" text-anchor="middle" dominant-baseline="central">推送召回</text></g>
+      <g class="c-amber"><rect x="235" y="382" width="128" height="44" rx="8"/><text class="th" x="299" y="404" text-anchor="middle" dominant-baseline="central">会员体系</text></g>
+      <g class="c-purple"><rect x="425" y="40" width="130" height="34" rx="8"/><text class="t" x="490" y="57" text-anchor="middle" dominant-baseline="central">新手任务</text></g>
+      <g class="c-purple"><rect x="425" y="86" width="130" height="34" rx="8"/><text class="t" x="490" y="103" text-anchor="middle" dominant-baseline="central">操作引导</text></g>
+      <g class="c-teal"><rect x="425" y="148" width="130" height="34" rx="8"/><text class="t" x="490" y="165" text-anchor="middle" dominant-baseline="central">每日内容</text></g>
+      <g class="c-teal"><rect x="425" y="194" width="130" height="34" rx="8"/><text class="t" x="490" y="211" text-anchor="middle" dominant-baseline="central">话题社区</text></g>
+      <g class="c-coral"><rect x="425" y="256" width="130" height="34" rx="8"/><text class="t" x="490" y="273" text-anchor="middle" dominant-baseline="central">流失召回</text></g>
+      <g class="c-coral"><rect x="425" y="302" width="130" height="34" rx="8"/><text class="t" x="490" y="319" text-anchor="middle" dominant-baseline="central">签到提醒</text></g>
+      <g class="c-amber"><rect x="425" y="364" width="130" height="34" rx="8"/><text class="t" x="490" y="381" text-anchor="middle" dominant-baseline="central">积分体系</text></g>
+      <g class="c-amber"><rect x="425" y="410" width="130" height="34" rx="8"/><text class="t" x="490" y="427" text-anchor="middle" dominant-baseline="central">等级特权</text></g>
+      </svg>
+      <figcaption>中心一个主题，主干按 MECE 拆 4 类，颜色按主干分组，连线用曲线</figcaption>
+    </figure>
+    <h3>和结构图的区别</h3>
+    <p>它俩最容易混，因为<span class="hl">脑图收敛之后，往往就变成了结构图</span>。区别在于阶段与气质：脑图重<span class="hl">发散</span>（还在想、用曲线、随意生长）；结构图重<span class="hl">收敛后的稳定结果</span>（已想清楚、用直角、正式规整，能写进 PRD）。</p>
+    <div class="compare-grid">
+      <div>
+        <div class="clabel a">思维导图 · 发散（曲线）</div>
+        <figure class="diagram">
+          <svg width="100%" viewBox="0 0 360 240" role="img"><title>脑图气质</title>
+          <path d="M120 120 C150 120 150 70 180 70" fill="none" stroke="#7d75d8" stroke-width="1.5"/>
+          <path d="M120 120 C150 120 150 120 180 120" fill="none" stroke="#1aa079" stroke-width="1.5"/>
+          <path d="M120 120 C150 120 150 170 180 170" fill="none" stroke="#e07549" stroke-width="1.5"/>
+          <g class="c-gray"><rect x="24" y="98" width="96" height="44" rx="10"/><text class="t" x="72" y="120" text-anchor="middle" dominant-baseline="central">主题</text></g>
+          <g class="c-purple"><rect x="180" y="50" width="100" height="40" rx="8"/><text class="t" x="230" y="70" text-anchor="middle" dominant-baseline="central">想法 A</text></g>
+          <g class="c-teal"><rect x="180" y="100" width="100" height="40" rx="8"/><text class="t" x="230" y="120" text-anchor="middle" dominant-baseline="central">想法 B</text></g>
+          <g class="c-coral"><rect x="180" y="150" width="100" height="40" rx="8"/><text class="t" x="230" y="170" text-anchor="middle" dominant-baseline="central">想法 C</text></g>
+          </svg>
+        </figure>
+      </div>
+      <div>
+        <div class="clabel b">结构图 · 收敛（直角）</div>
+        <figure class="diagram">
+          <svg width="100%" viewBox="0 0 360 240" role="img"><title>结构图气质</title>
+          <line class="arr" x1="180" y1="64" x2="180" y2="84"/>
+          <line class="arr" x1="70" y1="84" x2="290" y2="84"/>
+          <line class="arr" x1="70" y1="84" x2="70" y2="104"/>
+          <line class="arr" x1="180" y1="84" x2="180" y2="104"/>
+          <line class="arr" x1="290" y1="84" x2="290" y2="104"/>
+          <g class="c-gray"><rect x="130" y="24" width="100" height="40" rx="8"/><text class="t" x="180" y="44" text-anchor="middle" dominant-baseline="central">产品</text></g>
+          <g class="c-purple"><rect x="24" y="106" width="92" height="40" rx="8"/><text class="t" x="70" y="126" text-anchor="middle" dominant-baseline="central">模块 A</text></g>
+          <g class="c-teal"><rect x="134" y="106" width="92" height="40" rx="8"/><text class="t" x="180" y="126" text-anchor="middle" dominant-baseline="central">模块 B</text></g>
+          <g class="c-coral"><rect x="244" y="106" width="92" height="40" rx="8"/><text class="t" x="290" y="126" text-anchor="middle" dominant-baseline="central">模块 C</text></g>
+          </svg>
+        </figure>
+      </div>
+    </div>
+    <div class="tip"><strong>工具：</strong>XMind 是脑图的强项，左手敲键盘即可成图——<code>Tab</code> 加子主题、<code>Enter</code> 加同级；用「向右逻辑图」结构 + 现成风格主题最快出好看的图。</div>
+  </section>
+
+  <!-- ============ 02 流程图 / 泳道图 ============ -->
+  <section class="panel" id="p2">
+    <span class="kicker">流程行为</span>
+    <h2>流程图 / 泳道图</h2>
+    <p class="answers">回答：「事情按什么顺序发生？每一步归谁做？」</p>
+    <h3>是什么</h3>
+    <p>流程图讲清一连串动作的先后顺序；<span class="hl">泳道图 = 流程图 + 按角色分行</span>，每条「泳道」一个角色，每个步骤画进负责它的那条道里。跨泳道的箭头就是职责交接——这正是泳道图最值钱的信息。</p>
+    <p>符号只用四个：圆角矩形＝开始/结束、矩形＝步骤、菱形＝判断（能用是/否回答）、箭头＝流向。判断的每个出口都要标条件。</p>
+    <h3>案例：内容发布审核</h3>
+    <figure class="diagram">
+      <svg width="100%" viewBox="0 0 680 320" role="img"><title>内容审核泳道图</title>
+      <defs><marker id="sw_arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="10" y="40" width="630" height="252" rx="8" fill="none" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="10" y1="124" x2="640" y2="124" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="10" y1="208" x2="640" y2="208" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="90" y1="40" x2="90" y2="292" stroke="var(--b)" stroke-width="0.5"/>
+      <rect x="11" y="41" width="79" height="83" fill="var(--bg2)"/>
+      <rect x="11" y="125" width="79" height="83" fill="var(--bg2)"/>
+      <rect x="11" y="209" width="79" height="82" fill="var(--bg2)"/>
+      <text class="th" x="50" y="82" text-anchor="middle" dominant-baseline="central">作者</text>
+      <text class="th" x="50" y="166" text-anchor="middle" dominant-baseline="central">编辑</text>
+      <text class="th" x="50" y="250" text-anchor="middle" dominant-baseline="central">平台</text>
+      <line x1="200" y1="82" x2="300" y2="140" class="arr" marker-end="url(#sw_arrow)"/>
+      <line x1="350" y1="166" x2="366" y2="166" class="arr" marker-end="url(#sw_arrow)"/>
+      <path d="M430 200 L430 214 L580 214 L580 224" class="arr" fill="none" marker-end="url(#sw_arrow)"/>
+      <line x1="490" y1="166" x2="526" y2="166" class="arr" marker-end="url(#sw_arrow)"/>
+      <text class="ts" x="448" y="210" text-anchor="middle">是</text>
+      <text class="ts" x="508" y="155" text-anchor="middle">否</text>
+      <g class="c-gray"><rect x="100" y="60" width="100" height="44" rx="8"/><text class="th" x="150" y="82" text-anchor="middle" dominant-baseline="central">提交稿件</text></g>
+      <g class="c-gray"><rect x="250" y="144" width="100" height="44" rx="8"/><text class="th" x="300" y="166" text-anchor="middle" dominant-baseline="central">内容审核</text></g>
+      <g class="c-amber"><polygon points="430,132 490,166 430,200 370,166"/><text class="th" x="430" y="166" text-anchor="middle" dominant-baseline="central">通过?</text></g>
+      <g class="c-coral"><rect x="530" y="144" width="100" height="44" rx="8"/><text class="th" x="580" y="166" text-anchor="middle" dominant-baseline="central">反馈作者</text></g>
+      <g class="c-teal"><rect x="530" y="228" width="100" height="44" rx="8"/><text class="th" x="580" y="250" text-anchor="middle" dominant-baseline="central">发布上线</text></g>
+      </svg>
+      <figcaption>三条泳道＝三个角色；斜向跨道的箭头＝职责交接；菱形两个出口都标了是/否</figcaption>
+    </figure>
+    <h3>和状态图的区别（关键对照）</h3>
+    <p>同一件「订单退款」，用流程图和状态图画出来完全不同。<span class="hl">流程图的方框是动作（动词），讲事情怎么走、谁来做</span>，用菱形分岔；<span class="hl">状态图的方框是状态（名词），讲一个对象会变成哪些样子</span>，动作全跑到箭头上。</p>
+    <div class="compare-grid">
+      <div>
+        <div class="clabel a">流程图 · 方框＝动作</div>
+        <figure class="diagram">
+          <svg width="100%" viewBox="0 0 680 236" role="img"><title>退款流程图</title>
+          <defs><marker id="fc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <line class="arr" x1="112" y1="70" x2="141" y2="70" marker-end="url(#fc)"/>
+          <line class="arr" x1="237" y1="70" x2="246" y2="70" marker-end="url(#fc)"/>
+          <line class="arr" x1="350" y1="70" x2="386" y2="70" marker-end="url(#fc)"/>
+          <line class="arr" x1="482" y1="70" x2="511" y2="70" marker-end="url(#fc)"/>
+          <path d="M300 98 L300 166" class="arr" fill="none" marker-end="url(#fc)"/>
+          <text class="ts" x="368" y="60" text-anchor="middle">是</text>
+          <text class="ts" x="315" y="124" text-anchor="middle">否</text>
+          <g class="c-gray"><rect x="20" y="49" width="92" height="42" rx="8"/><text class="th" x="66" y="70" text-anchor="middle" dominant-baseline="central">用户申请</text></g>
+          <g class="c-gray"><rect x="145" y="49" width="92" height="42" rx="8"/><text class="th" x="191" y="70" text-anchor="middle" dominant-baseline="central">客服审核</text></g>
+          <g class="c-amber"><polygon points="300,42 350,70 300,98 250,70"/><text class="th" x="300" y="70" text-anchor="middle" dominant-baseline="central">通过?</text></g>
+          <g class="c-gray"><rect x="390" y="49" width="92" height="42" rx="8"/><text class="th" x="436" y="70" text-anchor="middle" dominant-baseline="central">财务打款</text></g>
+          <g class="c-gray"><rect x="515" y="49" width="92" height="42" rx="8"/><text class="th" x="561" y="70" text-anchor="middle" dominant-baseline="central">通知用户</text></g>
+          <g class="c-gray"><rect x="254" y="170" width="92" height="42" rx="8"/><text class="th" x="300" y="191" text-anchor="middle" dominant-baseline="central">驳回告知</text></g>
+          </svg>
+        </figure>
+      </div>
+      <div>
+        <div class="clabel b">状态图 · 方框＝状态</div>
+        <figure class="diagram">
+          <svg width="100%" viewBox="0 0 680 190" role="img"><title>退款状态图</title>
+          <defs><marker id="se" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <line class="arr" x1="140" y1="72" x2="266" y2="72" marker-end="url(#se)"/>
+          <line class="arr" x1="370" y1="72" x2="496" y2="72" marker-end="url(#se)"/>
+          <text class="ts" x="203" y="60" text-anchor="middle">申请退款</text>
+          <text class="ts" x="433" y="60" text-anchor="middle">打款完成</text>
+          <path d="M320 95 L320 140 L90 140 L90 99" class="arr" fill="none" marker-end="url(#se)"/>
+          <text class="ts" x="205" y="153" text-anchor="middle">审核驳回</text>
+          <g class="c-blue"><rect x="40" y="49" width="100" height="46" rx="10"/><text class="th" x="90" y="72" text-anchor="middle" dominant-baseline="central">已支付</text></g>
+          <g class="c-amber"><rect x="270" y="49" width="100" height="46" rx="10"/><text class="th" x="320" y="72" text-anchor="middle" dominant-baseline="central">退款中</text></g>
+          <g class="c-teal"><rect x="500" y="49" width="100" height="46" rx="10"/><text class="th" x="550" y="72" text-anchor="middle" dominant-baseline="central">已退款</text></g>
+          </svg>
+        </figure>
+      </div>
+    </div>
+    <p>注意「审核驳回」：流程图里它是一个动作框，状态图里它是一条<span class="hl">绕回去</span>的箭头（退款中 → 已支付）。状态图天然允许回头路，流程图则尽量单向。</p>
+    <div class="tip"><strong>工具：</strong>泳道图用 ProcessOn（自带泳道模板）或 draw.io 最顺手，XMind 不适合。<br><strong>诊断技巧：</strong>若某角色的步骤东一块西一块、箭头反复横跨泳道，说明流程本身交接太多、该优化了。</div>
+  </section>
+
+  <!-- ============ 03 状态图 ============ -->
+  <section class="panel" id="p3">
+    <span class="kicker">流程行为</span>
+    <h2>状态图（状态机）</h2>
+    <p class="answers">回答：「一个对象会处在哪些状态？什么事件让它变？」</p>
+    <h3>是什么</h3>
+    <p>它逼你想全一个对象的所有状态和流转，最大价值是<span class="hl">把超时、取消、退款、失败这些容易漏掉的边界情况全摊出来</span>——这是 PM 严谨度最被研发认可的地方。</p>
+    <p>两个核心零件：<span class="hl">方框＝状态（名词）</span>，是能存进数据库的「待着的样子」；<span class="hl">箭头＝事件（动词）</span>，是让它跳转的触发条件，必须写在箭头上。还有起始点（实心圆点）和终态（只进不出）。</p>
+    <h3>案例：订单状态机</h3>
+    <figure class="diagram">
+      <svg width="100%" viewBox="0 0 680 248" role="img"><title>订单状态机</title>
+      <defs><marker id="sm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <circle cx="42" cy="72" r="7" fill="var(--p)"/>
+      <line class="arr" x1="49" y1="72" x2="68" y2="72" marker-end="url(#sm)"/>
+      <line class="arr" x1="172" y1="72" x2="208" y2="72" marker-end="url(#sm)"/>
+      <line class="arr" x1="312" y1="72" x2="348" y2="72" marker-end="url(#sm)"/>
+      <line class="arr" x1="452" y1="72" x2="488" y2="72" marker-end="url(#sm)"/>
+      <text class="ts" x="190" y="60" text-anchor="middle">用户付款</text>
+      <text class="ts" x="330" y="60" text-anchor="middle">商家发货</text>
+      <text class="ts" x="470" y="60" text-anchor="middle">确认收货</text>
+      <path d="M122 95 L122 150 L168 150 L168 173" class="arr" fill="none" marker-end="url(#sm)"/>
+      <path d="M262 95 L262 150 L216 150 L216 173" class="arr" fill="none" marker-end="url(#sm)"/>
+      <text class="ts" x="146" y="142" text-anchor="middle">超时未付</text>
+      <text class="ts" x="239" y="142" text-anchor="middle">申请退款</text>
+      <g class="c-blue"><rect x="72" y="49" width="100" height="46" rx="10"/><text class="th" x="122" y="72" text-anchor="middle" dominant-baseline="central">待支付</text></g>
+      <g class="c-blue"><rect x="212" y="49" width="100" height="46" rx="10"/><text class="th" x="262" y="72" text-anchor="middle" dominant-baseline="central">已支付</text></g>
+      <g class="c-blue"><rect x="352" y="49" width="100" height="46" rx="10"/><text class="th" x="402" y="72" text-anchor="middle" dominant-baseline="central">已发货</text></g>
+      <g class="c-teal"><rect x="492" y="49" width="100" height="46" rx="10"/><text class="th" x="542" y="72" text-anchor="middle" dominant-baseline="central">已完成</text></g>
+      <g class="c-coral"><rect x="142" y="177" width="100" height="46" rx="10"/><text class="th" x="192" y="200" text-anchor="middle" dominant-baseline="central">已取消</text></g>
+      </svg>
+      <figcaption>方框全是状态（名词），箭头全是事件（动词）；两条往下的线＝主动挖出的边界情况</figcaption>
+    </figure>
+    <h3>和流程图的区别</h3>
+    <p>口诀：描述「<span class="hl">先做什么再做什么、谁来做</span>」用流程图；描述「<span class="hl">这东西会变成哪些样子、什么事件让它变</span>」用状态图。两者的对照图见上一章「流程图 / 泳道图」的退款双图。实际工作里常搭配用：流程图给协作方讲清怎么办事，状态图给研发兜住所有状态和异常。</p>
+    <div class="tip"><strong>铁律：</strong>画完逐个框检查「有没有进、有没有出」——除起始态和终态外，进得去出不来＝死状态，没箭头指向＝到不了的废状态，都说明漏设计了。<br><strong>工具：</strong>draw.io（自带 UML 状态机图形）或 ProcessOn。</div>
+  </section>
+
+  <!-- ============ 04 架构图 ============ -->
+  <section class="panel" id="p4">
+    <span class="kicker">结构组成</span>
+    <h2>架构图</h2>
+    <p class="answers">回答：「系统由哪些部分组成？谁和谁连？」</p>
+    <h3>是什么</h3>
+    <p>架构图讲结构关系，几乎都靠一个心法撑起来——<span class="hl">分层</span>。最经典是三层架构：接入层（客户端）→ 业务层（服务）→ 数据层。它不是「固定几层」，而是以三层为底、<span class="hl">按职责按需增减</span>（加网关层、中台层、基础设施层等）。</p>
+    <h3>案例：分层产品架构</h3>
+    <figure class="diagram">
+      <svg width="100%" viewBox="0 0 680 360" role="img"><title>分层产品架构</title>
+      <defs><marker id="ar_arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="40" y="40" width="600" height="84" rx="10" fill="none" stroke="var(--b)" stroke-width="0.5"/>
+      <rect x="40" y="148" width="600" height="84" rx="10" fill="none" stroke="var(--b)" stroke-width="0.5"/>
+      <rect x="40" y="256" width="600" height="84" rx="10" fill="none" stroke="var(--b)" stroke-width="0.5"/>
+      <g class="c-blue"><rect x="48" y="48" width="84" height="68" rx="6"/><text class="th" x="90" y="82" text-anchor="middle" dominant-baseline="central">接入层</text></g>
+      <g class="c-teal"><rect x="48" y="156" width="84" height="68" rx="6"/><text class="th" x="90" y="190" text-anchor="middle" dominant-baseline="central">服务层</text></g>
+      <g class="c-amber"><rect x="48" y="264" width="84" height="68" rx="6"/><text class="th" x="90" y="298" text-anchor="middle" dominant-baseline="central">数据层</text></g>
+      <g class="c-blue"><rect x="150" y="60" width="104" height="44" rx="8"/><text class="th" x="202" y="82" text-anchor="middle" dominant-baseline="central">iOS App</text></g>
+      <g class="c-blue"><rect x="270" y="60" width="104" height="44" rx="8"/><text class="th" x="322" y="82" text-anchor="middle" dominant-baseline="central">Android</text></g>
+      <g class="c-blue"><rect x="390" y="60" width="104" height="44" rx="8"/><text class="th" x="442" y="82" text-anchor="middle" dominant-baseline="central">小程序</text></g>
+      <g class="c-blue"><rect x="510" y="60" width="104" height="44" rx="8"/><text class="th" x="562" y="82" text-anchor="middle" dominant-baseline="central">Web 端</text></g>
+      <g class="c-teal"><rect x="150" y="168" width="104" height="44" rx="8"/><text class="th" x="202" y="190" text-anchor="middle" dominant-baseline="central">商品服务</text></g>
+      <g class="c-teal"><rect x="270" y="168" width="104" height="44" rx="8"/><text class="th" x="322" y="190" text-anchor="middle" dominant-baseline="central">订单服务</text></g>
+      <g class="c-teal"><rect x="390" y="168" width="104" height="44" rx="8"/><text class="th" x="442" y="190" text-anchor="middle" dominant-baseline="central">支付服务</text></g>
+      <g class="c-teal"><rect x="510" y="168" width="104" height="44" rx="8"/><text class="th" x="562" y="190" text-anchor="middle" dominant-baseline="central">用户服务</text></g>
+      <g class="c-amber"><rect x="218" y="276" width="104" height="44" rx="8"/><text class="th" x="270" y="298" text-anchor="middle" dominant-baseline="central">MySQL</text></g>
+      <g class="c-amber"><rect x="338" y="276" width="104" height="44" rx="8"/><text class="th" x="390" y="298" text-anchor="middle" dominant-baseline="central">Redis 缓存</text></g>
+      <g class="c-amber"><rect x="458" y="276" width="104" height="44" rx="8"/><text class="th" x="510" y="298" text-anchor="middle" dominant-baseline="central">对象存储</text></g>
+      <line x1="340" y1="124" x2="340" y2="144" class="arr" marker-end="url(#ar_arrow)"/>
+      <line x1="340" y1="232" x2="340" y2="252" class="arr" marker-end="url(#ar_arrow)"/>
+      <text class="ts" x="378" y="137" text-anchor="middle">调用</text>
+      <text class="ts" x="378" y="245" text-anchor="middle">读写</text>
+      </svg>
+      <figcaption>自上而下分层，同层等宽横排，颜色按层分组——层与层之间只画一根代表箭头</figcaption>
+    </figure>
+    <div class="tip"><strong>最大的坑——箭头别画满！</strong>别把每个客户端连到每个服务、再连到每个库，画成 N×N 蜘蛛网。架构图是给人看结构的，不是数连线的。需要强调某条链路时，再单独画一张子图。<br><strong>给 PM：</strong>产品架构图 3–4 层就够，中间件 / 基础设施那种细节是研发的技术架构图才需要。</p></div>
+    <h3>和结构图的区别</h3>
+    <p>一句话：<span class="hl">架构图按「职责」把系统横切成层</span>（接入/业务/数据）；<span class="hl">结构图按「包含/归属」往下分解成树</span>（产品→模块→功能）。前者回答「怎么协作运转」，后者回答「由什么组成」。详见下一章。</p>
+  </section>
+
+  <!-- ============ 05 结构图 ============ -->
+  <section class="panel" id="p5">
+    <span class="kicker">结构组成</span>
+    <h2>结构图</h2>
+    <p class="answers">回答：「什么由什么组成？什么包含什么？」</p>
+    <h3>是什么</h3>
+    <p>按「包含 / 归属」关系往下分解成树。它<span class="hl">没有固定层数</span>，几层取决于你拆多细（常规 3–4 层）。PM 用的主要两种：<span class="hl">功能结构图</span>（节点是「功能」——能做什么）和<span class="hl">信息架构图 / IA</span>（节点是「页面」——有哪些页、怎么导航）。</p>
+    <h3>案例：同一个「外卖 App」的两种结构图</h3>
+    <p>下面两张<span class="hl">骨架完全一样</span>，差别全在节点里装的是什么——这正是关键。左边末端是「能做的事」（动作），右边末端全带个「页」字（页面）。</p>
+    <div class="compare-grid">
+      <div>
+        <div class="clabel a">功能结构图 · 节点＝功能</div>
+        <figure class="diagram">
+          <svg width="100%" viewBox="0 0 680 310" role="img"><title>外卖功能结构图</title>
+          <line class="arr" x1="340" y1="88" x2="340" y2="114"/>
+          <line class="arr" x1="149" y1="114" x2="531" y2="114"/>
+          <line class="arr" x1="149" y1="114" x2="149" y2="138"/>
+          <line class="arr" x1="340" y1="114" x2="340" y2="138"/>
+          <line class="arr" x1="531" y1="114" x2="531" y2="138"/>
+          <line class="arr" x1="149" y1="184" x2="149" y2="214"/>
+          <line class="arr" x1="102" y1="214" x2="196" y2="214"/>
+          <line class="arr" x1="102" y1="214" x2="102" y2="238"/>
+          <line class="arr" x1="196" y1="214" x2="196" y2="238"/>
+          <line class="arr" x1="340" y1="184" x2="340" y2="214"/>
+          <line class="arr" x1="293" y1="214" x2="387" y2="214"/>
+          <line class="arr" x1="293" y1="214" x2="293" y2="238"/>
+          <line class="arr" x1="387" y1="214" x2="387" y2="238"/>
+          <line class="arr" x1="531" y1="184" x2="531" y2="214"/>
+          <line class="arr" x1="484" y1="214" x2="578" y2="214"/>
+          <line class="arr" x1="484" y1="214" x2="484" y2="238"/>
+          <line class="arr" x1="578" y1="214" x2="578" y2="238"/>
+          <g class="c-gray"><rect x="270" y="40" width="140" height="48" rx="8"/><text class="th" x="340" y="64" text-anchor="middle" dominant-baseline="central">外卖 App</text></g>
+          <g class="c-purple"><rect x="94" y="140" width="110" height="44" rx="8"/><text class="th" x="149" y="162" text-anchor="middle" dominant-baseline="central">找餐厅</text></g>
+          <g class="c-teal"><rect x="285" y="140" width="110" height="44" rx="8"/><text class="th" x="340" y="162" text-anchor="middle" dominant-baseline="central">下单</text></g>
+          <g class="c-coral"><rect x="476" y="140" width="110" height="44" rx="8"/><text class="th" x="531" y="162" text-anchor="middle" dominant-baseline="central">订单</text></g>
+          <g class="c-purple"><rect x="60" y="240" width="84" height="44" rx="8"/><text class="t" x="102" y="262" text-anchor="middle" dominant-baseline="central">搜索餐厅</text></g>
+          <g class="c-purple"><rect x="154" y="240" width="84" height="44" rx="8"/><text class="t" x="196" y="262" text-anchor="middle" dominant-baseline="central">筛选分类</text></g>
+          <g class="c-teal"><rect x="251" y="240" width="84" height="44" rx="8"/><text class="t" x="293" y="262" text-anchor="middle" dominant-baseline="central">加购物车</text></g>
+          <g class="c-teal"><rect x="345" y="240" width="84" height="44" rx="8"/><text class="t" x="387" y="262" text-anchor="middle" dominant-baseline="central">在线支付</text></g>
+          <g class="c-coral"><rect x="442" y="240" width="84" height="44" rx="8"/><text class="t" x="484" y="262" text-anchor="middle" dominant-baseline="central">实时追踪</text></g>
+          <g class="c-coral"><rect x="536" y="240" width="84" height="44" rx="8"/><text class="t" x="578" y="262" text-anchor="middle" dominant-baseline="central">评价商家</text></g>
+          </svg>
+        </figure>
+      </div>
+      <div>
+        <div class="clabel b">信息架构图 · 节点＝页面</div>
+        <figure class="diagram">
+          <svg width="100%" viewBox="0 0 680 310" role="img"><title>外卖信息架构图</title>
+          <line class="arr" x1="340" y1="88" x2="340" y2="114"/>
+          <line class="arr" x1="149" y1="114" x2="531" y2="114"/>
+          <line class="arr" x1="149" y1="114" x2="149" y2="138"/>
+          <line class="arr" x1="340" y1="114" x2="340" y2="138"/>
+          <line class="arr" x1="531" y1="114" x2="531" y2="138"/>
+          <line class="arr" x1="149" y1="184" x2="149" y2="214"/>
+          <line class="arr" x1="102" y1="214" x2="196" y2="214"/>
+          <line class="arr" x1="102" y1="214" x2="102" y2="238"/>
+          <line class="arr" x1="196" y1="214" x2="196" y2="238"/>
+          <line class="arr" x1="340" y1="184" x2="340" y2="214"/>
+          <line class="arr" x1="293" y1="214" x2="387" y2="214"/>
+          <line class="arr" x1="293" y1="214" x2="293" y2="238"/>
+          <line class="arr" x1="387" y1="214" x2="387" y2="238"/>
+          <line class="arr" x1="531" y1="184" x2="531" y2="214"/>
+          <line class="arr" x1="484" y1="214" x2="578" y2="214"/>
+          <line class="arr" x1="484" y1="214" x2="484" y2="238"/>
+          <line class="arr" x1="578" y1="214" x2="578" y2="238"/>
+          <g class="c-gray"><rect x="270" y="40" width="140" height="48" rx="8"/><text class="th" x="340" y="64" text-anchor="middle" dominant-baseline="central">外卖 App</text></g>
+          <g class="c-purple"><rect x="94" y="140" width="110" height="44" rx="8"/><text class="th" x="149" y="162" text-anchor="middle" dominant-baseline="central">首页</text></g>
+          <g class="c-teal"><rect x="285" y="140" width="110" height="44" rx="8"/><text class="th" x="340" y="162" text-anchor="middle" dominant-baseline="central">订单</text></g>
+          <g class="c-coral"><rect x="476" y="140" width="110" height="44" rx="8"/><text class="th" x="531" y="162" text-anchor="middle" dominant-baseline="central">我的</text></g>
+          <g class="c-purple"><rect x="60" y="240" width="84" height="44" rx="8"/><text class="t" x="102" y="262" text-anchor="middle" dominant-baseline="central">列表页</text></g>
+          <g class="c-purple"><rect x="154" y="240" width="84" height="44" rx="8"/><text class="t" x="196" y="262" text-anchor="middle" dominant-baseline="central">详情页</text></g>
+          <g class="c-teal"><rect x="251" y="240" width="84" height="44" rx="8"/><text class="t" x="293" y="262" text-anchor="middle" dominant-baseline="central">进行中页</text></g>
+          <g class="c-teal"><rect x="345" y="240" width="84" height="44" rx="8"/><text class="t" x="387" y="262" text-anchor="middle" dominant-baseline="central">已完成页</text></g>
+          <g class="c-coral"><rect x="442" y="240" width="84" height="44" rx="8"/><text class="t" x="484" y="262" text-anchor="middle" dominant-baseline="central">资料页</text></g>
+          <g class="c-coral"><rect x="536" y="240" width="84" height="44" rx="8"/><text class="t" x="578" y="262" text-anchor="middle" dominant-baseline="central">设置页</text></g>
+          </svg>
+        </figure>
+      </div>
+    </div>
+    <p>记忆点：<span class="hl">形状都是树，看节点——装「能做什么」就是功能结构图，装「有哪些页面」就是信息架构图。</span>跟研发讲要做哪些功能用前者；规划页面、Tab、导航跳转用后者。</p>
+    <div class="tip"><strong>最易翻车的一条：</strong>同一层必须是「同粒度、同一类」——别把「搜索」（一个功能点）和「整个交易体系」（一个大模块）放同一层。同层节点应平级、互不重叠，争取 MECE。<br><strong>工具：</strong>结构图正是 XMind 强项（切「组织结构图/树状」结构即可），ProcessOn、draw.io 也行。</div>
+  </section>
+
+  <!-- ============ 06 优先级矩阵 ============ -->
+  <section class="panel" id="p6">
+    <span class="kicker">分析决策</span>
+    <h2>优先级矩阵（四象限）</h2>
+    <p class="answers">回答：「这么多需求，先做哪个？」</p>
+    <h3>是什么</h3>
+    <p>用两个维度把需求切进田字格，把「都很重要」的争论变成一张图上的位置问题。最经典是<span class="hl">价值 vs 投入</span>。关键在于：四个象限不只是分类，<span class="hl">每个都对应一个行动</span>（优先做 / 规划 / 有空做 / 砍掉）。</p>
+    <h3>案例：价值 - 投入矩阵</h3>
+    <figure class="diagram">
+      <svg width="100%" viewBox="0 0 680 460" role="img"><title>价值投入矩阵</title>
+      <defs><marker id="ax" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <g class="c-teal"><rect x="150" y="56" width="220" height="170" fill-opacity="0.16" style="stroke:none"/></g>
+      <g class="c-blue"><rect x="370" y="56" width="220" height="170" fill-opacity="0.16" style="stroke:none"/></g>
+      <g class="c-gray"><rect x="150" y="226" width="220" height="170" fill-opacity="0.22" style="stroke:none"/></g>
+      <g class="c-coral"><rect x="370" y="226" width="220" height="170" fill-opacity="0.16" style="stroke:none"/></g>
+      <rect x="150" y="56" width="440" height="340" fill="none" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="370" y1="56" x2="370" y2="396" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="150" y1="226" x2="590" y2="226" stroke="var(--b)" stroke-width="0.5"/>
+      <line class="arr" x1="138" y1="396" x2="138" y2="52" marker-end="url(#ax)"/>
+      <line class="arr" x1="150" y1="410" x2="594" y2="410" marker-end="url(#ax)"/>
+      <text class="ts" x="138" y="40" text-anchor="middle">价值</text>
+      <text class="ts" x="372" y="430" text-anchor="middle">投入 / 成本</text>
+      <text class="th" x="260" y="74" text-anchor="middle" dominant-baseline="central" fill="var(--color-success-text)">快赢 · 优先做</text>
+      <text class="th" x="480" y="74" text-anchor="middle" dominant-baseline="central" fill="var(--color-info-text)">大项目 · 重点规划</text>
+      <text class="th" x="260" y="244" text-anchor="middle" dominant-baseline="central">填空 · 有空做</text>
+      <text class="th" x="480" y="244" text-anchor="middle" dominant-baseline="central" fill="var(--color-error-text)">砍掉 · 别做</text>
+      <circle cx="220" cy="150" r="5" fill="var(--p)"/><text class="t" x="232" y="150" dominant-baseline="central">搜索优化</text>
+      <circle cx="285" cy="188" r="5" fill="var(--p)"/><text class="t" x="297" y="188" dominant-baseline="central">分享按钮</text>
+      <circle cx="450" cy="150" r="5" fill="var(--p)"/><text class="t" x="462" y="150" dominant-baseline="central">会员体系</text>
+      <circle cx="235" cy="320" r="5" fill="var(--p)"/><text class="t" x="247" y="320" dominant-baseline="central">换肤主题</text>
+      <circle cx="465" cy="320" r="5" fill="var(--p)"/><text class="t" x="477" y="320" dominant-baseline="central">小众导出</text>
+      </svg>
+      <figcaption>把需求作为点扔进象限——该砍的、该先做的一目了然，评审会少吵架</figcaption>
+    </figure>
+    <div class="tip"><strong>易踩的坑：</strong>两个维度必须相互独立。「价值」和「成本」是两件事，可以；别选「重要」和「价值」这种其实是一回事的维度。<br><strong>其他常见版本：</strong>重要-紧急四象限（艾森豪威尔，管时间）、RICE（算分排序）、Kano 模型（分需求类型）。这个图最省事，Excel / PPT / 白板都能画。</div>
+  </section>
+
+  <!-- ============ 07 用户旅程图 ============ -->
+  <section class="panel" id="p7">
+    <span class="kicker">界面体验</span>
+    <h2>用户旅程图</h2>
+    <p class="answers">回答：「用户用我们产品时，体验怎么一路起伏？」</p>
+    <h3>是什么</h3>
+    <p>站在<span class="hl">用户视角</span>，沿时间轴画出完成某目标的全过程：每个阶段的行为、痛点，尤其是那条<span class="hl">情绪曲线</span>。它的灵魂就是找到情绪低谷——<span class="hl">低谷就是机会点</span>，告诉你最该投入资源去改哪里。</p>
+    <h3>案例：新用户点外卖</h3>
+    <figure class="diagram">
+      <svg width="100%" viewBox="0 0 680 330" role="img"><title>外卖用户旅程图</title>
+      <rect x="14" y="40" width="86" height="38" rx="4" fill="var(--bg2)"/><text class="ts" x="57" y="59" text-anchor="middle" dominant-baseline="central">阶段</text>
+      <rect x="14" y="80" width="86" height="46" rx="4" fill="var(--bg2)"/><text class="ts" x="57" y="103" text-anchor="middle" dominant-baseline="central">行为</text>
+      <rect x="14" y="130" width="86" height="112" rx="4" fill="var(--bg2)"/><text class="ts" x="57" y="186" text-anchor="middle" dominant-baseline="central">情绪</text>
+      <rect x="14" y="246" width="86" height="64" rx="4" fill="var(--bg2)"/><text class="ts" x="57" y="278" text-anchor="middle" dominant-baseline="central">痛点</text>
+      <rect x="104" y="40" width="564" height="270" fill="none" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="245" y1="40" x2="245" y2="310" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="386" y1="40" x2="386" y2="310" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="527" y1="40" x2="527" y2="310" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="104" y1="78" x2="668" y2="78" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="104" y1="126" x2="668" y2="126" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="104" y1="246" x2="668" y2="246" stroke="var(--b)" stroke-width="0.5"/>
+      <text class="th" x="174" y="59" text-anchor="middle" dominant-baseline="central">打开 App</text>
+      <text class="th" x="315" y="59" text-anchor="middle" dominant-baseline="central">选餐下单</text>
+      <text class="th" x="456" y="59" text-anchor="middle" dominant-baseline="central">等待配送</text>
+      <text class="th" x="597" y="59" text-anchor="middle" dominant-baseline="central">收餐评价</text>
+      <text class="t" x="174" y="102" text-anchor="middle" dominant-baseline="central">浏览首页</text>
+      <text class="t" x="315" y="102" text-anchor="middle" dominant-baseline="central">挑餐下单</text>
+      <text class="t" x="456" y="102" text-anchor="middle" dominant-baseline="central">等待骑手</text>
+      <text class="t" x="597" y="102" text-anchor="middle" dominant-baseline="central">取餐评分</text>
+      <polyline points="174,188 315,156 456,224 597,170" fill="none" stroke="#bb5a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <g class="c-teal"><circle cx="174" cy="188" r="6"/></g>
+      <g class="c-teal"><circle cx="315" cy="156" r="6"/></g>
+      <g class="c-coral"><circle cx="456" cy="224" r="7"/></g>
+      <g class="c-teal"><circle cx="597" cy="170" r="6"/></g>
+      <text class="ts" x="456" y="240" text-anchor="middle" dominant-baseline="central" fill="var(--color-error-text)">体验低谷</text>
+      <text class="t" x="174" y="278" text-anchor="middle" dominant-baseline="central">广告打扰</text>
+      <text class="t" x="315" y="278" text-anchor="middle" dominant-baseline="central">选择困难</text>
+      <text class="t" x="456" y="278" text-anchor="middle" dominant-baseline="central">进度不透明</text>
+      <text class="t" x="597" y="278" text-anchor="middle" dominant-baseline="central">入口太深</text>
+      </svg>
+      <figcaption>情绪曲线在「等待配送」跌到谷底——这就是该优先改进的点（如加实时进度）</figcaption>
+    </figure>
+    <h3>和流程图的区别</h3>
+    <p>流程图是系统视角，讲「事情怎么走」，没有情绪；旅程图是<span class="hl">用户视角</span>，讲「用户怎么感受、心情怎么起伏」。同样是「等待配送」，流程图里是中性步骤，旅程图里是情绪暴跌的痛点。它真正的杀伤力是<span class="hl">让需求有据</span>——把「我觉得要加进度条」变成「用户体验在等待阶段跌到谷底」。</p>
+    <div class="tip"><strong>最大的坑（铁律）：</strong>情绪曲线必须基于真实用户调研 / 访谈 / 数据，不能坐在工位上自己编。<br><strong>工具：</strong>FigJam、Miro、ProcessOn，本质是张表格。</div>
+  </section>
+
+  <!-- ============ 08 服务蓝图 ============ -->
+  <section class="panel" id="p8">
+    <span class="kicker">界面体验 · 进阶</span>
+    <h2>服务蓝图</h2>
+    <p class="answers">回答：「用户的体验，背后靠什么在支撑？」</p>
+    <h3>是什么</h3>
+    <p>用户旅程图的「立体升级版」。同一条时间轴，纵向切成几层，把<span class="hl">用户看得见的体验</span>和<span class="hl">背后看不见的运营、系统</span>对齐着摊开。那条「可见线」是灵魂：线上是用户能感知的，线下是决定体验却看不见的支撑。</p>
+    <h3>案例：外卖配送服务蓝图</h3>
+    <figure class="diagram">
+      <svg width="100%" viewBox="0 0 680 292" role="img"><title>外卖服务蓝图</title>
+      <rect x="14" y="36" width="92" height="32" rx="4" fill="var(--bg2)"/><text class="ts" x="60" y="52" text-anchor="middle" dominant-baseline="central">阶段</text>
+      <rect x="14" y="68" width="92" height="48" rx="4" fill="var(--bg2)"/><text class="ts" x="60" y="92" text-anchor="middle" dominant-baseline="central">用户行为</text>
+      <rect x="14" y="116" width="92" height="52" rx="4" fill="var(--bg2)"/><text class="ts" x="60" y="142" text-anchor="middle" dominant-baseline="central">前台 · 界面</text>
+      <rect x="14" y="168" width="92" height="52" rx="4" fill="var(--bg2)"/><text class="ts" x="60" y="194" text-anchor="middle" dominant-baseline="central">后台 · 系统</text>
+      <rect x="14" y="220" width="92" height="48" rx="4" fill="var(--bg2)"/><text class="ts" x="60" y="244" text-anchor="middle" dominant-baseline="central">支撑系统</text>
+      <rect x="110" y="36" width="558" height="232" fill="none" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="296" y1="36" x2="296" y2="268" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="482" y1="36" x2="482" y2="268" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="110" y1="68" x2="668" y2="68" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="110" y1="116" x2="668" y2="116" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="110" y1="220" x2="668" y2="220" stroke="var(--b)" stroke-width="0.5"/>
+      <line x1="110" y1="168" x2="668" y2="168" stroke="#bb5a2e" stroke-width="2" stroke-dasharray="6 4"/>
+      <rect x="116" y="161" width="50" height="15" rx="3" fill="var(--card)"/><text class="ts" x="141" y="168" text-anchor="middle" dominant-baseline="central" fill="var(--color-error-text)">可见线</text>
+      <text class="th" x="203" y="52" text-anchor="middle" dominant-baseline="central">下单</text>
+      <text class="th" x="389" y="52" text-anchor="middle" dominant-baseline="central">配送中</text>
+      <text class="th" x="575" y="52" text-anchor="middle" dominant-baseline="central">送达</text>
+      <text class="t" x="203" y="92" text-anchor="middle" dominant-baseline="central">下单付款</text>
+      <text class="t" x="389" y="92" text-anchor="middle" dominant-baseline="central">等待送达</text>
+      <text class="t" x="575" y="92" text-anchor="middle" dominant-baseline="central">取餐评价</text>
+      <text class="t" x="203" y="142" text-anchor="middle" dominant-baseline="central">下单页</text>
+      <text class="t" x="389" y="142" text-anchor="middle" dominant-baseline="central">配送进度页</text>
+      <text class="t" x="575" y="142" text-anchor="middle" dominant-baseline="central">评价页</text>
+      <text class="t" x="203" y="194" text-anchor="middle" dominant-baseline="central">商家备餐</text>
+      <text class="t" x="389" y="194" text-anchor="middle" dominant-baseline="central">系统派单</text>
+      <text class="t" x="575" y="194" text-anchor="middle" dominant-baseline="central">生成记录</text>
+      <text class="t" x="203" y="244" text-anchor="middle" dominant-baseline="central">支付系统</text>
+      <text class="t" x="389" y="244" text-anchor="middle" dominant-baseline="central">调度 + 地图</text>
+      <text class="t" x="575" y="244" text-anchor="middle" dominant-baseline="central">数据库</text>
+      </svg>
+      <figcaption>红色「可见线」之上＝用户可感知，之下＝看不见的支撑；前台痛点与后台原因上下对齐</figcaption>
+    </figure>
+    <h3>和用户旅程图的区别</h3>
+    <p>旅程图只画「可见线以上」（用户视角 + 情绪），告诉你<span class="hl">哪儿体验差</span>；服务蓝图补上「可见线以下」，告诉你<span class="hl">为什么差、该改后台哪个环节</span>。例：旅程图发现「等待阶段进度不透明」，服务蓝图进一步定位到——前台「配送进度页」不透明，根因在后台「调度系统」没把骑手实时位置回传上来。</p>
+    <div class="tip"><strong>什么时候用：</strong>当体验问题不只是 UI、而牵扯多个团队 / 后台系统 / 线下运营时。它偏服务设计和跨团队拉通，对纯做 App 的 PM 属于「了解、需要时能画」这一档。<strong>工具：</strong>Miro、FigJam（常多人协作填写）。</div>
+  </section>
+
+  <!-- ============ 09 全景图 ============ -->
+  <section class="panel" id="p9">
+    <span class="kicker">总览</span>
+    <h2>PM 制图全景</h2>
+    <p class="answers">按「用来回答什么问题」分成五大类，标清已学与待补。</p>
+    <figure class="diagram">
+      <svg width="100%" viewBox="0 0 680 366" role="img"><title>PM 制图全景</title>
+      <text class="ts" x="20" y="22" dominant-baseline="central">图例:</text>
+      <g class="c-teal"><rect x="64" y="16" width="16" height="12" rx="3"/></g>
+      <text class="ts" x="86" y="22" dominant-baseline="central">已学</text>
+      <g class="c-amber"><rect x="150" y="16" width="16" height="12" rx="3"/></g>
+      <text class="ts" x="172" y="22" dominant-baseline="central">重点补</text>
+      <rect x="252" y="16" width="16" height="12" rx="3" fill="var(--bg2)" stroke="var(--b)" stroke-width="0.5" stroke-dasharray="3 2"/>
+      <text class="ts" x="274" y="22" dominant-baseline="central">了解即可</text>
+      <rect x="20" y="48" width="110" height="50" rx="6" fill="var(--bg2)"/><text class="th" x="75" y="73" text-anchor="middle" dominant-baseline="central">思考发散</text>
+      <g class="c-teal"><rect x="140" y="55" width="118" height="36" rx="8"/><text class="t" x="199" y="73" text-anchor="middle" dominant-baseline="central">思维导图</text></g>
+      <rect x="20" y="110" width="110" height="50" rx="6" fill="var(--bg2)"/><text class="th" x="75" y="135" text-anchor="middle" dominant-baseline="central">结构组成</text>
+      <g class="c-teal"><rect x="140" y="117" width="118" height="36" rx="8"/><text class="t" x="199" y="135" text-anchor="middle" dominant-baseline="central">功能结构图</text></g>
+      <g class="c-teal"><rect x="274" y="117" width="118" height="36" rx="8"/><text class="t" x="333" y="135" text-anchor="middle" dominant-baseline="central">信息架构图</text></g>
+      <g class="c-teal"><rect x="408" y="117" width="118" height="36" rx="8"/><text class="t" x="467" y="135" text-anchor="middle" dominant-baseline="central">架构图</text></g>
+      <rect x="542" y="117" width="118" height="36" rx="8" fill="var(--bg2)" stroke="var(--b)" stroke-width="0.5" stroke-dasharray="4 3"/>
+      <text class="t" x="601" y="135" text-anchor="middle" dominant-baseline="central">ER 图</text>
+      <rect x="20" y="172" width="110" height="50" rx="6" fill="var(--bg2)"/><text class="th" x="75" y="197" text-anchor="middle" dominant-baseline="central">流程行为</text>
+      <g class="c-teal"><rect x="140" y="179" width="118" height="36" rx="8"/><text class="t" x="199" y="197" text-anchor="middle" dominant-baseline="central">流程图</text></g>
+      <g class="c-teal"><rect x="274" y="179" width="118" height="36" rx="8"/><text class="t" x="333" y="197" text-anchor="middle" dominant-baseline="central">泳道图</text></g>
+      <g class="c-teal"><rect x="408" y="179" width="118" height="36" rx="8"/><text class="t" x="467" y="197" text-anchor="middle" dominant-baseline="central">状态图</text></g>
+      <rect x="542" y="179" width="118" height="36" rx="8" fill="var(--bg2)" stroke="var(--b)" stroke-width="0.5" stroke-dasharray="4 3"/>
+      <text class="t" x="601" y="197" text-anchor="middle" dominant-baseline="central">时序图</text>
+      <rect x="20" y="234" width="110" height="50" rx="6" fill="var(--bg2)"/><text class="th" x="75" y="259" text-anchor="middle" dominant-baseline="central">界面体验</text>
+      <rect x="140" y="241" width="118" height="36" rx="8" fill="var(--bg2)" stroke="var(--b)" stroke-width="0.5" stroke-dasharray="4 3"/>
+      <text class="t" x="199" y="259" text-anchor="middle" dominant-baseline="central">原型图</text>
+      <g class="c-teal"><rect x="274" y="241" width="118" height="36" rx="8"/><text class="t" x="333" y="259" text-anchor="middle" dominant-baseline="central">用户旅程图</text></g>
+      <g class="c-teal"><rect x="408" y="241" width="118" height="36" rx="8"/><text class="t" x="467" y="259" text-anchor="middle" dominant-baseline="central">服务蓝图</text></g>
+      <rect x="542" y="241" width="118" height="36" rx="8" fill="var(--bg2)" stroke="var(--b)" stroke-width="0.5" stroke-dasharray="4 3"/>
+      <text class="t" x="601" y="259" text-anchor="middle" dominant-baseline="central">故事地图</text>
+      <rect x="20" y="296" width="110" height="50" rx="6" fill="var(--bg2)"/><text class="th" x="75" y="321" text-anchor="middle" dominant-baseline="central">规划决策</text>
+      <rect x="140" y="303" width="118" height="36" rx="8" fill="var(--bg2)" stroke="var(--b)" stroke-width="0.5" stroke-dasharray="4 3"/>
+      <text class="t" x="199" y="321" text-anchor="middle" dominant-baseline="central">产品路线图</text>
+      <g class="c-amber"><rect x="274" y="303" width="118" height="36" rx="8"/><text class="t" x="333" y="321" text-anchor="middle" dominant-baseline="central">优先级矩阵</text></g>
+      <rect x="408" y="303" width="118" height="36" rx="8" fill="var(--bg2)" stroke="var(--b)" stroke-width="0.5" stroke-dasharray="4 3"/>
+      <text class="t" x="467" y="321" text-anchor="middle" dominant-baseline="central">转化漏斗</text>
+      </svg>
+      <figcaption>原型图你已会；灰色虚线那几个（ER 图、时序图、故事地图、路线图、转化漏斗）用到再学即可</figcaption>
+    </figure>
+    <p>注：上图把「原型图」标为待补是默认占位；你已经会画，可视为已掌握。绿色＝本手册已覆盖，黄色＝建议优先补强，灰色＝特定场景再查。</p>
+    <div class="tip"><strong>主线一句话：</strong>思维导图发散想法 → 结构图固化层级 → 流程图/泳道图讲清谁怎么做 → 状态图兜住所有状态 → 架构图说清系统组成 → 优先级矩阵做取舍 → 旅程图/服务蓝图打磨体验。接下来就是拿真实工作去练。</div>
+  </section>
+
+  <div class="pager">
+    <button class="prev"><div class="pl">← 上一篇</div><div class="pt" id="prevTitle">—</div></button>
+    <button class="next"><div class="pl">下一篇 →</div><div class="pt" id="nextTitle">—</div></button>
+  </div>
+
+  </main>
+</div>
+
+<footer>产品经理制图手册 · 九类图，一套心法。好看 = 克制 + 对齐 + 留白。</footer>
+
+<script>
+const order=[
+ {id:"p0",t:"设计原则"},{id:"p1",t:"思维导图"},{id:"p2",t:"流程图 / 泳道图"},
+ {id:"p3",t:"状态图"},{id:"p4",t:"架构图"},{id:"p5",t:"结构图"},
+ {id:"p6",t:"优先级矩阵"},{id:"p7",t:"用户旅程图"},{id:"p8",t:"服务蓝图"},{id:"p9",t:"全景图"}
+];
+const links=document.querySelectorAll('.nav-link');
+const panels=document.querySelectorAll('.panel');
+const prevBtn=document.querySelector('.pager .prev');
+const nextBtn=document.querySelector('.pager .next');
+const prevT=document.getElementById('prevTitle');
+const nextT=document.getElementById('nextTitle');
+let idx=0;
+function show(i){
+  idx=i;const id=order[i].id;
+  panels.forEach(p=>p.classList.toggle('active',p.id===id));
+  links.forEach(l=>l.classList.toggle('current',l.dataset.target===id));
+  // pager
+  if(i>0){prevBtn.disabled=false;prevT.textContent=order[i-1].t;}else{prevBtn.disabled=true;prevT.textContent="—";}
+  if(i<order.length-1){nextBtn.disabled=false;nextT.textContent=order[i+1].t;}else{nextBtn.disabled=true;nextT.textContent="—";}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+links.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();show(order.findIndex(o=>o.id===l.dataset.target));}));
+prevBtn.addEventListener('click',()=>{if(idx>0)show(idx-1);});
+nextBtn.addEventListener('click',()=>{if(idx<order.length-1)show(idx+1);});
+show(0);
+</script>
+</body>
+</html>

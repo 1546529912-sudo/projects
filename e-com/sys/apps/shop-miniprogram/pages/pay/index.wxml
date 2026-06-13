@@ -1,0 +1,21 @@
+<view class="page-pay">
+  <view class="amount-box">
+    <view class="label">应付金额</view>
+    <view class="amount">¥{{amountYuan}}</view>
+    <view class="order-no">订单号 {{orderNo}}</view>
+  </view>
+
+  <view class="card method">
+    <view class="row selected">
+      <view class="icon">💚</view>
+      <view class="title">微信支付（mock 模式）</view>
+      <view class="check">✓</view>
+    </view>
+    <view class="tip">M3 接入真实微信支付，本期点击"立即支付"等同于支付成功</view>
+  </view>
+
+  <view style="height: 80rpx;"></view>
+
+  <button class="btn-primary btn-block" disabled="{{paying}}" bindtap="onPay">{{paying ? '处理中...' : '立即支付 ¥' + amountYuan}}</button>
+  <view class="cancel" bindtap="onCancel">稍后支付</view>
+</view>

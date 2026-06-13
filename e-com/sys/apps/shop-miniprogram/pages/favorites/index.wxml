@@ -1,0 +1,18 @@
+<view class="page-fav">
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+  <view wx:elif="{{list.length === 0}}" class="empty">还没收藏任何商品</view>
+
+  <view
+    wx:for="{{list}}" wx:key="id"
+    class="fav-card"
+    data-sku="{{item.sku_code}}"
+    bindtap="onDetail"
+  >
+    <image class="thumb" src="{{item.thumb}}" mode="aspectFill" />
+    <view class="meta">
+      <view class="title">{{item.title}}</view>
+      <view class="price">¥{{item.priceYuan}}</view>
+    </view>
+    <view class="action" data-id="{{item.spu_id}}" catchtap="onUnfav">取消收藏</view>
+  </view>
+</view>

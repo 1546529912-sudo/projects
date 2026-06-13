@@ -1,0 +1,25 @@
+<view class="page-my-rev">
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+  <view wx:elif="{{list.length === 0}}" class="empty">还没有评价</view>
+
+  <view wx:for="{{list}}" wx:key="id" class="rev-card">
+    <view class="row1">
+      <text class="stars">{{item.stars}}</text>
+      <text wx:if="{{item.status === 'hidden'}}" class="hidden-badge">已被隐藏</text>
+      <text class="date">{{item.created_at}}</text>
+    </view>
+    <view class="content">{{item.content || '（无内容）'}}</view>
+    <view wx:if="{{item.previews.length > 0}}" class="image-grid">
+      <image
+        wx:for="{{item.previews}}" wx:key="*this" wx:for-item="p" wx:for-index="i"
+        class="img"
+        src="{{p}}"
+        mode="aspectFill"
+        data-idx="{{i}}"
+        data-urls="{{item.previews}}"
+        bindtap="onPreview"
+      />
+    </view>
+    <view class="meta">订单 {{item.order_no}} · SKU {{item.sku_code}}</view>
+  </view>
+</view>

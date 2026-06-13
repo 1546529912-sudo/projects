@@ -1,0 +1,47 @@
+<view class="page-od">
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <block wx:else>
+    <view class="status-bar">
+      <view class="t">{{statusText}}</view>
+      <view class="n">订单号 {{orderNo}}</view>
+    </view>
+
+    <view wx:if="{{address}}" class="card">
+      <view class="section-title">收货地址</view>
+      <view class="name-phone">{{address.name}} <text class="phone">{{address.phone}}</text></view>
+      <view class="detail">{{address.province}}{{address.city}}{{address.district}} {{address.detail}}</view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">商品</view>
+      <view wx:for="{{items}}" wx:key="id" class="row">
+        <view class="thumb">{{item.sku_snapshot.spu_name || item.sku_code}}</view>
+        <view class="meta">
+          <view class="name">{{item.sku_snapshot.spu_name || item.sku_code}}</view>
+          <view class="attrs">{{item.sku_code}} × {{item.qty}}</view>
+          <view wx:if="{{order.status === 'completed'}}" class="review-link" data-sku="{{item.sku_code}}" catchtap="onReview">去评价 ›</view>
+        </view>
+        <view class="sub">¥{{item.subtotalYuan}}</view>
+      </view>
+    </view>
+
+    <view class="card sums">
+      <view class="sum-row"><text>商品合计</text><text>¥{{goodsYuan}}</text></view>
+      <view class="sum-row"><text>运费</text><text>¥{{freightYuan}}</text></view>
+      <view class="sum-row total"><text>{{order.status === 'pending_pay' ? '应付' : '实付'}}</text><text class="price">¥{{totalYuan}}</text></view>
+    </view>
+
+    <view wx:if="{{order.remark}}" class="card"><text class="section-title">备注</text>{{order.remark}}</view>
+
+    <view style="height: 160rpx;"></view>
+
+    <view class="bottom-bar">
+      <button wx:if="{{order.status === 'pending_pay'}}" class="btn-secondary" bindtap="onCancel">取消订单</button>
+      <button wx:if="{{order.status === 'pending_pay'}}" class="btn-primary" bindtap="onPay">去支付</button>
+      <button wx:if="{{order.status === 'paid' || order.status === 'picking'}}" class="btn-secondary" bindtap="onRefund" data-type="refund_only">申请退款</button>
+      <button wx:if="{{order.status === 'shipped'}}" class="btn-primary" bindtap="onConfirm">确认收货</button>
+      <button wx:if="{{order.status === 'shipped' || order.status === 'completed'}}" class="btn-secondary" bindtap="onRefund" data-type="return_refund">退货退款</button>
+      <button wx:if="{{order.status === 'shipped' || order.status === 'completed'}}" class="btn-secondary" bindtap="onExchange">申请换货</button>
+    </view>
+  </block>
+</view>

@@ -65,7 +65,7 @@ function StatCard({ icon, label, value, sub, color }: StatCardProps) {
 function CustomerRow({ c, overdue, onRecord }: { c: DashboardCustomer; overdue?: boolean; onRecord?: (c: DashboardCustomer) => void }) {
   const navigate = useNavigate();
   return (
-    <div className="group flex items-center justify-between rounded-[7px] px-3 py-2.5 hover:bg-[var(--bg-hover)]">
+    <div className="group flex h-10 items-center justify-between rounded-[7px] px-3 hover:bg-[var(--bg-hover)]">
       <div
         className="flex min-w-0 flex-1 cursor-pointer items-center gap-2.5"
         onClick={() => navigate(`/customers/${c.id}`)}
@@ -100,7 +100,7 @@ function OppRow({ o, stale }: { o: DashboardOpportunity; stale?: boolean }) {
   return (
     <div
       onClick={() => navigate(`/customers/${o.customer.id}`)}
-      className="flex cursor-pointer items-center justify-between rounded-[7px] px-3 py-2.5 hover:bg-[var(--bg-hover)]"
+      className="flex h-[58px] cursor-pointer items-center justify-between rounded-[7px] px-3 hover:bg-[var(--bg-hover)]"
     >
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
@@ -136,9 +136,11 @@ interface SectionProps {
   emptyText: string;
   /** 锚点 id，供顶栏提醒跳转 */
   sectionId?: string;
+  /** 内容区固定高度（4 行：CustomerRow → h-[176px]；OppRow → h-[248px]） */
+  bodyClassName?: string;
 }
 
-function Section({ icon, title, count, badge, children, emptyText, sectionId }: SectionProps) {
+function Section({ icon, title, count, badge, children, emptyText, sectionId, bodyClassName }: SectionProps) {
   return (
     <div id={sectionId} className="scroll-mt-[76px] rounded-[12px] border border-[var(--border-default)] bg-[var(--bg-card)]">
       <div className="flex items-center gap-2 border-b border-[var(--border-default)] px-4 py-3">
@@ -150,9 +152,9 @@ function Section({ icon, title, count, badge, children, emptyText, sectionId }: 
           </span>
         )}
       </div>
-      <div className="p-2">
+      <div className={`overflow-y-auto p-2 ${bodyClassName ?? ''}`}>
         {count === 0 ? (
-          <div className="py-4 text-center text-sm text-[var(--text-muted)]">{emptyText}</div>
+          <div className="flex h-full items-center justify-center text-sm text-[var(--text-muted)]">{emptyText}</div>
         ) : children}
       </div>
     </div>
@@ -233,6 +235,7 @@ export function DashboardPage() {
             count={todayFollowUps.length}
             badge="bg-blue-100 text-blue-700"
             emptyText="今日暂无需跟进的客户"
+            bodyClassName="h-[176px]"
           >
             {todayFollowUps.map((c) => <CustomerRow key={c.id} c={c} onRecord={setQuickRecord} />)}
           </Section>
@@ -245,6 +248,7 @@ export function DashboardPage() {
             count={overdueFollowUps.length}
             badge="bg-red-100 text-red-700"
             emptyText="暂无逾期跟进"
+            bodyClassName="h-[176px]"
           >
             {overdueFollowUps.map((c) => <CustomerRow key={c.id} c={c} overdue onRecord={setQuickRecord} />)}
           </Section>
@@ -257,6 +261,7 @@ export function DashboardPage() {
             count={upcomingOpportunities.length}
             badge="bg-orange-100 text-orange-700"
             emptyText="近期无即将到期的商机"
+            bodyClassName="h-[248px]"
           >
             {upcomingOpportunities.map((o) => <OppRow key={o.id} o={o} />)}
           </Section>
@@ -269,6 +274,7 @@ export function DashboardPage() {
             count={staleOpportunities.length}
             badge="bg-gray-100 text-gray-600"
             emptyText="暂无长期未推进的商机"
+            bodyClassName="h-[248px]"
           >
             {staleOpportunities.map((o) => <OppRow key={o.id} o={o} stale />)}
           </Section>

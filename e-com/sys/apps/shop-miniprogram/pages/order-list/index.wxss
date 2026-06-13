@@ -1,0 +1,11 @@
+.page-order-list { padding: 0 16rpx 32rpx; }
+.tabs { display: flex; background: #FFF; padding: 8rpx 0; position: sticky; top: 0; z-index: 9; border-bottom: 2rpx solid #F7F7F7; }
+.tab { flex: 1; text-align: center; padding: 16rpx 0; color: #717171; font-size: 26rpx; }
+.tab.on { color: #FF385C; font-weight: 600; border-bottom: 4rpx solid #FF385C; }
+.order { margin-top: 16rpx; }
+.head { display: flex; justify-content: space-between; padding-bottom: 16rpx; border-bottom: 2rpx solid #F7F7F7; }
+.no { color: #555; font-size: 24rpx; }
+.status { color: #FF385C; font-weight: 600; font-size: 26rpx; }
+.row { padding: 16rpx 0; }
+.actions { text-align: right; padding-top: 16rpx; }
+.small { padding: 8rpx 32rpx; font-size: 26rpx; height: auto; line-height: 1.5; display: inline-block; border-radius: 8rpx; }

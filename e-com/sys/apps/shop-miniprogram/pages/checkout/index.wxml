@@ -1,0 +1,50 @@
+<view class="page-checkout">
+  <view class="card address" bindtap="onPickAddress">
+    <view wx:if="{{address}}">
+      <view class="name-phone">{{address.name}} <text class="phone">{{address.phone}}</text></view>
+      <view class="detail">{{address.province}}{{address.city}}{{address.district}} {{address.detail}}</view>
+    </view>
+    <view wx:else class="empty-addr">点击新增/选择收货地址 ›</view>
+    <view wx:if="{{address}}" class="tip">点击切换地址 ›</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">商品（{{selectedQty}}件）</view>
+    <view wx:for="{{list}}" wx:key="id" class="row">
+      <view class="thumb">{{item.sku.spu_name || item.sku_code}}</view>
+      <view class="meta">
+        <view class="name">{{item.sku.spu_name || item.sku_code}}</view>
+        <view class="attrs">{{item.sku_code}} × {{item.qty}}</view>
+        <view class="price">¥{{item.subtotalYuan}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card coupon-pick" bindtap="onPickCoupon">
+    <text>优惠券</text>
+    <view class="coupon-pick-right">
+      <text wx:if="{{userCouponId}}" class="coupon-applied">{{couponName}} -¥{{discountYuan}}</text>
+      <text wx:else class="coupon-empty">选择优惠券</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <view class="card sums">
+    <view class="sum-row"><text>商品合计</text><text>¥{{totalAmountYuan}}</text></view>
+    <view class="sum-row"><text>运费</text><text>¥{{freightYuan}}</text></view>
+    <view wx:if="{{userCouponId}}" class="sum-row discount"><text>优惠</text><text>-¥{{discountYuan}}</text></view>
+    <view class="sum-row total"><text>应付</text><text class="price">¥{{payTotalYuan}}</text></view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">备注</view>
+    <input class="input" placeholder="选填" value="{{remark}}" bindinput="onRemark" />
+  </view>
+
+  <view style="height: 140rpx;"></view>
+
+  <view class="bottom-bar">
+    <view class="bar-total">应付 <text class="price">¥{{payTotalYuan}}</text></view>
+    <button class="btn-primary submit" disabled="{{submitting}}" bindtap="onSubmit">{{submitting ? '提交中...' : '提交订单'}}</button>
+  </view>
+</view>

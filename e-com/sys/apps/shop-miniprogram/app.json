@@ -1,0 +1,49 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/list/index",
+    "pages/detail/index",
+    "pages/cart/index",
+    "pages/checkout/index",
+    "pages/pay/index",
+    "pages/pay-result/index",
+    "pages/order-list/index",
+    "pages/order-detail/index",
+    "pages/refund-apply/index",
+    "pages/my-refunds/index",
+    "pages/exchange-apply/index",
+    "pages/my-exchanges/index",
+    "pages/coupon-center/index",
+    "pages/my-coupons/index",
+    "pages/address-list/index",
+    "pages/address-edit/index",
+    "pages/favorites/index",
+    "pages/review-submit/index",
+    "pages/my-reviews/index",
+    "pages/login/index",
+    "pages/me/index",
+    "pages/topic-detail/index",
+    "pages/merchant-apply/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "电商商城",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7F7F7"
+  },
+  "tabBar": {
+    "color": "#717171",
+    "selectedColor": "#FF385C",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/home/index", "text": "首页" },
+      { "pagePath": "pages/list/index", "text": "商品" },
+      { "pagePath": "pages/cart/index", "text": "购物车" },
+      { "pagePath": "pages/me/index", "text": "我的" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,28 @@
+/* Element Plus 主题色覆盖 · 与小程序保持品牌一致 */
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'primary': (
+      'base': #FF385C,
+    ),
+    'success': (
+      'base': #008A05,
+    ),
+    'warning': (
+      'base': #FFB400,
+    ),
+    'danger': (
+      'base': #C13515,
+    ),
+    'info': (
+      'base': #717171,
+    ),
+  ),
+  $text-color: (
+    'primary': #222222,
+    'regular': #717171,
+    'secondary': #B0B0B0,
+  ),
+  $border-color: (
+    'base': #DDDDDD,
+  )
+);

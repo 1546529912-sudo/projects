@@ -15,3 +15,6 @@ coverage/
 
 # Nested git metadata (ignore if re-introduced as sub-repos)
 **/.git/
+
+# 公司内部资料，不公开
+PEEK/

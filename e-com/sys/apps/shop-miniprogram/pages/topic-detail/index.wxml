@@ -1,0 +1,26 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:elif="{{error}}" class="error">{{error}}</view>
+
+  <block wx:elif="{{topic}}">
+    <image wx:if="{{topic.banner_preview}}" class="banner" src="{{topic.banner_preview}}" mode="aspectFill" />
+    <view class="head card">
+      <view class="title">{{topic.name}}</view>
+      <view wx:if="{{topic.description}}" class="desc">{{topic.description}}</view>
+      <view class="time">
+        活动时间：{{topic.start_at || '不限'}} → {{topic.end_at || '不限'}}
+      </view>
+    </view>
+
+    <view wx:if="{{items.length}}" class="items">
+      <view wx:for="{{items}}" wx:key="spu_id" class="item card" data-spu="{{item.spu_id}}" data-sku="{{item.sku_code}}" bindtap="onItemTap">
+        <image class="item-img" src="{{item.main_image_preview}}" mode="aspectFill" />
+        <view class="item-body">
+          <view class="item-name">{{item.name}}</view>
+          <view class="item-price">¥{{item.price_yuan}}</view>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="empty">本专题暂未关联商品</view>
+  </block>
+</view>

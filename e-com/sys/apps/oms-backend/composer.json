@@ -1,0 +1,27 @@
+{
+    "name": "ecom/oms-backend",
+    "description": "OMS 订单管理后端",
+    "type": "project",
+    "license": "proprietary",
+    "version": "1.0.0",
+    "require": {
+        "php": ">=8.2.0",
+        "topthink/framework": "^8.0",
+        "topthink/think-orm": "^3.0",
+        "topthink/think-queue": "^3.0",
+        "topthink/think-migration": "^3.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {"app\\": "app", "App\\Oms\\": "app"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Tests\\": "tests/"}
+    },
+    "config": {"preferred-install": "dist", "sort-packages": true},
+    "extra": {"think": {"services": [], "commands": ["app\\command\\ConsumeWmsEvents"]}},
+    "scripts": {"test": "phpunit"}
+}

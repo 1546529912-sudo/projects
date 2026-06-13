@@ -1,4 +1,4 @@
-const { getReportHistory } = require('../../utils/cloud');
+const { getReportHistory, getPeriodReport } = require('../../utils/cloud');
 
 Page({
   data: {
@@ -94,6 +94,11 @@ Page({
       filtered.some(r => r.reportDate > periodData.generatedDate);
     this.setData({ periodStart, periodEnd, hasPeriodReport, hasNewReports });
 
+    // localStorage 没有时，异步从云端补查（清缓存或换设备场景）
+    if (filter !== 'all' && !hasPeriodReport) {
+      this._checkPeriodFromCloud(periodType, periodStart, filtered);
+    }
+
     // 按月分组，打平为带 type 标记的列表
     const displayList = [];
     let curMonth = '';
@@ -105,6 +110,22 @@ Page({
       displayList.push({ type: 'item', ...r });
     }
     this.setData({ displayList });
+  },
+
+  async _checkPeriodFromCloud(type, periodStart, filtered) {
+    try {
+      const result = await getPeriodReport(type, periodStart);
+      if (!result || !result.personalText) return;
+      wx.setStorageSync(`period_${type}_${periodStart}`, {
+        summary: result.summary || '',
+        personalText: result.personalText,
+        formalText: result.formalText,
+        generatedDate: result.generatedDate || '',
+      });
+      const hasNewReports = !!result.generatedDate &&
+        filtered.some(r => r.reportDate > result.generatedDate);
+      this.setData({ hasPeriodReport: true, hasNewReports });
+    } catch (_) {}
   },
 
   onViewDetail(e) {

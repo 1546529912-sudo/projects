@@ -1,0 +1,23 @@
+<view class="page-list">
+  <view class="tabs">
+    <view class="tab tab-active">综合</view>
+    <view class="tab">销量</view>
+    <view class="tab">价格↑</view>
+    <view class="tab">价格↓</view>
+    <view class="tab">上新</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:elif="{{error}}" class="error">{{error}}</view>
+  <view wx:elif="{{products.length === 0}}" class="empty">暂无符合条件的商品</view>
+
+  <view wx:else class="product-grid">
+    <view wx:for="{{products}}" wx:key="id" class="product-card">
+      <view class="product-img-placeholder">
+        <text class="placeholder-text">{{item.name}}</text>
+      </view>
+      <view class="product-name">{{item.name}}</view>
+      <view class="product-price">¥{{item.price_yuan}}</view>
+    </view>
+  </view>
+</view>

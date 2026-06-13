@@ -1,0 +1,45 @@
+{
+    "name": "ecom/shop-backend",
+    "description": "电商商城前端 BFF 后端",
+    "type": "project",
+    "license": "proprietary",
+    "version": "1.0.0",
+    "require": {
+        "php": ">=8.2.0",
+        "topthink/framework": "^8.0",
+        "topthink/think-orm": "^3.0",
+        "topthink/think-queue": "^3.0",
+        "topthink/think-migration": "^3.0",
+        "firebase/php-jwt": "^7.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "app",
+            "App\\Shop\\": "app"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "think": {
+            "services": []
+        }
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "@php think optimize:schema"
+        ],
+        "test": "phpunit"
+    }
+}

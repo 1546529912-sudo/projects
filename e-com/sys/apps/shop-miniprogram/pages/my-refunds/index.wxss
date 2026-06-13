@@ -1,0 +1,11 @@
+.page-mr { padding: 24rpx; }
+.empty { padding: 200rpx 0; text-align: center; color: #999; }
+.card { background: #FFFFFF; border-radius: 16rpx; padding: 24rpx; margin-bottom: 20rpx; }
+.head { display: flex; justify-content: space-between; padding-bottom: 16rpx; border-bottom: 1px solid #F0F0F0; margin-bottom: 16rpx; }
+.head .no { font-weight: 600; font-size: 26rpx; }
+.head .status { color: #FF385C; font-weight: 600; font-size: 26rpx; }
+.row { display: flex; justify-content: space-between; padding: 6rpx 0; font-size: 26rpx; }
+.row .lbl { color: #999; }
+.row .price { color: #FF385C; font-weight: 600; }
+.evid-row { display: flex; flex-wrap: wrap; gap: 8rpx; padding: 6rpx 0; }
+.evid-thumb { width: 120rpx; height: 120rpx; border-radius: 8rpx; }

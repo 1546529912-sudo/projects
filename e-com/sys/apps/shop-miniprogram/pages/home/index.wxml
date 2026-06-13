@@ -1,0 +1,83 @@
+<view class="page-home">
+  <!-- 顶部固定栏 -->
+  <view class="header">
+    <view class="logo">电商商城</view>
+    <view class="search-box">搜索商品</view>
+    <view class="cart-icon">
+      🛒<text wx:if="{{cartCount > 0}}" class="cart-badge">{{cartCount}}</text>
+    </view>
+  </view>
+
+  <!-- iter-40: 首页 Banner 轮播 -->
+  <swiper wx:if="{{banners.length}}" class="banner-swiper" indicator-dots autoplay circular>
+    <swiper-item wx:for="{{banners}}" wx:key="id">
+      <image class="banner-img" src="{{item.image_url}}" mode="aspectFill"
+        data-type="{{item.link_type}}" data-value="{{item.link_value}}" data-sku="{{item.link_sku}}" bindtap="onBannerTap" />
+    </swiper-item>
+  </swiper>
+  <view wx:else class="banner card">
+    <view class="banner-title">电商商城</view>
+    <view class="banner-sub">运营在 后台 / 营销 / Banner 管理 配置首页 Banner</view>
+  </view>
+
+  <!-- iter-40: 首页热门推荐 -->
+  <view wx:if="{{featured.length}}" class="featured card">
+    <view class="featured-title">🔥 热门推荐</view>
+    <scroll-view scroll-x class="featured-scroll">
+      <view wx:for="{{featured}}" wx:key="spu_id" class="featured-item"
+        data-spu="{{item.spu_id}}" data-sku="{{item.sku_code}}" bindtap="onFeaturedTap">
+        <image class="featured-img" src="{{item.main_image}}" mode="aspectFill" />
+        <view class="featured-name">{{item.name}}</view>
+        <view class="featured-price">¥{{item.price_yuan}}</view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- iter-41: 进行中的活动专题 -->
+  <view wx:if="{{topics.length}}" class="topics-block">
+    <view wx:for="{{topics}}" wx:key="id" class="topic-card"
+      data-code="{{item.code}}" bindtap="onTopicTap">
+      <image wx:if="{{item.banner_image_url}}" class="topic-banner" src="{{item.banner_image_url}}" mode="aspectFill" />
+      <view class="topic-info">
+        <view class="topic-name">🎉 {{item.name}}</view>
+        <view class="topic-desc">{{item.description || '点击查看详情'}}</view>
+        <view class="topic-time">{{item.end_at ? '至 ' + item.end_at : '长期有效'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载态 -->
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <!-- 错误态 -->
+  <view wx:elif="{{error}}" class="error">
+    <view class="error-text">{{error}}</view>
+    <button class="btn-primary" bindtap="loadProducts">重试</button>
+  </view>
+
+  <!-- 空态 -->
+  <view wx:elif="{{products.length === 0}}" class="empty">
+    <view>暂无商品</view>
+  </view>
+
+  <!-- 商品列表 -->
+  <view wx:else class="product-grid">
+    <view
+      wx:for="{{products}}"
+      wx:key="id"
+      class="product-card"
+      bindtap="onProductTap"
+      data-sku="{{item.default_sku.sku_code}}"
+    >
+      <view class="product-img-placeholder">
+        <text class="placeholder-text">{{item.name}}</text>
+      </view>
+      <view class="product-name">{{item.name}}</view>
+      <view class="product-price">¥{{item.price_yuan}}</view>
+      <view class="product-sales">销量 {{item.sales_text}}</view>
+    </view>
+  </view>
+
+  <!-- 来源标签 -->
+  <view wx:if="{{source}}" class="source-tag">数据来源：{{source}}</view>
+</view>

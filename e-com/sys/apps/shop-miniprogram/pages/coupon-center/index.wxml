@@ -1,0 +1,28 @@
+<view class="page-coupon-center">
+  <view class="header">
+    <text class="title">领券中心</text>
+    <text class="my-link" bindtap="onMy">我的优惠券 ›</text>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+  <view wx:elif="{{list.length === 0}}" class="empty">暂无可领优惠券</view>
+
+  <view wx:for="{{list}}" wx:key="id" class="coupon-card {{!item.claimable ? 'disabled' : ''}}">
+    <view class="left">
+      <view wx:if="{{item.type === 'threshold'}}" class="amount">¥<text class="big">{{item.discount_yuan}}</text></view>
+      <view wx:else class="amount"><text class="big">{{item.discount_value}}</text>% off</view>
+      <view class="min">满 ¥{{item.min_yuan}} 可用</view>
+    </view>
+    <view class="mid">
+      <view class="name">{{item.name}}</view>
+      <view class="desc">{{item.desc}}</view>
+      <view class="period">{{item.valid_from}} ~ {{item.valid_to}}</view>
+      <view class="claim-count">已领 {{item.claimed_count}}{{item.total_count > 0 ? '/' + item.total_count : ''}} · 每人限 {{item.per_user_limit}} 张</view>
+    </view>
+    <view class="right">
+      <button wx:if="{{item.claimable}}" class="btn-claim" size="mini" data-id="{{item.id}}" bindtap="onClaim">领取</button>
+      <view wx:elif="{{item.my_claimed >= item.per_user_limit}}" class="status">已领过</view>
+      <view wx:else class="status">已领完</view>
+    </view>
+  </view>
+</view>

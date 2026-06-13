@@ -404,6 +404,143 @@
   line-height: 1.5;
 }
 
+/* ── 项目名触发按钮 ── */
+.pname-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80rpx;
+  border: 1rpx solid #C07048;
+  border-radius: 10rpx;
+  padding: 0 20rpx;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.pname-val {
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #2C1E12;
+}
+
+.pname-ph {
+  flex: 1;
+  font-size: 28rpx;
+  color: #C4A882;
+}
+
+.pname-arrow {
+  font-size: 28rpx;
+  color: #C07048;
+  margin-left: 8rpx;
+}
+
+/* ── 项目选择浮层 ── */
+.picker-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 100;
+}
+
+.picker-panel {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: #fff;
+  border-radius: 28rpx 28rpx 0 0;
+  z-index: 101;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.picker-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx 20rpx;
+  border-bottom: 1rpx solid #F0E8DE;
+}
+
+.picker-ttl {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #2C1E12;
+}
+
+.picker-x {
+  font-size: 32rpx;
+  color: #A0896E;
+  padding: 8rpx 8rpx 8rpx 24rpx;
+}
+
+/* 自定义输入行 */
+.picker-new-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 32rpx;
+  border-bottom: 1rpx solid #F0E8DE;
+}
+
+.picker-new-input {
+  flex: 1;
+  height: 72rpx;
+  border: 1rpx solid #EEE0D0;
+  border-radius: 10rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  color: #2C1E12;
+  background: #FDFAF7;
+  box-sizing: border-box;
+}
+
+.picker-new-btn {
+  height: 72rpx;
+  padding: 0 28rpx;
+  background: linear-gradient(135deg, #D4885E, #A85530);
+  border-radius: 10rpx;
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 历史列表 */
+.picker-sec-lbl {
+  font-size: 22rpx;
+  color: #A0896E;
+  padding: 16rpx 32rpx 8rpx;
+}
+
+.picker-list {
+  max-height: 480rpx;   /* 5 × 96rpx */
+}
+
+.picker-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 96rpx;
+  padding: 0 32rpx;
+  font-size: 28rpx;
+  color: #2C1E12;
+  border-bottom: 1rpx solid #F8F4EF;
+}
+
+.picker-item-sel {
+  background: #FFF4EC;
+  color: #C07048;
+  font-weight: 600;
+}
+
+.picker-check {
+  color: #C07048;
+  font-size: 28rpx;
+}
+
 .del-project {
   display: flex;
   align-items: center;

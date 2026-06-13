@@ -1,0 +1,37 @@
+.img-placeholder { width: 100%; height: 600rpx; background: linear-gradient(135deg, #FF385C20, #FF385C40); display: flex; align-items: center; justify-content: center; color: #222; font-size: 36rpx; font-weight: 600; }
+.info { margin-top: 24rpx; }
+.price { color: #FF385C; font-size: 48rpx; font-weight: 700; }
+.name { font-size: 32rpx; margin-top: 16rpx; }
+.sku-code { color: #B0B0B0; font-size: 24rpx; margin-top: 12rpx; }
+.stock { color: #555; font-size: 26rpx; margin-top: 12rpx; }
+.sold-out { color: #FF385C; }
+.section-title { font-weight: 600; margin-bottom: 16rpx; }
+.bullet { color: #555; line-height: 1.8; }
+.qty-row { display: flex; align-items: center; gap: 32rpx; }
+.qty-btn { width: 64rpx; height: 64rpx; line-height: 60rpx; text-align: center; border: 2rpx solid #DDD; border-radius: 8rpx; font-size: 36rpx; }
+.qty-num { font-size: 32rpx; min-width: 80rpx; text-align: center; }
+.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; background: #FFF; display: flex; align-items: center; padding: 16rpx 24rpx; box-shadow: 0 -2rpx 8rpx rgba(0,0,0,.05); gap: 16rpx; }
+.bar-cart { padding: 16rpx 24rpx; color: #555; font-size: 26rpx; }
+.bar-btn { flex: 1; height: 80rpx; line-height: 80rpx; padding: 0; border-radius: 8rpx; font-size: 30rpx; }
+.error { padding: 80rpx; text-align: center; color: #FF385C; }
+
+/* iter-20 评价区 + 收藏按钮 */
+.reviews-section { padding-bottom: 8rpx; }
+.reviews-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16rpx; }
+.rating-avg { color: #FFB400; font-size: 28rpx; font-weight: bold; }
+.rev-empty { text-align: center; color: #999; font-size: 26rpx; padding: 32rpx 0; }
+.rev-item { padding: 16rpx 0; border-bottom: 1rpx solid #EEEEEE; }
+.rev-item:last-child { border-bottom: 0; }
+.rev-r1 { display: flex; align-items: center; gap: 16rpx; margin-bottom: 8rpx; }
+.stars { color: #FFB400; font-size: 26rpx; }
+.date { color: #999; font-size: 22rpx; margin-left: auto; }
+.rev-content { color: #333; font-size: 26rpx; line-height: 1.5; margin-bottom: 8rpx; }
+.rev-images { display: flex; flex-wrap: wrap; gap: 8rpx; }
+.rev-img { width: 120rpx; height: 120rpx; border-radius: 8rpx; background: #F7F7F7; }
+
+.bar-fav { display: flex; flex-direction: column; align-items: center; padding: 0 12rpx; }
+.heart { font-size: 36rpx; color: #B0B0B0; }
+.heart.on { color: #FF385C; }
+.bar-fav-label { font-size: 20rpx; color: #717171; margin-top: 4rpx; }
+.shop-tag { margin-top: 16rpx; padding: 12rpx 18rpx; background: #FFF0F3; border-radius: 12rpx; font-size: 24rpx; color: #717171; }
+.shop-name { color: #FF385C; font-weight: 600; margin: 0 6rpx; }

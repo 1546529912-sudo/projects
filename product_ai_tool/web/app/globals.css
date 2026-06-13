@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+:root {
+  --uber-black: #000000;
+  --uber-white: #ffffff;
+  --body-gray: #4b4b4b;
+  --muted-gray: #afafaf;
+  --chip-gray: #efefef;
+  --hover-gray: #e2e2e2;
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    "Inter",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
+  background: var(--uber-white);
+  color: var(--uber-black);
+}

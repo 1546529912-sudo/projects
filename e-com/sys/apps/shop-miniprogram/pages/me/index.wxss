@@ -1,0 +1,19 @@
+.page-me { padding: 16rpx; }
+.header { display: flex; gap: 24rpx; align-items: center; padding: 48rpx 32rpx; }
+.avatar { width: 120rpx; height: 120rpx; line-height: 120rpx; border-radius: 60rpx; background: linear-gradient(135deg, #FF385C, #ff7e9c); color: #FFF; text-align: center; font-size: 24rpx; font-weight: 600; padding: 8rpx; box-sizing: border-box; flex-shrink: 0; }
+.info { flex: 1; }
+.nick { font-size: 32rpx; font-weight: 600; }
+.phone { color: #717171; margin-top: 8rpx; }
+.section-title { font-weight: 600; margin-bottom: 16rpx; }
+.order-tabs { display: flex; gap: 12rpx; }
+.tab {
+  flex: 1; min-width: 0;
+  text-align: center;
+  padding: 24rpx 4rpx;
+  background: #F7F7F7;
+  border-radius: 8rpx;
+  color: #555;
+  font-size: 26rpx;
+  white-space: nowrap;
+}
+.logout { text-align: center; color: #FF385C; margin-top: 48rpx; }

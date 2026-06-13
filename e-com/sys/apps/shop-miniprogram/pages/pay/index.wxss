@@ -1,0 +1,12 @@
+.page-pay { padding: 48rpx; }
+.amount-box { text-align: center; padding: 48rpx; }
+.amount-box .label { color: #717171; font-size: 26rpx; }
+.amount-box .amount { color: #FF385C; font-size: 64rpx; font-weight: 700; margin-top: 16rpx; }
+.amount-box .order-no { color: #B0B0B0; font-size: 22rpx; margin-top: 16rpx; }
+.method .row { display: flex; align-items: center; gap: 16rpx; padding: 24rpx 0; }
+.method .icon { font-size: 36rpx; }
+.method .title { flex: 1; font-size: 30rpx; }
+.method .check { color: #FF385C; font-weight: 700; }
+.method .tip { color: #B0B0B0; font-size: 22rpx; padding-top: 8rpx; }
+.btn-block { width: 100%; }
+.cancel { text-align: center; color: #717171; padding: 32rpx; }

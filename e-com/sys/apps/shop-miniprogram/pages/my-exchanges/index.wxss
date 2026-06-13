@@ -1,0 +1,16 @@
+.page { padding: 24rpx; background: #F7F7F7; min-height: 100vh; }
+.empty { text-align: center; color: #999; padding: 120rpx 0; }
+.card { background: #fff; border-radius: 12rpx; padding: 24rpx; margin-bottom: 16rpx; }
+.row { display: flex; align-items: center; padding: 8rpx 0; font-size: 28rpx; }
+.row.top { justify-content: space-between; padding-bottom: 16rpx; border-bottom: 1rpx solid #eee; margin-bottom: 8rpx; }
+.no { font-weight: 600; }
+.status { font-size: 24rpx; padding: 4rpx 12rpx; border-radius: 999rpx; }
+.status-pending_approve { background: #FFF3E0; color: #E6A23C; }
+.status-approved, .status-received_old, .status-sent_new { background: #E8F4FF; color: #409EFF; }
+.status-completed { background: #E8F6EC; color: #67C23A; }
+.status-rejected, .status-cancelled { background: #F5F5F5; color: #999; }
+.lbl { color: #717171; width: 140rpx; }
+.reason { flex: 1; }
+.time { color: #999; font-size: 24rpx; padding-top: 8rpx; }
+.actions { margin-top: 12rpx; text-align: right; }
+.btn-cancel { color: #F56C6C; font-size: 24rpx; }

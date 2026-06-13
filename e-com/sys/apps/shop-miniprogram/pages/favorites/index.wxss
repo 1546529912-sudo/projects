@@ -1,0 +1,16 @@
+.page-fav { padding: 24rpx; }
+.empty { text-align: center; color: #999; padding: 200rpx 0; }
+.fav-card {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+.thumb { width: 140rpx; height: 140rpx; background: #F7F7F7; border-radius: 8rpx; flex-shrink: 0; }
+.meta { flex: 1; padding: 0 24rpx; }
+.title { font-size: 28rpx; line-height: 1.4; margin-bottom: 8rpx; }
+.price { color: #FF385C; font-size: 30rpx; font-weight: bold; }
+.action { color: #717171; font-size: 24rpx; padding: 12rpx; }

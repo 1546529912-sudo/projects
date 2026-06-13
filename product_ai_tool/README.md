@@ -1,449 +1,62 @@
-# AI Demo 标注工具产品功能开发列表
+# product_ai_tool
 
-## 1. 产品定位
+AI Demo 标注工具：使用 `deepseek-v4-flash` 生成单文件 HTML 可交互 Demo，在预览画布上叠加标注，并基于标注驱动 AI 迭代 HTML，支持版本回退。
 
-本产品用于帮助用户通过大模型快速生成可交互 Demo，并在 Demo 页面上添加可视化标注，再基于标注继续让 AI 修改 Demo。
+当前项目**正式技术方案**为 **Laravel + MySQL + Alpine.js / 原生 JS**，默认大模型为 **`deepseek-v4-flash`**（服务端调用，密钥不出前端）。仓库中的 `web/` 目录为 **Next.js 原型参考**，不沿用其实现思路作为生产路径。
 
-核心闭环：
+## 文档
 
-```text
-输入需求
-→ 选择大模型
-→ 生成单 HTML 可交互 Demo
-→ iframe 预览
-→ 切换到标注模式
-→ 在当前页面添加标注
-→ 标注只在当前页面显示
-→ 编辑标注
-→ 根据标注让 AI 修改 HTML
-→ 生成新版本
-→ 可回退
+| 文档 | 说明 |
+| --- | --- |
+| [产品功能开发.md](./产品功能开发.md) | 产品定位、MVP 范围、页面结构、数据结构、技术要点、明确不做、开发顺序 |
+| [HARNESS.md](./HARNESS.md) | 多 Agent 协作的全局执行约束与回写边界 |
+| [EXECUTION_POLICY.md](./EXECUTION_POLICY.md) | 防重复、返工上限、幂等与长流程兜底策略 |
+| [AGENTS.md](./AGENTS.md) | 多 Agent 角色、分工与协作规则 |
+| [progress.md](./progress.md) | MVP 进度清单（与开发顺序对齐） |
+| [outputs/orchestration/progress-update-template.md](./outputs/orchestration/progress-update-template.md) | 主控 Agent 的 `progress` 回写模板 |
+| [outputs/orchestration/blocker-escalation-template.md](./outputs/orchestration/blocker-escalation-template.md) | 主控 Agent 的阻塞升级模板 |
+| [outputs/architecture/tech-selection.md](./outputs/architecture/tech-selection.md) | 正式技术选型与 DeepSeek 环境约定 |
+| [outputs/architecture/spec.md](./outputs/architecture/spec.md) | 模块划分、表结构、路由与 API、协议与安全 |
+| [outputs/development/laravel-task-breakdown.md](./outputs/development/laravel-task-breakdown.md) | Laravel 阶段任务拆分（A～F）与 progress 对照 |
+| [agents/](./agents/) | 各 Agent 的详细人设与工作规则 |
+
+## 核心闭环
+
+输入需求 → 选择 `deepseek-v4-flash` → 生成单 HTML Demo → iframe 预览 → 标注模式添加/编辑标注（按 `pageKey` 隔离）→ 基于标注让 AI 修改 HTML → 新版本 → 可回退。
+
+## MVP 边界（摘要）
+
+- **做**：单 HTML（内联 CSS/JS）、iframe（推荐 `srcdoc`）、页面标识与 `postMessage` 协议、标注 overlay（不写进 Demo HTML）、按页过滤标注、右侧列表、单标注驱动 AI 改 HTML、版本保存与回退。
+- **不做**：多文件 React/Vue 工程、真实后端业务接口、复杂绘图工具、多人协同、第一版扩展到多个模型等（详见 `产品功能开发.md` 第 6 节）。
+
+## 本地运行（Laravel）
+
+正式代码在目录 `laravel/`。需要 **PHP** 版本满足本仓库 `composer install` 解析结果（**Laravel 11 当前锁文件常见为 PHP 8.4+**；若本机为 8.2/8.3 且报 `platform_check`，请升级 PHP 或重新 `composer update` 按团队约束锁定）。
+
+```bash
+cd laravel
+cp .env.example .env
+php artisan key:generate
+# 默认 .env.example 为 sqlite：确保 database/database.sqlite 存在
+touch database/database.sqlite
+php artisan migrate
+php artisan serve
 ```
 
-第一版产品不做完整低代码平台，也不做在线 IDE。第一版只聚焦一个目标：
+浏览器打开 `http://127.0.0.1:8000/workbench`。在 `.env` 中配置 `DEEPSEEK_API_KEY`（及如有需要则调整 `DEEPSEEK_MODEL`）后，生成将走 DeepSeek；未配置时使用离线示例 HTML，仍可验证 iframe 与 `postMessage`。
 
-```text
-AI 生成单 HTML 可交互 Demo + 页面级标注 + 基于标注修改 Demo
+拉取新代码后若出现新迁移，在 `laravel/` 下执行：
+
+```bash
+php artisan migrate
 ```
 
-## 2. MVP 范围
+**当前已实现**：工作台生成/预览；`annotations` CRUD API；标注 overlay；**预览模式下可勾选「显示标注」**；列表点击定位至高亮 pin；**单标注 AI 修订**（`POST /api/annotations/{id}/revise`）；**版本列表与恢复**；**当前 Demo 重新生成**（有标注时需确认）；自动化测试含 `RevisionVersionRegenerateTest`、`WorkbenchPreviewVersionsTest`、`DeepSeekInitialGenerationTest`、`AnnotationApiTest` 等。本地执行 `cd laravel && php artisan test`。
 
-### 2.1 AI Demo 生成
+生产或团队规范使用 **MySQL** 时，修改 `.env` 中 `DB_*` 并去掉 sqlite 文件依赖即可。
 
-1. 需求输入框
-   - 用户输入想生成的产品 Demo 需求。
-   - 示例：生成一个在线教育 App 的课程详情页 Demo。
+## 协作方式
 
-2. 大模型选择
-   - 支持选择不同大模型。
-   - 可选模型包括 GPT、Claude、Gemini、DeepSeek、Qwen 等。
-   - MVP 阶段可以先接入 1-2 个模型。
+产品需求以 `产品功能开发.md` 为准；实现与验收以 `progress.md` 为准。各 Agent 细则见 `AGENTS.md` 与 `agents/*.md`。
 
-3. 单 HTML Demo 生成
-   - 第一版只支持生成一个完整 HTML 文件。
-   - HTML 文件内包含 HTML、CSS、JavaScript。
-   - 不支持 React、Vue、Next.js 等多文件工程。
-
-4. Demo 生成规范
-   - 必须是单 HTML 文件。
-   - 必须可以直接运行。
-   - 不依赖 npm。
-   - 不调用真实后端接口。
-   - 不跳转真实外部页面。
-   - 支持基础交互，例如弹窗、Tab、页面切换、列表展开。
-   - 必须包含页面标识。
-   - 页面变化时必须通过 iframe 通信通知外层系统。
-
-5. Demo 预览
-   - 使用 iframe 展示 AI 生成的 HTML。
-   - 推荐使用 `iframe srcdoc` 渲染。
-   - iframe 可添加 sandbox 限制。
-
-### 2.2 Demo 页面与状态识别
-
-6. 页面标识 `pageKey`
-   - 每个 Demo 内部页面需要有唯一页面标识。
-   - 示例：
-
-```text
-home
-detail
-checkout
-```
-
-7. 页面切换通知
-   - Demo 内部页面切换时，通过 `postMessage` 通知外层系统。
-
-```js
-window.parent.postMessage({
-  type: 'DEMO_PAGE_CHANGE',
-  pageKey: 'detail'
-}, '*')
-```
-
-8. 状态标识 `stateKey` 预留
-   - 用于后续区分同一页面下的不同交互状态。
-   - 示例：
-
-```text
-弹窗打开
-Tab A
-Tab B
-抽屉展开
-表单步骤 1
-表单步骤 2
-```
-
-9. iframe 通信协议
-   - 至少定义以下消息：
-
-```text
-DEMO_READY
-DEMO_PAGE_CHANGE
-DEMO_STATE_CHANGE
-DEMO_ACTION
-```
-
-### 2.3 标注功能
-
-10. 预览模式 / 标注模式切换
-    - 预览模式：用户可以正常操作 Demo。
-    - 标注模式：用户点击 Demo 区域时添加标注。
-
-11. 添加标注
-    - 用户在 Demo 指定位置点击，新增一个标注图标。
-    - 标注显示在 iframe 上方的 overlay 层。
-
-12. 标注位置保存
-    - 使用百分比保存位置，避免不同屏幕尺寸下位置完全失效。
-
-```json
-{
-  "x": 42.5,
-  "y": 31.2
-}
-```
-
-13. 标注绑定页面
-    - 每个标注必须绑定：
-
-```text
-demoId + pageKey
-```
-
-14. 标注绑定状态预留
-    - 后续可升级为：
-
-```text
-demoId + pageKey + stateKey
-```
-
-15. 页面级标注隔离
-    - 当前页面只显示当前页面的标注。
-    - 页面 A 的标注不应该出现在页面 B。
-
-16. 点击标注弹出编辑框
-    - 用户点击标注图标后，弹出标注编辑框。
-
-17. 标注内容编辑
-    - 支持编辑以下内容：
-
-```text
-标题
-描述
-类型
-状态
-```
-
-18. 标注类型
-    - MVP 可支持：
-
-```text
-说明
-修改建议
-问题
-```
-
-19. 标注状态
-    - MVP 可支持：
-
-```text
-未处理
-已完成
-```
-
-20. 删除标注
-    - 用户可以删除不需要的标注。
-
-21. 标注高亮
-    - 点击某个标注后，画布上的标注图标高亮。
-
-22. 隐藏 / 显示标注
-    - 用户在预览时可以选择是否显示标注。
-
-### 2.4 标注列表
-
-23. 右侧标注列表
-    - 显示当前页面的所有标注。
-
-24. 全部标注视图
-    - 可查看整个 Demo 下的所有标注。
-
-25. 标注筛选
-    - 支持按状态筛选：
-
-```text
-未处理
-已完成
-```
-
-26. 标注定位
-    - 点击列表中的标注，画布自动定位并高亮对应图标。
-
-### 2.5 基于标注修改 Demo
-
-27. 单个标注 AI 修改
-    - 用户选择某条标注，点击“让 AI 修改”。
-
-28. 修改范围选择
-    - 支持选择：
-
-```text
-只修改当前标注
-修改当前页面所有标注
-修改整个 Demo
-```
-
-MVP 默认只做“只修改当前标注”。
-
-29. AI 修改上下文组装
-    - 发送给模型的信息包括：
-
-```text
-当前 HTML
-当前 demoId
-当前 pageKey
-当前 stateKey
-标注位置
-标注内容
-用户修改要求
-```
-
-30. 返回新 HTML
-    - AI 根据标注返回修改后的完整 HTML。
-
-31. 重新渲染 Demo
-    - 使用新 HTML 更新 iframe 预览。
-
-32. 标注状态更新
-    - AI 修改后，标注状态变为“已完成”。
-    - 后续可扩展为“待确认 / 已应用 / 已拒绝”。
-
-### 2.6 版本管理
-
-33. Demo 版本保存
-    - 每次生成或 AI 修改后，都保存一个新版本。
-
-```text
-version 1：初始生成
-version 2：根据标注修改
-version 3：再次修改
-```
-
-34. 版本列表
-    - 用户可以查看历史版本。
-
-35. 恢复上一个版本
-    - AI 改坏时，用户可以回退到上一个版本。
-
-36. 标注创建版本记录
-    - 每条标注记录创建时对应的 HTML 版本。
-
-37. 重新生成提醒
-    - 如果已有标注，用户重新生成 Demo 时需要提示：
-
-```text
-重新生成可能导致已有标注位置不准确
-```
-
-## 3. 推荐页面结构
-
-```text
-顶部工具栏
-├── 模型选择
-├── 预览模式 / 标注模式切换
-├── 显示 / 隐藏标注
-├── 生成 Demo
-└── 版本回退
-
-左侧面板
-├── 需求输入
-├── 当前 Demo 信息
-└── 生成按钮
-
-中间画布
-├── iframe Demo 预览层
-└── annotation overlay 标注层
-
-右侧面板
-├── 当前页面标注列表
-├── 全部标注入口
-├── 标注详情编辑
-└── 让 AI 修改按钮
-```
-
-## 4. 推荐数据结构
-
-### 4.1 demos
-
-```sql
-demos
-- id
-- user_id
-- title
-- prompt
-- current_version_id
-- created_at
-- updated_at
-```
-
-### 4.2 demo_versions
-
-```sql
-demo_versions
-- id
-- demo_id
-- version_no
-- html_code
-- model
-- prompt
-- created_at
-```
-
-### 4.3 annotations
-
-```sql
-annotations
-- id
-- demo_id
-- version_id
-- page_key
-- state_key
-- x
-- y
-- title
-- description
-- type
-- status
-- created_at
-- updated_at
-```
-
-## 5. 关键技术点
-
-### 5.1 标注层和 Demo 层分离
-
-标注不要写入 AI 生成的 HTML 中。
-
-正确结构：
-
-```text
-AI 生成的 HTML
-+
-系统独立维护的 annotations 数据
-```
-
-这样可以方便地隐藏、编辑、删除标注，也不会污染 Demo 源码。
-
-### 5.2 标注只显示在当前页面
-
-前端显示标注时，按当前页面过滤：
-
-```js
-const visibleAnnotations = annotations.filter(item => {
-  return item.demoId === currentDemoId
-    && item.pageKey === currentPageKey
-    && item.stateKey === currentStateKey
-})
-```
-
-MVP 阶段如果暂时不做 `stateKey`，可以先按 `demoId + pageKey` 过滤。
-
-### 5.3 iframe 通信是核心协议
-
-Demo 在 iframe 内部运行，标注系统在 iframe 外部运行。
-
-因此 Demo 内部必须在关键时刻通知外层：
-
-```js
-window.parent.postMessage({
-  type: 'DEMO_PAGE_CHANGE',
-  pageKey: 'checkout'
-}, '*')
-```
-
-外层系统收到消息后，更新当前 `pageKey`，并重新渲染对应页面的标注。
-
-### 5.4 AI 生成提示词必须严格
-
-生成 Demo 时，需要约束大模型：
-
-```text
-只返回一个完整 HTML 文件
-包含 HTML、CSS、JavaScript
-不要使用外部依赖
-不要调用真实接口
-不要跳转真实 URL
-所有页面必须在同一个 HTML 内部完成
-页面切换必须更新 pageKey
-页面切换必须 postMessage 通知父页面
-交互必须可点击、可切换、可演示
-```
-
-## 6. 第一版明确不做
-
-1. 不做 React / Vue / Next.js 多文件项目生成。
-2. 不做真实登录、支付、下单、上传。
-3. 不做复杂 DOM 自动识别。
-4. 不做 Figma 式画框、箭头、自由绘图。
-5. 不做多人协同。
-6. 不做复杂权限系统。
-7. 不做复杂版本 diff。
-8. 不做多个设备画布同步。
-9. 不做像素级精准元素绑定。
-10. 不一开始接入太多大模型。
-11. 不把标注写进 AI 生成的 HTML 里。
-12. 不自动改多个页面。
-13. 不做复杂页面路由工程。
-
-## 7. MVP 开发顺序
-
-1. 搭建基础页面布局。
-2. 实现需求输入和模型选择。
-3. 接入一个大模型，生成单 HTML Demo。
-4. 使用 iframe 预览 HTML。
-5. 约束 AI 生成 HTML 的页面标识和 `postMessage` 协议。
-6. 实现预览模式 / 标注模式切换。
-7. 实现点击画布添加标注。
-8. 实现标注位置百分比保存。
-9. 实现标注点击编辑。
-10. 实现页面级标注过滤。
-11. 实现右侧当前页面标注列表。
-12. 实现删除标注和状态更新。
-13. 实现基于单个标注让 AI 修改 HTML。
-14. 实现 Demo 版本保存。
-15. 实现回退上一个版本。
-
-## 8. 后续增强方向
-
-1. 支持 `stateKey`，区分弹窗、Tab、抽屉等状态。
-2. 支持标注截图快照。
-3. 支持标注评论串。
-4. 支持标注优先级。
-5. 支持多人协作。
-6. 支持更多模型。
-7. 支持 React / Vue 工程生成。
-8. 支持 DOM selector 辅助定位。
-9. 支持版本 diff。
-10. 支持移动端和桌面端多画布预览。
-
+这里的“多 Agent”是一种协作开发模式：由负责人 / 主控 Agent 统一调度，产品、设计、架构、开发、测试按顺序接力，围绕同一份需求和进度表推进，而不是额外开发一套新的 Agent 平台。

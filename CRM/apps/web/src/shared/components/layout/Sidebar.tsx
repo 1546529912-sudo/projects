@@ -20,7 +20,7 @@ export function Sidebar() {
   return (
     <aside className="flex h-full w-[214px] shrink-0 flex-col overflow-hidden border-r border-[var(--side-border)] bg-[var(--side-bg)]">
       <div className="flex h-[58px] shrink-0 items-center gap-2.5 border-b border-[var(--side-border)] px-4">
-        <div className="grid h-7 w-7 place-items-center rounded-[7px] bg-[var(--action-primary)] text-xs font-bold text-white">C</div>
+        <div className="grid h-7 w-7 place-items-center rounded-[7px] bg-[var(--action-primary)] text-xs font-bold text-white shadow-[0_2px_6px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.18)]">C</div>
         <div className="text-sm font-semibold tracking-[-0.02em] text-[var(--text-heading)]">CRM Studio</div>
       </div>
       <nav className="min-h-0 flex-1 overflow-y-auto p-2.5">
@@ -31,28 +31,43 @@ export function Sidebar() {
             to={item.to}
             className={({ isActive }) =>
               cn(
-                'mb-0.5 flex h-9 items-center gap-2 rounded-[7px] px-2.5 text-sm text-[var(--side-item-text)] transition hover:bg-[var(--bg-hover)]',
-                isActive && 'bg-[var(--side-active-bg)] font-medium text-[var(--side-active-text)]',
-                'justify-between',
+                'group relative mb-1 flex h-10 items-center justify-between gap-2 rounded-[8px] px-2 text-sm text-[var(--side-item-text)] transition-all duration-150',
+                !isActive &&
+                  'hover:bg-white hover:text-[var(--text-heading)] hover:shadow-[0_1px_2px_rgba(15,23,42,0.04),0_1px_3px_rgba(15,23,42,0.06)]',
+                isActive &&
+                  'bg-white font-medium text-[var(--side-active-text)] shadow-[0_1px_2px_rgba(15,23,42,0.04),0_2px_6px_rgba(15,23,42,0.06)] ring-1 ring-[var(--side-border)]',
               )
             }
           >
-            <span className="flex items-center gap-2 min-w-0">
-              <item.icon className="h-4 w-4 shrink-0" />
-              <span className="truncate">{item.label}</span>
-            </span>
-            {item.to === '/dashboard' &&
-              reminders &&
-              reminders.attentionTotal > 0 && (
-                <span
-                  className={cn(
-                    'shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none text-white',
-                    reminders.urgentFollowUp > 0 ? 'bg-red-500' : 'bg-[var(--action-primary)]',
-                  )}
-                >
-                  {reminders.attentionTotal > 99 ? '99+' : reminders.attentionTotal}
+            {({ isActive }) => (
+              <>
+                <span className="flex min-w-0 items-center gap-2.5">
+                  <span
+                    className={cn(
+                      'grid h-7 w-7 shrink-0 place-items-center rounded-[6px] transition-all duration-150',
+                      isActive
+                        ? 'bg-[var(--action-primary)] text-white shadow-[0_1px_2px_rgba(15,23,42,0.18)]'
+                        : 'text-[var(--side-item-text)] group-hover:bg-white group-hover:text-[var(--text-heading)] group-hover:shadow-[inset_0_0_0_1px_var(--side-border)]',
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                  </span>
+                  <span className="truncate">{item.label}</span>
                 </span>
-              )}
+                {item.to === '/dashboard' &&
+                  reminders &&
+                  reminders.attentionTotal > 0 && (
+                    <span
+                      className={cn(
+                        'inline-flex h-[18px] min-w-[18px] shrink-0 items-center justify-center rounded-full px-1 text-[11px] font-bold leading-none text-white shadow-[0_1px_2px_rgba(15,23,42,0.18)]',
+                        reminders.urgentFollowUp > 0 ? 'bg-red-500' : 'bg-[var(--action-primary)]',
+                      )}
+                    >
+                      {reminders.attentionTotal > 99 ? '99+' : reminders.attentionTotal}
+                    </span>
+                  )}
+              </>
+            )}
           </NavLink>
         ))}
       </nav>

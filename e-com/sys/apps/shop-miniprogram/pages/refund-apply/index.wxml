@@ -1,0 +1,46 @@
+<view class="page-ra">
+  <view class="hint">{{typeLabel}} · 订单 {{orderNo}}</view>
+
+  <view class="card">
+    <view class="section-title">选择退款商品</view>
+    <view wx:for="{{items}}" wx:key="sku_code" class="item">
+      <checkbox checked="{{item.checked}}" bindtap="onCheck" data-idx="{{index}}" color="#FF385C"/>
+      <view class="meta">
+        <view class="name">{{item.name}}</view>
+        <view class="attr">{{item.sku_code}}</view>
+      </view>
+      <view class="qty">
+        <input type="number" value="{{item.qty}}" bindblur="onQtyChange" data-idx="{{index}}" />
+        <text class="max">/ {{item.max}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">退款原因</view>
+    <textarea bindinput="onReason" value="{{reason}}" placeholder="简要描述退款理由" maxlength="200"></textarea>
+  </view>
+
+  <view class="card">
+    <view class="section-title">凭证图片（选填，最多 5 张）</view>
+    <view class="evid-grid">
+      <view wx:for="{{evidencePreviews}}" wx:key="*this" class="evid-item">
+        <image src="{{item}}" mode="aspectFill" class="evid-img" />
+        <view class="evid-del" bindtap="onRemoveImage" data-idx="{{index}}">×</view>
+      </view>
+      <view wx:if="{{evidencePreviews.length < 5}}" class="evid-add" bindtap="onPickImage">
+        <text>{{uploading ? '...' : '+ 添加'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card sums">
+    <view class="sum-row total"><text>退款金额</text><text class="price">¥{{amountYuan}}</text></view>
+  </view>
+
+  <view style="height: 160rpx;"></view>
+
+  <view class="bottom-bar">
+    <button class="btn-primary" disabled="{{submitting}}" bindtap="onSubmit">{{submitting ? '提交中...' : '提交申请'}}</button>
+  </view>
+</view>

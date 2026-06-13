@@ -83,8 +83,8 @@ Page({
           const d = new Date(r.createTime);
           return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
         })(),
-        title: r.title || r.rawText?.slice(0, 15) || '录入记录',
-        summary: r.summary || r.rawText?.slice(0, 30) || '',
+        projectNames: (r.projects || []).map(p => p.project_name).filter(Boolean).join('、') || r.title || r.rawText?.slice(0, 15) || '录入记录',
+        actionsSummary: (r.projects || []).flatMap(p => p.actions || []).slice(0, 2).join('；') || r.summary || r.rawText?.slice(0, 30) || '',
       }));
 
       let projectSet = new Set();
@@ -106,8 +106,11 @@ Page({
         return new Date(v).getTime();
       };
       const latestRecord = records[records.length - 1];
-      const hasNewRecords = hasTodayReport && !!latestRecord &&
-        getMs(latestRecord.createTime) > getMs(todayReport.updateTime);
+      const latestMs = latestRecord
+        ? Math.max(getMs(latestRecord.createTime), getMs(latestRecord.updateTime))
+        : 0;
+      const hasNewRecords = hasTodayReport && latestMs > 0 &&
+        latestMs > getMs(todayReport.updateTime);
 
       this.setData({
         todayRecords: records,

@@ -1,0 +1,22 @@
+.page-ra { padding: 24rpx; }
+.hint { color: #717171; font-size: 26rpx; margin-bottom: 16rpx; }
+.card { background: #FFFFFF; border-radius: 16rpx; padding: 24rpx; margin-bottom: 20rpx; }
+.section-title { font-weight: 600; margin-bottom: 16rpx; }
+.item { display: flex; align-items: center; padding: 16rpx 0; border-bottom: 1px solid #F0F0F0; }
+.item:last-child { border-bottom: none; }
+.meta { flex: 1; margin-left: 16rpx; }
+.name { font-size: 28rpx; }
+.attr { color: #999; font-size: 24rpx; margin-top: 4rpx; }
+.qty { display: flex; align-items: center; }
+.qty input { width: 80rpx; height: 56rpx; border: 1px solid #DDD; border-radius: 8rpx; text-align: center; }
+.qty .max { color: #999; margin-left: 8rpx; font-size: 24rpx; }
+textarea { width: 100%; min-height: 140rpx; border: 1px solid #DDD; border-radius: 8rpx; padding: 12rpx; font-size: 26rpx; box-sizing: border-box; }
+.evid-grid { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.evid-item { position: relative; width: 160rpx; height: 160rpx; }
+.evid-img { width: 100%; height: 100%; border-radius: 8rpx; }
+.evid-del { position: absolute; top: -10rpx; right: -10rpx; width: 36rpx; height: 36rpx; line-height: 32rpx; text-align: center; background: #FF385C; color: #FFFFFF; border-radius: 50%; font-size: 28rpx; }
+.evid-add { width: 160rpx; height: 160rpx; border: 2rpx dashed #DDD; border-radius: 8rpx; display: flex; align-items: center; justify-content: center; color: #999; font-size: 24rpx; }
+.sums .sum-row { display: flex; justify-content: space-between; align-items: center; }
+.sums .total .price { color: #FF385C; font-size: 36rpx; font-weight: 700; }
+.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 16rpx 24rpx; background: #FFFFFF; border-top: 1px solid #EEEEEE; }
+.btn-primary { background: #FF385C; color: #FFFFFF; border-radius: 100rpx; padding: 24rpx 0; font-size: 30rpx; font-weight: 600; }

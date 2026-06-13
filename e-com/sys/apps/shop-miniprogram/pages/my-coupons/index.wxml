@@ -1,0 +1,37 @@
+<view class="page-my-coupons">
+  <view class="tabs">
+    <view class="tab {{tab === 'unused' ? 'active' : ''}}" data-tab="unused" bindtap="onTab">未使用</view>
+    <view class="tab {{tab === 'used' ? 'active' : ''}}" data-tab="used" bindtap="onTab">已使用</view>
+    <view class="tab {{tab === 'expired' ? 'active' : ''}}" data-tab="expired" bindtap="onTab">已过期</view>
+  </view>
+
+  <view wx:if="{{selectMode}}" class="select-bar">
+    <text>选择优惠券（商品金额 ¥{{goodsAmount / 100}}）</text>
+    <text class="unpick" bindtap="onUnpick">不使用</text>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+  <view wx:elif="{{list.length === 0}}" class="empty">
+    没有优惠券，去 <text class="link" bindtap="onCenter">领券中心</text> 领取
+  </view>
+
+  <view wx:for="{{list}}" wx:key="id"
+        class="coupon-card {{tab !== 'unused' || (selectMode && !item.usable) ? 'disabled' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="onPick">
+    <view class="left">
+      <view wx:if="{{item.type === 'threshold'}}" class="amount">¥<text class="big">{{item.discount_yuan}}</text></view>
+      <view wx:else class="amount"><text class="big">{{item.discount_value}}</text>% off</view>
+      <view class="min">满 ¥{{item.min_yuan}} 可用</view>
+    </view>
+    <view class="mid">
+      <view class="name">{{item.name}}</view>
+      <view class="desc">{{item.desc}}</view>
+      <view class="period">{{item.valid_from}} ~ {{item.valid_to}}</view>
+      <view wx:if="{{item.order_no}}" class="order">已用于 {{item.order_no}}</view>
+    </view>
+    <view class="right" wx:if="{{selectMode && item.usable}}">
+      <view class="status pick">选用</view>
+    </view>
+  </view>
+</view>

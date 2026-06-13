@@ -1,0 +1,25 @@
+<view class="page">
+  <view wx:if="{{!loading && list.length === 0}}" class="empty">还没有换货单</view>
+
+  <view wx:for="{{list}}" wx:key="exchange_no" class="card">
+    <view class="row top">
+      <text class="no">{{item.exchange_no}}</text>
+      <text class="status status-{{item.status}}">{{item.statusLabel}}</text>
+    </view>
+    <view class="row">
+      <text class="lbl">订单</text><text>{{item.order_no}}</text>
+    </view>
+    <view class="row">
+      <text class="lbl">原因</text><text class="reason">{{item.reason}}</text>
+    </view>
+    <view class="row" wx:if="{{item.tracking_no_new}}">
+      <text class="lbl">新货单号</text><text>{{item.tracking_no_new}}</text>
+    </view>
+    <view class="row time">
+      <text>{{item.created_at}}</text>
+    </view>
+    <view wx:if="{{item.canCancel}}" class="actions">
+      <button class="btn-cancel" size="mini" data-no="{{item.exchange_no}}" bindtap="onCancel">取消申请</button>
+    </view>
+  </view>
+</view>
