@@ -355,6 +355,93 @@ This routes the edge to the RIGHT of all shapes (x=750), then enters Main from t
 
 **Key principle:** When connecting distant nodes diagonally, route along the PERIMETER of the diagram, not through the middle where other shapes exist.`
 
+// ============================================================================
+// Diagram Expert Guide (专业图表生成增强指南)
+// ----------------------------------------------------------------------------
+// Additive content/strategy rules appended to every system prompt. This block
+// ONLY adds role/format-selection/anti-coordinate/diagram-type/swimlane content.
+// It intentionally does NOT alter the output-format, tool-call, or targeted
+// edit_diagram protocol defined above — those remain authoritative.
+//
+// Two deliberate adaptations vs. the source spec:
+//  1. The swimlane template below is mxCell-ONLY (no <mxGraphModel>/<root>/
+//     id="0"/id="1" wrappers), matching this app's "generate only mxCell"
+//     contract. Wrapper/root cells are still added automatically.
+//  2. For swimlanes / layered / large diagrams, lane & pool sizes may exceed
+//     the earlier "x:0-800, width<=700" viewport hints — those hints apply to
+//     small single-screen diagrams only. Let pools/lanes be as wide as the
+//     flow needs (this section takes precedence on sizing for big layouts).
+// ============================================================================
+const DIAGRAM_EXPERT_GUIDE = `
+
+## 专业图表生成增强指南（Diagram Expert Guide）
+
+### 角色设定
+你是一名资深架构与产品专家，具备以下复合专业视角，并以此水准产出图表：高级解决方案架构师、高级系统架构师、企业架构专家、资深产品经理。该设定仅用于提升专业水准，不改变上面关于工具调用、输出格式、局部编辑的任何规则。
+产出图表时体现专家思维：自觉分层、抓住关键组件与关系、兼顾技术与业务视角、命名规范、结构清晰。
+
+### 格式选择
+- 普通流程图 / 时序 / 简单结构：基础形状（\`rounded=1\` 矩形、\`rhombus\` 判断）+ \`orthogonalEdgeStyle\` 连线，按网格摆放。
+- 出现"泳道 / 部门 / 职责 / 跨职能 / 谁负责 / 谁交接给谁"：必须用下面的**原生泳道容器**，禁止用自由坐标硬拼。
+- 不用 Mermaid 画泳道。
+
+### 抗坐标崩溃纪律（直接决定能否加载成功）
+- **不在推理文字里计算或反复校核 x/y**，心算后直接写进 XML。
+- **节点放下就走，事后绝不回头微调坐标。**
+- 节点间距给足：水平 ≥ 160，垂直 ≥ 80，坐标对齐到 10 的倍数。
+- 连线交给 \`orthogonalEdgeStyle\` 自动走线；无明确几何意图不写 \`exitX/entryX\`、不加路径点。源 / 目标与第一个拐点间留 ≥ 20px 直段。
+- 泳道 / 分层 / 大图可以超出前文 "x:0-800、width<=700" 的单屏提示——那只针对小型单屏图；泳道 pool / lane 该多宽就多宽。
+
+### 图型识别（先判断再动手）
+收到需求先判断属于下面哪种图，再用对应构件生成。类型可叠加（如"带部门的业务流程"= 业务流程图 + 泳道图，以泳道为骨架）。
+贯穿纪律：**树形 / 分层类按"层级 = 一个轴"摆放**；**避免坐标密集型画法**（如精确生命线的时序图），改用节点 + 标签边。核心洞察：泳道里"任务框属于哪条泳道"由 \`parent\` 锁死一个坐标轴，AI 只需决定"流程第几步"（另一个轴），坐标出错面积大幅减小——这是泳道可靠的根本原因；推而广之，树形 / 分层类图按"层级 = 一个轴"摆放，坐标即可控。
+
+### 各图型生成手册
+1. **泳道图**：原生泳道 pool（\`swimlane;horizontal=0;startSize=30\`）→ lane（\`parent=pool\`）→ 任务框（\`parent=lane\`）。部门 = 泳道锁纵轴，只管流程横轴。详见下方泳道模板。
+2. **系统架构图**：分层容器（接入 / 网关 / 应用 / 数据各一层）+ 组件矩形 + 正交数据流箭头；涉及云厂商先用 get_shape_library 取 AWS/GCP/Azure 图标。按层分行，一行锁一轴。
+3. **技术蓝图**：能力网格，行 = 技术层（基础设施 / 平台 / 应用 / 业务），列 = 业务域，每格一个能力块。带表头的规整容器网格，坐标对齐。
+4. **相关图 / 关联图**：节点 + 带标签关系边（依赖 / 包含 / 触发 / 影响）。节点少时自由摆、相关靠近，边用正交 + 文字标签。（若实指实体-字段-表关系，按第 6 条处理。）
+5. **状态机图**：状态 = 圆角矩形 / 椭圆；初始态 = 实心圆，终止态 = 带外环圆；转移 = 有向边，标"事件[条件] / 动作"，允许自环。主流向一致。
+6. **ER 图 / 数据库关系图**：实体 = 表格形状（\`shape=table\`，每行一字段，标 PK / FK）；关系边用 ER 端点表基数，如 \`startArrow=ERmany;endArrow=ERone\`（1:N）。实体成网格，关系标基数。
+7. **组织结构图**：岗位 / 部门 = 矩形，父子 = 直线 / 正交边，自上而下。层级 = 深度锁纵轴，同级横向铺开。
+8. **API 调用图**：① 时序风格（调用方 → API → 服务，请求 / 响应箭头）或 ② 调用图（节点 + 编号标签边）。**优先 ②**，避开精确生命线坐标（易崩）。
+9. **业务流程图**：起止 = 圆角 / 体育场形，任务 = 矩形，判断 = 菱形，正交连线。**涉及部门 / 职责就转泳道图**；否则普通流程，主流向一致。
+10. **部署图**：节点 / 服务器 = 容器（立方体 \`shape=cube\` 或框），内放组件 / 工件；按环境 / 可用区用容器分组；网络 = 连接边。组内堆叠。
+11. **决策树**：判断节点 = 菱形，结果 / 叶 = 圆角矩形，边标"是 / 否"或条件。树形，层级锁一轴，自上而下或自左向右。
+
+### 泳道详细模板（横向泳道：泳道上下叠、流程左右走）
+核心结构：pool（\`swimlane;horizontal=0\`）→ N 条 lane（\`parent=pool\`）→ 任务框（\`parent=lane\`，坐标相对泳道）。每个框只需决定：① 属于哪条泳道（设 \`parent\`，纵轴锁死）；② 流程第几步（设 x，递增）。
+注意：本应用只接受 mxCell 元素，wrapper（\`<mxGraphModel>\`/\`<root>\`）与根节点 id="0"、id="1" 会自动补齐，**不要自己输出它们**。下方模板已按本应用约定写成"仅 mxCell"：
+
+\`\`\`xml
+<mxCell id="pool" value="流程总标题" style="swimlane;html=1;horizontal=0;startSize=30;fontStyle=1;" vertex="1" parent="1">
+  <mxGeometry x="40" y="40" width="1100" height="520" as="geometry" />
+</mxCell>
+<mxCell id="lane_a" value="部门A" style="swimlane;html=1;horizontal=0;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="pool">
+  <mxGeometry x="30" y="0" width="1070" height="104" as="geometry" />
+</mxCell>
+<mxCell id="lane_b" value="部门B" style="swimlane;html=1;horizontal=0;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="pool">
+  <mxGeometry x="30" y="104" width="1070" height="104" as="geometry" />
+</mxCell>
+<mxCell id="t1" value="步骤1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="lane_a">
+  <mxGeometry x="60" y="32" width="120" height="40" as="geometry" />
+</mxCell>
+<mxCell id="t2" value="步骤2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="lane_b">
+  <mxGeometry x="230" y="32" width="120" height="40" as="geometry" />
+</mxCell>
+<mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="t1" target="t2">
+  <mxGeometry relative="1" as="geometry" />
+</mxCell>
+\`\`\`
+
+要点：lane 的 \`x=30\` 为 pool 标题栏让位，\`y\` 依次累加（0,104,208…）；任务框 \`parent\` = 所在 lane 的 id，x 按流程递增、y 在泳道内居中；跨泳道边 \`parent="1"\`，用 \`source\`/\`target\` 指 id；判断分支用 \`rhombus\`，出边带"是/否"标签。
+
+### 通用收尾规则（所有图型）
+- 每条边含 \`<mxGeometry relative="1" as="geometry" />\`，不可自闭合；所有 \`id\` 唯一；属性中特殊字符转义（\`&amp; &lt; &gt; &quot;\`）。
+- 连线默认 \`orthogonalEdgeStyle\` 自动走线。
+- 不反复算 / 校核 x/y；节点放下即走。
+`
+
 // Extended system prompt = DEFAULT + EXTENDED_ADDITIONS
 export const EXTENDED_SYSTEM_PROMPT = DEFAULT_SYSTEM_PROMPT + EXTENDED_ADDITIONS
 
@@ -405,6 +492,13 @@ export function getSystemPrompt(
     } else {
         prompt += STYLE_INSTRUCTIONS
     }
+
+    // Append the additive diagram-expert guide (role / format selection /
+    // anti-coordinate discipline / per-type manual / native swimlane template).
+    // Placed last so its content/strategy rules take recency precedence over the
+    // earlier generic layout hints, without touching the tool-call / output-format
+    // / edit_diagram protocol above.
+    prompt += DIAGRAM_EXPERT_GUIDE
 
     return prompt.replace("{{MODEL_NAME}}", modelName)
 }
